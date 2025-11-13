@@ -1,0 +1,28 @@
+{
+  "header": {
+    "citySelector": {
+      "title": "Select City",
+      "hanoi": "Hanoi",
+      "hochiminh": "Ho Chi Minh",
+      "danang": "Da Nang"
+    }
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "traffic": "Traffic",
+    "floodMap": "Flood Map",
+    "trafficJam": "Traffic Jam",
+    "airQuality": "Air Quality",
+    "environment": "Environment",
+    "publicServices": "Public Services",
+    "infrastructure": "Infrastructure",
+    "weather": "Weather",
+    "parking": "Parking",
+    "analytics": "Analytics",
+    "alerts": "Alerts & Notifications"
+  },
+  "dashboard": {
+    "welcome": "Welcome to Smart City Platform",
+    "description": "Smart platform for your city"
+  }
+}

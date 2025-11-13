@@ -1,0 +1,28 @@
+{
+  "header": {
+    "citySelector": {
+      "title": "Chọn thành phố",
+      "hanoi": "Hà Nội",
+      "hochiminh": "Hồ Chí Minh",
+      "danang": "Đà Nẵng"
+    }
+  },
+  "sidebar": {
+    "dashboard": "Tổng quan",
+    "traffic": "Giao thông",
+    "floodMap": "Bản đồ ngập nước",
+    "trafficJam": "Kẹt xe",
+    "airQuality": "Chất lượng không khí",
+    "environment": "Môi trường",
+    "publicServices": "Dịch vụ công cộng",
+    "infrastructure": "Hạ tầng kỹ thuật",
+    "weather": "Thời tiết",
+    "parking": "Bãi đỗ xe",
+    "analytics": "Phân tích dữ liệu",
+    "alerts": "Cảnh báo & Thông báo"
+  },
+  "dashboard": {
+    "welcome": "Chào mừng đến với Nền tảng Thành phố Thông minh",
+    "description": "Nền tảng thông minh cho thành phố của bạn"
+  }
+}
