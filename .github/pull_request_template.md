@@ -40,11 +40,11 @@ Provide a clear and concise description of what this PR accomplishes
 
 **Test details:**
 
-<!-- Describe key test scenarios -->
+Describe key test scenarios
 
 ## Screenshots
 
-<!-- Add screenshots for UI changes -->
+Add screenshots for UI changes
 
 ## Deployment Notes
 
