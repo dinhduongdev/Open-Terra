@@ -1,32 +1,36 @@
 services:
   orion:
-      image: ${IMAGE_REGISTRY:-yudhna04}/orion-ld:${DOCKER_ARCH:-arm64}
-      hostname: orion
-      container_name: fiware-orion
-      depends_on:
-          - mongo-db
-      networks:
-          - default
-      ports:
-          - "1026:1026"
-      command: -dbhost mongo-db -logLevel DEBUG
-      healthcheck:
-          test: curl --fail -s http://orion:1026/version || exit 1
+    image: ${IMAGE_REGISTRY:-yudhna04}/orion-ld:${DOCKER_ARCH:-arm64}
+    hostname: orion
+    container_name: fiware-orion
+    depends_on:
+      - mongo-db
+    networks:
+      - open-terra-network
+    ports:
+      - "1026:1026"
+    command: -dbhost mongo-db -logLevel DEBUG
+    healthcheck:
+      test: curl --fail -s http://orion:1026/version || exit 1
 
   mongo-db:
-      image: mongo:4.2
-      hostname: mongo-db
-      container_name: db-mongo
-      expose:
-          - "27017"
-      ports:
-          - "27017:27017"
-      networks:
-          - default
+    image: mongo:4.2
+    hostname: mongo-db
+    container_name: db-mongo
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    networks:
+      - open-terra-network
 
   ld-context:
-      image: httpd:alpine
-      hostname: context
-      container_name: fiware-ld-context
-      ports:
-          - "3004:80"
+    image: httpd:alpine
+    hostname: context
+    container_name: fiware-ld-context
+    ports:
+      - "3004:80"
+
+networks:
+  open-terra-network:
+    external: true

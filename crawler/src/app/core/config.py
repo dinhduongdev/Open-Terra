@@ -1,7 +1,7 @@
 import os
 from enum import Enum
 
-from pydantic import SecretStr, computed_field
+from pydantic import Field, SecretStr, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -74,8 +74,7 @@ class FirstUserSettings(BaseSettings):
     ADMIN_PASSWORD: str = "!Ch4ng3Th1sP4ssW0rd!"
 
 
-class TestSettings(BaseSettings):
-    ...
+class TestSettings(BaseSettings): ...
 
 
 class RedisCacheSettings(BaseSettings):
@@ -149,6 +148,82 @@ class CORSSettings(BaseSettings):
     CORS_HEADERS: list[str] = ["*"]
 
 
+class TomTomSettings(BaseSettings):
+    """TomTom Traffic API Configuration"""
+
+    TOMTOM_API_KEY: str = Field(..., description="API Key for TomTom Traffic API")
+
+
+class OpenAQSettings(BaseSettings):
+    """OpenAQ API Configuration"""
+
+    OPEN_AQ_API_KEY: str = Field(..., description="API Key for OpenAQ API")
+
+
+class AQICNSettings(BaseSettings):
+    """AQICN API Configuration"""
+
+    AQICN_API_TOKEN: str = Field(default="", env="AQICN_API_TOKEN")
+
+
+class OpenWeatherMapSettings(BaseSettings):
+    """OpenWeatherMap API Configuration"""
+
+    OPENWEATHERMAP_BASE_URL: str = Field(
+        ..., description="Base URL for OpenWeatherMap API", env="OPENWEATHERMAP_BASE_URL"
+    )
+    OPENWEATHERMAP_API_KEY: str = Field(..., description="API Key for OpenWeatherMap API", env="OPENWEATHERMAP_API_KEY")
+
+
+class OrionLDSettings(BaseSettings):
+    """Orion Context Broker NGSI-LD API Configuration"""
+
+    ORION_LD_BASE_URL: str = Field(
+        default="http://fiware-orion:1026", description="Base URL for Orion-LD Context Broker", env="ORION_LD_BASE_URL"
+    )
+
+
+class CrawlerLocationsSettings(BaseSettings):
+    """Configuration for crawler locations across multiple domains"""
+
+    # Weather crawler locations - can be extended via environment variable
+    # Format: "city_id:city_name:lat:lon:country;city_id:city_name:lat:lon:country"
+    WEATHER_LOCATIONS: str = Field(
+        default="hcm:Ho Chi Minh City:10.8231:106.6297:Vietnam",
+        description="Weather crawler locations (semicolon-separated, format: id:name:lat:lon:country)",
+        env="WEATHER_LOCATIONS",
+    )
+
+    # Future: Traffic crawler locations
+    # TRAFFIC_LOCATIONS: str = Field(...)
+
+    # Future: Air quality crawler locations
+    # AIR_QUALITY_LOCATIONS: str = Field(...)
+
+    def get_weather_locations(self) -> list[dict[str, str | float]]:
+        """Parse weather locations from config string.
+
+        Returns:
+            List of location dicts with id, name, latitude, longitude, and country
+        """
+        locations = []
+        for loc in self.WEATHER_LOCATIONS.split(";"):
+            parts = loc.strip().split(":")
+            if len(parts) >= 4:
+                location = {
+                    "id": parts[0],
+                    "name": parts[1],
+                    "latitude": float(parts[2]),
+                    "longitude": float(parts[3]),
+                }
+                if len(parts) >= 5:
+                    location["country"] = parts[4]
+                else:
+                    location["country"] = "Vietnam"
+                locations.append(location)
+        return locations
+
+
 class Settings(
     AppSettings,
     SQLiteSettings,
@@ -164,6 +239,12 @@ class Settings(
     CRUDAdminSettings,
     EnvironmentSettings,
     CORSSettings,
+    TomTomSettings,
+    OpenWeatherMapSettings,
+    OpenAQSettings,
+    AQICNSettings,
+    OrionLDSettings,
+    CrawlerLocationsSettings,
 ):
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "..", ".env"),
