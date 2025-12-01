@@ -1,17 +1,33 @@
 services:
   orion:
-    image: ${IMAGE_REGISTRY:-yudhna04}/orion-ld:${DOCKER_ARCH:-arm64}
+    platform: linux/amd64
+    image: fiware/orion-ld:latest
     hostname: orion
     container_name: fiware-orion
     depends_on:
-      - mongo-db
+      mongo-db:
+        condition: service_started
+      timescale-db:
+        condition: service_healthy
     networks:
       - open-terra-network
     ports:
       - "1026:1026"
-    command: -dbhost mongo-db -logLevel DEBUG
+    environment:
+      - ORIONLD_TROE=TRUE
+      - ORIONLD_TROE_USER=orion
+      - ORIONLD_TROE_PWD=orion
+      - ORIONLD_TROE_HOST=timescale-db
+      - ORIONLD_MONGO_HOST=mongo-db
+      - ORIONLD_MULTI_SERVICE=TRUE
+      - ORIONLD_DISABLE_FILE_LOG=TRUE
+    command: -dbhost mongo-db -logLevel ERROR -troePoolSize 10 -forwarding
     healthcheck:
       test: curl --fail -s http://orion:1026/version || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   mongo-db:
     image: mongo:4.2
@@ -30,7 +46,62 @@ services:
     container_name: fiware-ld-context
     ports:
       - "3004:80"
+    networks:
+      - open-terra-network
+
+  # Temporal Operations
+  mintaka:
+    image: fiware/mintaka:latest
+    hostname: mintaka
+    container_name: fiware-mintaka
+    restart: always
+    depends_on:
+      timescale-db:
+        condition: service_healthy
+      orion:
+        condition: service_healthy
+    environment:
+      - DATASOURCES_DEFAULT_HOST=timescale-db
+      - DATASOURCES_DEFAULT_USERNAME=orion
+      - DATASOURCES_DEFAULT_PASSWORD=orion
+      - DATASOURCES_DEFAULT_DATABASE=orion
+      - DATASOURCES_DEFAULT_MAXIMUM_POOL_SIZE=2
+      - ENDPOINTS_INFO_ENABLED=true
+      - ENDPOINTS_INFO_SENSITIVE=false
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    networks:
+      - open-terra-network
+
+  timescale-db:
+    image: timescale/timescaledb-ha:pg14-latest
+    hostname: timescale-db
+    container_name: db-timescale
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orion"]
+      interval: 15s
+      timeout: 15s
+      retries: 5
+      start_period: 60s
+    environment:
+      - POSTGRES_USER=orion
+      - POSTGRES_PASSWORD=orion
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    command: ["postgres", "-c", "log_statement=none"]
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    networks:
+      - open-terra-network
+    volumes:
+      - timescale-db:/var/lib/postgresql/data
 
 networks:
   open-terra-network:
     external: true
+
+volumes:
+  timescale-db: ~
