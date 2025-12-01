@@ -16,4 +16,4 @@ class WorkerSettings:
     handle_signals = False
 
     # Cron jobs - run weather crawler every 5 minutes
-    cron_jobs = [cron(crawl_weather_data, second={30, 60})]
+    cron_jobs = [cron(crawl_weather_data, minute={0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55}, second=0)]
