@@ -20,16 +20,6 @@ class NGSILDConverter(ABC):
         pass
 
     @abstractmethod
-    def get_context_url(self) -> str:
-        """
-        Get the domain-specific context URL.
-
-        Returns:
-            Context URL for this domain
-        """
-        pass
-
-    @abstractmethod
     def convert(self, entity: BaseModel, entity_id: str) -> dict[str, Any]:
         """
         Convert entity to NGSI-LD format.
@@ -58,9 +48,7 @@ class NGSILDConverter(ABC):
             "id": f"urn:ngsi-ld:{entity_type}:{entity_id}",
             "type": entity_type,
             "@context": [
-                self.get_context_url(),
-                "https://smartdatamodels.org/context.jsonld",
-                "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld",
+                "http://context/open-terra-context.jsonld",
             ],
         }
 

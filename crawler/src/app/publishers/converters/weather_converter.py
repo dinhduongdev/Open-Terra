@@ -15,10 +15,6 @@ class WeatherObservedConverter(NGSILDConverter):
         """Get entity type name."""
         return "WeatherObserved"
 
-    def get_context_url(self) -> str:
-        """Get Weather domain context URL."""
-        return "https://raw.githubusercontent.com/smart-data-models/dataModel.Weather/refs/heads/master/context.jsonld"
-
     def convert(self, entity: BaseModel, entity_id: str) -> dict[str, Any]:
         """
         Convert WeatherObserved entity to NGSI-LD format.
