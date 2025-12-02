@@ -7,6 +7,7 @@ import requests
 from pydantic import BaseModel
 
 from src.app.core.config import settings
+from src.app.publishers.converters.air_quality_converter import AirQualityObservedConverter
 from src.app.publishers.converters.base import NGSILDConverter
 from src.app.publishers.converters.weather_converter import WeatherObservedConverter
 
@@ -15,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 CONVERTERS: dict[str, NGSILDConverter] = {
     "WeatherObserved": WeatherObservedConverter(),
+    "AirQualityObserved": AirQualityObservedConverter(),
     # Add more converters here as needed
 }
 
