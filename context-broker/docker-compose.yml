@@ -4,9 +4,10 @@ services:
     image: fiware/orion-ld:latest
     hostname: orion
     container_name: fiware-orion
+    restart: unless-stopped
     depends_on:
       mongo-db:
-        condition: service_started
+        condition: service_healthy
       timescale-db:
         condition: service_healthy
     networks:
@@ -24,7 +25,7 @@ services:
     command: -dbhost mongo-db -logLevel ERROR -troePoolSize 10 -forwarding
     healthcheck:
       test: curl --fail -s http://orion:1026/version || exit 1
-      interval: 10s
+      interval: 20s
       timeout: 5s
       retries: 5
       start_period: 30s
@@ -39,27 +40,43 @@ services:
       - "27017:27017"
     networks:
       - open-terra-network
+    volumes:
+      - mongo-db:/data/db
+      - mongo-config:/data/configdb
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
+      interval: 5s
 
   ld-context:
     image: httpd:alpine
     hostname: context
     container_name: fiware-ld-context
+    restart: unless-stopped
     ports:
       - "3004:80"
+    volumes:
+      - ./ld-context:/usr/local/apache2/htdocs:ro
     networks:
       - open-terra-network
+    healthcheck:
+      test: wget --spider -q http://localhost/open-terra-context.jsonld || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
   # Temporal Operations
   mintaka:
+    platform: linux/amd64
     image: fiware/mintaka:latest
     hostname: mintaka
     container_name: fiware-mintaka
-    restart: always
+    restart: unless-stopped
     depends_on:
       timescale-db:
-        condition: service_healthy
+        condition: service_started
       orion:
-        condition: service_healthy
+        condition: service_started
     environment:
       - DATASOURCES_DEFAULT_HOST=timescale-db
       - DATASOURCES_DEFAULT_USERNAME=orion
@@ -76,6 +93,7 @@ services:
       - open-terra-network
 
   timescale-db:
+    platform: linux/amd64
     image: timescale/timescaledb-ha:pg14-latest
     hostname: timescale-db
     container_name: db-timescale
@@ -99,9 +117,71 @@ services:
     volumes:
       - timescale-db:/var/lib/postgresql/data
 
+  # MQTT Broker
+  mosquitto:
+    image: eclipse-mosquitto:1.6.14
+    hostname: mosquitto
+    container_name: mosquitto
+    expose:
+      - "1883"
+      - "9001"
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - open-terra-network
+
+  # IoT Agent for UltraLight 2.0
+  iot-agent:
+    platform: linux/amd64
+    image: fiware/iotagent-ul:latest
+    hostname: iot-agent
+    container_name: fiware-iot-agent
+    depends_on:
+      - mongo-db
+      - mosquitto
+      - orion
+    networks:
+      - open-terra-network
+    expose:
+      - "4041"
+      - "7896"
+    ports:
+      - "4041:4041"
+      - "7896:7896"
+    environment:
+      - IOTA_CB_HOST=orion
+      - IOTA_CB_PORT=1026
+      - IOTA_NORTH_PORT=4041
+      - IOTA_REGISTRY_TYPE=mongodb
+      - IOTA_LOG_LEVEL=DEBUG
+      - IOTA_TIMESTAMP=true
+      - IOTA_AUTOCAST=true
+      - IOTA_MONGO_HOST=mongo-db
+      - IOTA_MONGO_PORT=27017
+      - IOTA_MONGO_DB=iotagentul
+      - IOTA_PROVIDER_URL=http://iot-agent:4041
+      - IOTA_MQTT_HOST=mosquitto
+      - IOTA_MQTT_PORT=1883
+      - IOTA_DEFAULT_RESOURCE=
+      - IOTA_CB_NGSI_VERSION=ld
+      - IOTA_JSON_LD_CONTEXT=http://context/open-terra-context.jsonld
+      - IOTA_FALLBACK_TENANT=openiot
+      - IOTA_AMQP_DISABLED=true
+    healthcheck:
+      test: curl --fail -s http://iot-agent:4041/iot/about || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
 networks:
   open-terra-network:
     external: true
 
 volumes:
   timescale-db: ~
+  mongo-db: ~
+  mongo-config: ~
