@@ -16,7 +16,7 @@ class OpenWeatherMapClient:
         if not self.api_key:
             raise ValueError("OpenWeatherMap API key must be provided.")
 
-    def get_current_weather(
+    def get_latest_weather(
         self,
         lat: float,
         lon: float,
@@ -38,14 +38,14 @@ class OpenWeatherMapClient:
             data = response.json()
             logger.info(f"OpenWeatherMap response data: {data}")
             logger.info(f"Type of response data: {type(data)}")
-            logger.info(f"Successfully fetched current weather data for lat: {lat}, lon: {lon}")
-            logger.info(f"Response after parsing : {self._parse_current_weather(data)}", extra={"pretty": True})
-            return self._parse_current_weather(data)
+            logger.info(f"Successfully fetched latest weather data for lat: {lat}, lon: {lon}")
+            logger.info(f"Response after parsing : {self._parse_latest_weather(data)}", extra={"pretty": True})
+            return self._parse_latest_weather(data)
         except requests.RequestException as e:
-            logger.error(f"Error fetching current weather data: {e}")
+            logger.error(f"Error fetching latest weather data: {e}")
             raise
 
-    def _parse_current_weather(self, data: dict) -> dict:
+    def _parse_latest_weather(self, data: dict) -> dict:
         """Parse OpenWeatherMap API response to normalized format.
 
         Args:

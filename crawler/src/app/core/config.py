@@ -158,11 +158,17 @@ class OpenAQSettings(BaseSettings):
     """OpenAQ API Configuration"""
 
     OPEN_AQ_API_KEY: str = Field(..., description="API Key for OpenAQ API")
+    OPEN_AQ_BASE_URL: str = Field(
+        default="https://api.openaq.org/v3", description="Base URL for OpenAQ API v3", env="OPEN_AQ_BASE_URL"
+    )
 
 
 class AQICNSettings(BaseSettings):
     """AQICN API Configuration"""
 
+    AQICN_BASE_URL: str = Field(
+        default="https://api.openaq.org/v3", description="Base URL for AQICN API", env="AQICN_BASE_URL"
+    )
     AQICN_API_TOKEN: str = Field(default="", env="AQICN_API_TOKEN")
 
 
@@ -194,11 +200,16 @@ class CrawlerLocationsSettings(BaseSettings):
         env="WEATHER_LOCATIONS",
     )
 
+    # Air quality crawler bounding box (Ho Chi Minh City area)
+    # Format: "min_lon,min_lat,max_lon,max_lat"
+    AIR_QUALITY_BBOX: str = Field(
+        default="106.358004,10.376182,106.977358,11.164050",
+        description="Air quality bbox for location search (format: min_lon,min_lat,max_lon,max_lat)",
+        env="AIR_QUALITY_BBOX",
+    )
+
     # Future: Traffic crawler locations
     # TRAFFIC_LOCATIONS: str = Field(...)
-
-    # Future: Air quality crawler locations
-    # AIR_QUALITY_LOCATIONS: str = Field(...)
 
     def get_weather_locations(self) -> list[dict[str, str | float]]:
         """Parse weather locations from config string.
@@ -222,6 +233,14 @@ class CrawlerLocationsSettings(BaseSettings):
                     location["country"] = "Vietnam"
                 locations.append(location)
         return locations
+
+    def get_air_quality_bbox(self) -> str:
+        """Get air quality bounding box.
+
+        Returns:
+            Bounding box string in format: "min_lon,min_lat,max_lon,max_lat"
+        """
+        return self.AIR_QUALITY_BBOX
 
 
 class Settings(
