@@ -95,3 +95,21 @@ body {
   background-size: 200% auto;
   animation: gradient 3s ease infinite;
 }
+
+/* Ensure Leaflet map elements don't overlap modals */
+.leaflet-pane,
+.leaflet-control,
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 400 !important;
+}
+
+.leaflet-popup {
+  z-index: 600 !important;
+}
+
+/* Ensure modal overlays are above everything */
+[style*="z-index: 9999"],
+[style*="zIndex: 9999"] {
+  z-index: 9999 !important;
+}

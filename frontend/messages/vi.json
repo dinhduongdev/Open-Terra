@@ -24,5 +24,95 @@
   "dashboard": {
     "welcome": "Chào mừng đến với Nền tảng Thành phố Thông minh",
     "description": "Nền tảng thông minh cho thành phố của bạn"
+  },
+  "floodMap": {
+    "title": "Bản đồ ngập nước",
+    "subtitle": "Theo dõi tình trạng ngập úng và cảnh báo lũ lụt theo thời gian thực",
+    "loading": "Đang tải bản đồ...",
+    "toggleLayer": "Lớp vùng ngập:",
+    "layerOn": "✓ Đang bật",
+    "layerOff": "Tắt",
+    "instructions": {
+      "title": "Hướng dẫn sử dụng",
+      "clickZone": "Click vào các vùng màu để xem chi tiết mức độ ngập",
+      "clickStation": "Click vào biểu tượng 📍 để xem thông tin trạm đo",
+      "clickWarning": "Click vào biểu tượng ⚠️ để xem cảnh báo chi tiết",
+      "toggleButton": "Sử dụng nút bật/tắt để ẩn/hiện lớp vùng ngập"
+    },
+    "overview": {
+      "totalArea": "Tổng diện tích ngập",
+      "affectedPopulation": "Dân số ảnh hưởng",
+      "averageDepth": "Độ sâu trung bình",
+      "criticalZones": "Vùng nguy hiểm",
+      "activeWarnings": "Cảnh báo hoạt động"
+    },
+    "warnings": {
+      "title": "Cảnh báo ngập lụt",
+      "levels": {
+        "warning": "Cảnh báo",
+        "danger": "Nguy hiểm",
+        "critical": "Rất nguy hiểm"
+      }
+    },
+    "statistics": {
+      "chartTitle": "Biểu đồ mực nước & lượng mưa",
+      "stationsTitle": "Trạm đo mực nước",
+      "waterLevel": "Mực nước",
+      "rainfall": "Lượng mưa",
+      "currentLevel": "Mực nước hiện tại",
+      "updated": "Cập nhật",
+      "status": {
+        "normal": "Bình thường",
+        "warning": "Cảnh báo",
+        "danger": "Nguy hiểm",
+        "critical": "Rất nguy hiểm"
+      }
+    },
+    "safety": {
+      "title": "Hướng dẫn an toàn khi ngập lụt",
+      "avoid": {
+        "title": "Cần tránh",
+        "tip1": "Không đi qua vùng nước chảy xiết hoặc nước sâu",
+        "tip2": "Tránh xa các cột điện, dây điện bị đổ hoặc ngập nước",
+        "tip3": "Không cố gắng lái xe qua vùng ngập sâu",
+        "tip4": "Không uống nước chưa qua xử lý từ vùng ngập"
+      },
+      "should": {
+        "title": "Nên làm",
+        "tip1": "Theo dõi thông tin cảnh báo từ cơ quan chức năng",
+        "tip2": "Chuẩn bị túi cứu hộ khẩn cấp và đồ dùng thiết yếu",
+        "tip3": "Di chuyển đến nơi cao hơn khi có lệnh sơ tán",
+        "tip4": "Liên hệ cơ quan chức năng khi cần hỗ trợ: 113, 114, 115"
+      }
+    },
+    "citizenReport": {
+      "button": "Báo cáo ngập lụt",
+      "title": "Báo cáo ngập lụt",
+      "listTitle": "Báo cáo từ người dân",
+      "noReports": "Chưa có báo cáo nào từ người dân",
+      "noReportsDesc": "Các báo cáo ngập lụt sẽ được hiển thị tại đây",
+      "form": {
+        "location": "Địa chỉ ngập",
+        "locationPlaceholder": "VD: 123 Đường ABC, Phường XYZ, Quận DEF",
+        "coordinates": "Tọa độ GPS",
+        "latitude": "Vĩ độ",
+        "longitude": "Kinh độ",
+        "currentLocation": "Vị trí hiện tại",
+        "severity": "Mức độ nghiêm trọng",
+        "waterDepth": "Độ sâu nước (cm)",
+        "waterDepthPlaceholder": "VD: 30",
+        "description": "Mô tả tình trạng",
+        "descriptionPlaceholder": "Mô tả chi tiết tình trạng ngập, phạm vi ảnh hưởng, các thiệt hại (nếu có)...",
+        "reporterInfo": "Thông tin người báo cáo",
+        "reporterName": "Họ và tên",
+        "reporterNamePlaceholder": "Nguyễn Văn A",
+        "reporterPhone": "Số điện thoại",
+        "reporterPhonePlaceholder": "0123456789",
+        "privacyNotice": "Thông tin của bạn sẽ được bảo mật và chỉ sử dụng để xác minh và xử lý báo cáo ngập lụt. Cơ quan chức năng có thể liên hệ với bạn để xác thực thông tin.",
+        "cancel": "Hủy",
+        "submit": "Gửi báo cáo",
+        "success": "Báo cáo đã được gửi thành công! Cơ quan chức năng sẽ xử lý trong thời gian sớm nhất."
+      }
+    }
   }
 }
