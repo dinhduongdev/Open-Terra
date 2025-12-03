@@ -11,14 +11,14 @@ WORKDIR /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project
+    uv sync --locked --no-install-project  --all-extras
 
 # Copy the project source code
 COPY . /app
 
 # Install the project in non-editable mode
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-editable
+    uv sync --locked --no-editable  --all-extras
 
 # --------- Final Stage ---------
 FROM python:3.11-slim-bookworm
