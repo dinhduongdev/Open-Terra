@@ -114,5 +114,10 @@
         "success": "Báo cáo đã được gửi thành công! Cơ quan chức năng sẽ xử lý trong thời gian sớm nhất."
       }
     }
+  },
+  "weather": {
+    "title": "Thời tiết",
+    "subtitle": "Theo dõi thông tin thời tiết và dự báo theo thời gian thực",
+    "loading": "Đang tải dữ liệu thời tiết..."
   }
 }
