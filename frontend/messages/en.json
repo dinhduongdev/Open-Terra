@@ -114,5 +114,10 @@
         "success": "Report submitted successfully! Authorities will process it as soon as possible."
       }
     }
+  },
+  "weather": {
+    "title": "Weather",
+    "subtitle": "Monitor real-time weather information and forecasts",
+    "loading": "Loading weather data..."
   }
 }
