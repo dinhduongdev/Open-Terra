@@ -6,10 +6,68 @@ from src.app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
+def normalize_entity(entity: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Normalize NGSI-LD entity from expanded format to concise format.
+    Handles both normalized and expanded URL-based property names.
+    
+    Example:
+    Input:  {"https://smartdatamodels.org/dataModel.Weather/temperature": {"type": "Property", "value": 27.01}}
+    Output: {"temperature": 27.01}
+    """
+    result = {}
+    
+    # Keep basic fields
+    if "id" in entity:
+        result["id"] = entity["id"]
+    if "type" in entity:
+        result["type"] = entity["type"]
+    if "@context" in entity:
+        result["@context"] = entity["@context"]
+    
+    # Process all properties
+    for key, value in entity.items():
+        if key in ["id", "type", "@context"]:
+            continue
+            
+        # Extract short name from URL (e.g., "temperature" from "https://...../temperature")
+        short_key = key.split("/")[-1] if "/" in key else key
+        
+        # Handle NGSI-LD Property/GeoProperty/Relationship structure
+        if isinstance(value, dict):
+            prop_type = value.get("type")
+            
+            if prop_type == "Property":
+                # Extract value from Property
+                prop_value = value.get("value")
+                
+                # Handle nested @value structure
+                if isinstance(prop_value, dict) and "@value" in prop_value:
+                    result[short_key] = prop_value["@value"]
+                else:
+                    result[short_key] = prop_value
+                    
+            elif prop_type == "GeoProperty":
+                # Keep GeoProperty structure
+                result[short_key] = value.get("value")
+                
+            elif prop_type == "Relationship":
+                # Extract object reference
+                result[short_key] = value.get("object")
+            else:
+                # Unknown type, keep as is
+                result[short_key] = value
+        else:
+            # Simple value
+            result[short_key] = value
+    
+    return result
+
 class ContextBrokerClient:
     def __init__(
         self,
         broker_url: str = None,
+        temporal_url: str = None,
         context_url: str = None,
         tenant: Optional[str] = None
     ):
@@ -18,13 +76,25 @@ class ContextBrokerClient:
         
         Args:
             broker_url: Base URL of the context broker
+            temporal_url: Base URL for temporal API (Mintaka)
             context_url: URL of the @context file
             tenant: NGSILD-Tenant header value (optional)
         """
-        self.broker_url = "http://localhost:1026/".rstrip("/") if broker_url is None else broker_url.rstrip("/")
+        self.broker_url = (broker_url or settings.ORION_LD_BASE_URL).rstrip("/")
+        self.temporal_url = (temporal_url or settings.MINTAKA_BASE_URL).rstrip("/")
         self.context_url = context_url or settings.ORION_LD_CONTEXT
         self.tenant = tenant
         self.client = httpx.AsyncClient(timeout=30.0)
+        
+        # Log configuration with both logger and print
+        print(f"[DEBUG] ContextBrokerClient initialized:")
+        print(f"[DEBUG]   broker_url: {self.broker_url}")
+        print(f"[DEBUG]   temporal_url: {self.temporal_url}")
+        print(f"[DEBUG]   context_url: {self.context_url}")
+        logger.info(f"ContextBrokerClient initialized:")
+        logger.info(f"  broker_url: {self.broker_url}")
+        logger.info(f"  temporal_url: {self.temporal_url}")
+        logger.info(f"  context_url: {self.context_url}")
     
     def _get_headers(
         self, 
@@ -33,10 +103,12 @@ class ContextBrokerClient:
     ) -> Dict[str, str]:
         """Build common headers for requests."""
         headers = {
-            "Content-Type": content_type,
-            "Accept": accept,
-            "Link": f'<https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"'
+            "Accept": accept
         }
+        
+        # Don't add Link header - it causes issues with Orion-LD
+        # The @context should be in the request body for POST/PATCH operations
+        # For GET operations, Orion-LD returns full URIs by default
         
         if self.tenant:
             headers["NGSILD-Tenant"] = self.tenant
@@ -73,14 +145,36 @@ class ContextBrokerClient:
             if attrs:
                 params["pick"] = ",".join(attrs)
             
+            headers = self._get_headers()
+            
+            # Log request details with both logger and print
+            print(f"[DEBUG] GET Entity Request:")
+            print(f"[DEBUG]   URL: {url}")
+            print(f"[DEBUG]   Params: {params}")
+            logger.info(f"GET Entity Request:")
+            logger.info(f"  URL: {url}")
+            logger.info(f"  Params: {params}")
+            logger.info(f"  Headers: {headers}")
+            
             response = await self.client.get(
                 url,
-                headers=self._get_headers(),
+                headers=headers,
                 params=params
             )
             
+            print(f"[DEBUG] Response status: {response.status_code}")
+            logger.info(f"Response: {response.status_code}")
+            if response.status_code != 200:
+                logger.error(f"Response body: {response.text}")
+            
             if response.status_code == 200:
-                return response.json()
+                entity = response.json()
+                print(f"[DEBUG] Raw entity keys: {list(entity.keys())[:10]}...")  # First 10 keys
+                # Normalize expanded format to concise
+                normalized = normalize_entity(entity)
+                print(f"[DEBUG] Normalized entity keys: {list(normalized.keys())}")
+                logger.info(f"Normalized entity keys: {list(normalized.keys())}")
+                return normalized
             elif response.status_code == 404:
                 logger.warning(f"Entity {entity_id} not found")
                 return None
@@ -89,7 +183,11 @@ class ContextBrokerClient:
                 response.raise_for_status()
                 
         except Exception as e:
+            print(f"[DEBUG] Exception getting entity {entity_id}: {str(e)}")
+            import traceback
+            print(f"[DEBUG] Traceback: {traceback.format_exc()}")
             logger.error(f"Exception getting entity {entity_id}: {str(e)}")
+            logger.exception("Full traceback:")
             raise
 
     async def get_entities(
@@ -144,20 +242,37 @@ class ContextBrokerClient:
             if coordinates:
                 params["coordinates"] = coordinates
             
+            headers = self._get_headers()
+            
+            # Log request details
+            logger.info(f"GET Entities Request:")
+            logger.info(f"  URL: {url}")
+            logger.info(f"  Params: {params}")
+            logger.info(f"  Headers: {headers}")
+            
             response = await self.client.get(
                 url,
-                headers=self._get_headers(),
+                headers=headers,
                 params=params
             )
             
+            logger.info(f"Response: {response.status_code}")
+            if response.status_code != 200:
+                logger.error(f"Response body: {response.text}")
+            
             if response.status_code == 200:
-                return response.json()
+                entities = response.json()
+                # Normalize all entities
+                normalized = [normalize_entity(entity) for entity in entities]
+                logger.info(f"Retrieved {len(normalized)} entities")
+                return normalized
             else:
                 logger.error(f"Error querying entities: {response.status_code} - {response.text}")
                 response.raise_for_status()
                 
         except Exception as e:
             logger.error(f"Exception querying entities: {str(e)}")
+            logger.exception("Full traceback:")
             raise
     
     async def get_temporal_entity(
@@ -233,7 +348,8 @@ class ContextBrokerClient:
         limit: int = 100,
         attrs: Optional[List[str]] = None,
         entity_format: str = "temporalValues",
-        q: Optional[str] = None
+        q: Optional[str] = None,
+        id_pattern: Optional[str] = None
     ) -> List[Dict[str, Any]]:
         """
         Query temporal data for multiple entities.
@@ -251,29 +367,45 @@ class ContextBrokerClient:
             attrs: List of attributes
             entity_format: Response format
             q: Query filter
+            id_pattern: Entity ID pattern (regex) for filtering
             
         Returns:
             List of temporal entities
         """
         try:
-            url = f"{self.broker_url}/temporal/entities/"
+            url = f"{self.temporal_url}/temporal/entities/"
             params = {
                 "type": entity_type,
-                "format": entity_format,
-                "timerel": timerel,
                 "limit": limit
             }
             
+            # Note: Mintaka doesn't support 'format' parameter for temporal queries
+            # It always returns in temporal format
+            
+            # timerel and timeAt are always required by Mintaka
+            # If not provided, use 'before' with current time
+            if not time_at and not last_n:
+                from datetime import datetime
+                time_at = datetime.utcnow()
+            
+            params["timerel"] = timerel
             if time_at:
-                params["timeAt"] = time_at.isoformat() + "Z"
+                # Convert to UTC and format as ISO 8601 with Z suffix
+                # Replace timezone info to avoid +00:00Z format
+                utc_time = time_at.replace(tzinfo=None) if time_at.tzinfo else time_at
+                params["timeAt"] = utc_time.strftime("%Y-%m-%dT%H:%M:%SZ")
             if end_time_at:
-                params["endTimeAt"] = end_time_at.isoformat() + "Z"
+                utc_end = end_time_at.replace(tzinfo=None) if end_time_at.tzinfo else end_time_at
+                params["endTimeAt"] = utc_end.strftime("%Y-%m-%dT%H:%M:%SZ")
             if last_n:
                 params["lastN"] = last_n
+            
             if attrs:
                 params["attrs"] = ",".join(attrs)
             if q:
                 params["q"] = q
+            if id_pattern:
+                params["idPattern"] = id_pattern
             
             response = await self.client.get(
                 url,
@@ -285,6 +417,11 @@ class ContextBrokerClient:
                 return response.json()
             else:
                 logger.error(f"Error querying temporal entities: {response.status_code}")
+                logger.error(f"Response body: {response.text}")
+                print(f"[ERROR] Temporal query failed with status {response.status_code}")
+                print(f"[ERROR] URL: {url}")
+                print(f"[ERROR] Params: {params}")
+                print(f"[ERROR] Response: {response.text}")
                 response.raise_for_status()
                 
         except Exception as e:

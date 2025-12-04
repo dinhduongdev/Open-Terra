@@ -1,10 +1,14 @@
 from fastapi import APIRouter, Depends, Path, Query
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 from src.app.schemas.api_response import APIResponse
 from src.app.schemas.smart_data.weather_observed import WeatherObserved, WeatherObservedResponse, WeatherListResponse
 from src.app.services.context_broker_client import ContextBrokerClient
 from src.app.core.config import settings
+from src.app.core.constants import (
+    WEATHER_ENTITY_ID,
+    WEATHER_ID_PATTERN
+)
 router = APIRouter(prefix="/v1/weather", tags=["weather"])
 
 # ==== BUG_FIXING: THIS API IS CURRENTLY UNAVAILABLE DUE TO ISSUES WITH CONTEXT BROKER INTERACTIONS. ====
@@ -41,88 +45,44 @@ async def get_latest_weather(
     ```
     """
     try:
-        entities = await context_broker_client.get_entities(
-            entity_type="WeatherObserved",
-            entity_format="concise",
-            limit=1
-        )
-        
-        if not entities:
-            return APIResponse.fail(
-                message="No weather data available",
-                error_code="NO_DATA",
-                code=404
-            )
-        
-        # Convert to WeatherObservedResponse format
-        weather_data = entities[0]
-        
-        return APIResponse.success(
-            data=weather_data,
-            message="Latest weather data retrieved successfully"
-        )
-        
-    except Exception as e:
-        return APIResponse.fail(
-            message=f"Failed to retrieve weather data: {str(e)}",
-            error_code="WEATHER_FETCH_ERROR",
-            code=500
-        )
-    finally:
-        await context_broker_client.close()
-
-@router.get(
-    "/{entity_id}",
-    summary="Get weather observation by ID",
-    description="Retrieve a specific weather observation by its entity ID"
-)
-async def get_weather_by_id(
-    entity_id: str = Path(
-        ..., 
-        description="Entity ID (e.g., urn:ngsi-ld:WeatherObserved:Station-001)"
-    ),
-    context_broker_client: ContextBrokerClient = Depends(get_context_broker)
-):
-    """
-    Get weather observation by entity ID.
-    
-    **Example Request:**
-    ```
-    GET /v1/weather/urn:ngsi-ld:WeatherObserved:Station-001
-    ```
-    
-    **Context Broker Query:**
-    ```
-    GET /ngsi-ld/v1/entities/{entity_id}?format=concise
-    ```
-    """
-    try:
+        # Use the exact entity ID from constants
         weather = await context_broker_client.get_entity(
-            entity_id=entity_id,
+            entity_id=WEATHER_ENTITY_ID,
             entity_format="concise"
         )
         
         if not weather:
-            return APIResponse.fail(
-                message=f"Weather entity '{entity_id}' not found",
-                error_code="NOT_FOUND",
-                code=404
+            return APIResponse(
+                success=False,
+                code=404,
+                message="No weather data available",
+                error="NO_DATA",
+                result=None
             )
         
-        return APIResponse.success(
-            data=weather,
-            message="Weather observation retrieved successfully"
+        weather_data = weather
+        
+        return APIResponse(
+            success=True,
+            code=200,
+            message="Latest weather data retrieved successfully",
+            error=None,
+            result=weather_data
         )
         
     except Exception as e:
-        return APIResponse.fail(
-            message=f"Failed to retrieve weather: {str(e)}",
-            error_code="FETCH_ERROR",
-            code=500
+        import traceback
+        print(f"[ERROR] Exception in get_latest_weather: {str(e)}")
+        print(f"[ERROR] Traceback: {traceback.format_exc()}")
+        return APIResponse(
+            success=False,
+            code=500,
+            message=f"Failed to retrieve weather data: {str(e)}",
+            error="WEATHER_FETCH_ERROR",
+            result=None
         )
-    finally:
-        await context_broker_client.close()
-        
+
+
 @router.get(
     "/query",
     summary="Query weather data with filters",
@@ -189,61 +149,71 @@ async def query_weather(
         description="Weather type (e.g., 'Rainy', 'Sunny', 'Cloudy')"
     ),
     
-    # Time filter
-    start_date: Optional[datetime] = Query(
+    # Time filter (optional - defaults to last 24 hours if not provided)
+    start_time: Optional[datetime] = Query(
         None,
-        description="Start date for filtering (ISO 8601 format)"
+        description="Start time (ISO 8601 format, e.g., 2025-12-01T00:00:00Z)"
     ),
-    end_date: Optional[datetime] = Query(
+    end_time: Optional[datetime] = Query(
         None,
-        description="End date for filtering (ISO 8601 format)"
+        description="End time (ISO 8601 format)"
     ),
     
     # Pagination
     limit: int = Query(
-        10, 
+        100, 
         ge=1, 
-        le=100,
+        le=1000,
         description="Maximum number of results"
-    ),
-    offset: int = Query(
-        0, 
-        ge=0,
-        description="Number of results to skip"
     ),
     context_broker_client: ContextBrokerClient = Depends(get_context_broker)
 ):
     """
-    Query weather observations with multiple filters.
+    Query weather observations with multiple filters from historical data.
+    
+    **Note:** This endpoint queries temporal data (Timescale DB via Mintaka).
+    MongoDB only stores the latest record. For current data, use `/latest`.
     
     **Example Requests:**
     
-    1. Get hot weather:
+    1. Get hot weather in last 24 hours:
     ```
-    GET /weather/query?min_temperature=30
+    GET /weather/query?min_temperature=30&start_time=2025-12-03T00:00:00Z&end_time=2025-12-04T00:00:00Z
     ```
     
     2. Get high humidity days:
     ```
-    GET /weather/query?min_humidity=0.8
+    GET /weather/query?min_humidity=0.8&start_time=2025-12-01T00:00:00Z&end_time=2025-12-02T00:00:00Z
     ```
     
-    3. Get rainy weather in date range:
+    **Context Broker Temporal Query:**
     ```
-    GET /weather/query?weather_type=Rainy&start_date=2025-12-01T00:00:00Z&end_date=2025-12-02T00:00:00Z
-    ```
-    
-    **Context Broker Query:**
-    ```
-    GET /ngsi-ld/v1/entities/
+    GET /temporal/entities/
         ?type=WeatherObserved
+        &timerel=between
+        &timeAt=2025-12-01T00:00:00Z
+        &endTimeAt=2025-12-02T00:00:00Z
         &q=temperature>=30;relativeHumidity>=0.8
-        &limit=10
-        &offset=0
-        &format=concise
     ```
     """
     try:
+        # Set default time range if not provided (last 24 hours)
+        if start_time is None:
+            end_time = datetime.utcnow()
+            start_time = end_time - timedelta(days=1)
+        elif end_time is None:
+            end_time = datetime.utcnow()
+        
+        # Validate time range
+        if start_time >= end_time:
+            return APIResponse(
+                success=False,
+                code=400,
+                message="start_time must be before end_time",
+                error="INVALID_PARAMS",
+                result=None
+            )
+        
         # Build NGSI-LD query string
         conditions = []
         
@@ -260,32 +230,45 @@ async def query_weather(
         
         q_param = ";".join(conditions) if conditions else None
         
-        entities = await context_broker_client.get_entities(
+        # Weather has only one station - use constant
+        id_pattern = WEATHER_ID_PATTERN
+        
+        # Query temporal data with filters
+        entities = await context_broker_client.get_temporal_entities(
             entity_type="WeatherObserved",
-            entity_format="concise",
+            timerel="between",
+            time_at=start_time,
+            end_time_at=end_time,
+            q=q_param,
             limit=limit,
-            offset=offset,
-            q=q_param
+            entity_format="concise",
+            id_pattern=id_pattern
         )
         
-        result = WeatherListResponse(
-            total=len(entities),
-            items=entities
-        )
+        result = {
+            "total": len(entities),
+            "items": entities
+        }
         
-        return APIResponse.success(
-            data=result,
-            message=f"Found {len(entities)} weather observations"
+        return APIResponse(
+            success=True,
+            code=200,
+            message=f"Found {len(entities)} weather observations",
+            error=None,
+            result=result
         )
         
     except Exception as e:
-        return APIResponse.fail(
+        import traceback
+        print(f"[ERROR] Exception in query_weather: {str(e)}")
+        print(f"[ERROR] Traceback: {traceback.format_exc()}")
+        return APIResponse(
+            success=False,
+            code=500,
             message=f"Query failed: {str(e)}",
-            error_code="QUERY_ERROR",
-            code=500
+            error="QUERY_ERROR",
+            result=None
         )
-    finally:
-        await context_broker_client.close()
 
 @router.get(
     "/history",
@@ -345,41 +328,63 @@ async def get_weather_history(
     ```
     """
     try:
-        # Validate input
-        if last_n and (start_time or end_time):
-            return APIResponse.fail(
-                message="Cannot use both 'last_n' and time range"
+        # Validate input - check if both methods are provided
+        if last_n is not None and (start_time is not None or end_time is not None):
+            return APIResponse(
+                success=False,
+                code=400,
+                message="Cannot use both 'last_n' and time range",
+                error="INVALID_PARAMS",
+                result=None
             )
         
-        if not last_n and not (start_time and end_time):
-            return APIResponse.fail(
-                message="Must provide either 'last_n' or both 'start_time' and 'end_time'"
+        # Check if neither method is provided
+        if last_n is None and (start_time is None or end_time is None):
+            return APIResponse(
+                success=False,
+                code=400,
+                message="Must provide either 'last_n' or both 'start_time' and 'end_time'",
+                error="INVALID_PARAMS",
+                result=None
             )
         
-        if start_time and end_time and start_time >= end_time:
-            return APIResponse.fail(
-                message="start_time must be before end_time"
+        # Validate time range order
+        if start_time is not None and end_time is not None and start_time >= end_time:
+            return APIResponse(
+                success=False,
+                code=400,
+                message="start_time must be before end_time",
+                error="INVALID_PARAMS",
+                result=None
             )
         
         entities = await context_broker_client.get_temporal_entities(
             entity_type="WeatherObserved",
-            timerel="between" if start_time else "before",
-            time_at=start_time,
+            timerel="between" if (start_time and end_time) else "before",
+            time_at=start_time if start_time else datetime.utcnow(),
             end_time_at=end_time,
             last_n=last_n,
             limit=limit,
             entity_format="concise"
         )
         
-        return APIResponse.success(
-            data={"total": len(entities), "items": entities},
-            message="Weather history retrieved successfully"
+        return APIResponse(
+            success=True,
+            code=200,
+            message="Weather history retrieved successfully",
+            error=None,
+            result={"total": len(entities), "items": entities}
         )
     except Exception as e:
-        return APIResponse.fail(
+        import traceback
+        print(f"[ERROR] Exception in get_weather_history: {str(e)}")
+        print(f"[ERROR] Traceback: {traceback.format_exc()}")
+        return APIResponse(
+            success=False,
+            code=500,
             message=f"Failed to retrieve weather history: {str(e)}",
-            error_code="HISTORY_FETCH_ERROR",
-            code=500
+            error="HISTORY_FETCH_ERROR",
+            result=None
         )
 
 @router.get(
@@ -446,8 +451,12 @@ async def get_weather_statistics(
     try:
         # Validate time range
         if start_time >= end_time:
-            return APIResponse.fail(
-                message="start_time must be before end_time"
+            return APIResponse(
+                success=False,
+                code=400,
+                message="start_time must be before end_time",
+                error="INVALID_PARAMS",
+                result=None
             )
         
         # Parse attributes
@@ -481,15 +490,21 @@ async def get_weather_statistics(
             }
         }
         
-        return APIResponse.success(
-            data=result,
-            message="Statistics calculated successfully"
+        return APIResponse(
+            success=True,
+            code=200,
+            message="Statistics calculated successfully",
+            error=None,
+            result=result
         )
     except Exception as e:
-        return APIResponse.error(
+        import traceback
+        print(f"[ERROR] Exception in get_weather_statistics: {str(e)}")
+        print(f"[ERROR] Traceback: {traceback.format_exc()}")
+        return APIResponse(
+            success=False,
+            code=500,
             message=f"Failed to calculate statistics: {str(e)}",
-            error_code="STATISTICS_ERROR",
-            status=500
+            error="STATISTICS_ERROR",
+            result=None
         )
-    finally:
-        await context_broker_client.close()

@@ -30,6 +30,12 @@ class Settings(BaseSettings):
         description="Base URL for Orion-LD Context Broker"
     )
     
+    # Mintaka Temporal API (for temporal operations)
+    MINTAKA_BASE_URL: str = Field(
+        default="http://localhost:8080/",
+        description="Base URL for Mintaka temporal API"
+    )
+    
     ORION_LD_CONTEXT: str = Field(
         default="",
         description="Default @context URLs for NGSI-LD entities"
