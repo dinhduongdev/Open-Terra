@@ -96,7 +96,7 @@ function LogoIcon({ className = "w-8 h-8", width, height }: LogoIconProps) {
         r="12"
         fill="#4DD6FF"
         stroke="#FFFFFF"
-        stroke-width="2"
+        strokeWidth="2"
       />
       <circle
         cx="130"
@@ -104,7 +104,7 @@ function LogoIcon({ className = "w-8 h-8", width, height }: LogoIconProps) {
         r="12"
         fill="#4DD6FF"
         stroke="#FFFFFF"
-        stroke-width="2"
+        strokeWidth="2"
       />
 
       <circle
@@ -113,7 +113,7 @@ function LogoIcon({ className = "w-8 h-8", width, height }: LogoIconProps) {
         r="12"
         fill="#3498DB"
         stroke="#FFFFFF"
-        stroke-width="2"
+        strokeWidth="2"
       />
       <circle
         cx="230"
@@ -121,7 +121,7 @@ function LogoIcon({ className = "w-8 h-8", width, height }: LogoIconProps) {
         r="12"
         fill="#3498DB"
         stroke="#FFFFFF"
-        stroke-width="2"
+        strokeWidth="2"
       />
 
       <circle
@@ -130,7 +130,7 @@ function LogoIcon({ className = "w-8 h-8", width, height }: LogoIconProps) {
         r="15"
         fill="#1F8EF1"
         stroke="#FFFFFF"
-        stroke-width="2"
+        strokeWidth="2"
       />
 
       <line
@@ -139,7 +139,7 @@ function LogoIcon({ className = "w-8 h-8", width, height }: LogoIconProps) {
         x2="170"
         y2="170"
         stroke="#1F8EF1"
-        stroke-width="4"
+        strokeWidth="4"
         opacity="0.85"
       />
       <line
@@ -148,7 +148,7 @@ function LogoIcon({ className = "w-8 h-8", width, height }: LogoIconProps) {
         x2="170"
         y2="170"
         stroke="#1F8EF1"
-        stroke-width="4"
+        strokeWidth="4"
         opacity="0.85"
       />
       <line
@@ -157,7 +157,7 @@ function LogoIcon({ className = "w-8 h-8", width, height }: LogoIconProps) {
         x2="170"
         y2="170"
         stroke="#1F8EF1"
-        stroke-width="4"
+        strokeWidth="4"
         opacity="0.85"
       />
       <line
@@ -166,7 +166,7 @@ function LogoIcon({ className = "w-8 h-8", width, height }: LogoIconProps) {
         x2="170"
         y2="170"
         stroke="#1F8EF1"
-        stroke-width="4"
+        strokeWidth="4"
         opacity="0.85"
       />
 
