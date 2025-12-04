@@ -1,0 +1,57 @@
+services:
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    command: uvicorn src.app.main:app --host 0.0.0.0 --port 8000 --reload
+    env_file:
+      - ./src/.env
+    ports:
+       - "8000:8000"
+    volumes:
+      - ./src/app:/code/src/app
+      - ./src/.env:/code/src/.env
+    networks:
+      - open-terra-network
+
+  # Uncomment when needed for FIWARE Orion-LD Context Broker
+  # orion:
+  #   image: fiware/orion-ld:1.5.1
+  #   hostname: orion
+  #   container_name: fiware-orion
+  #   depends_on:
+  #     - mongo-db
+  #   networks:
+  #     - open-terra-network
+  #   ports:
+  #     - "1026:1026"
+  #   command: -dbhost mongo-db -logLevel DEBUG -forwarding
+  #   healthcheck:
+  #     test: curl --fail -s http://orion:1026/version || exit 1
+  #     interval: 10s
+
+  # mongo-db:
+  #   image: mongo:4.4
+  #   hostname: mongo-db
+  #   container_name: db-mongo
+  #   expose:
+  #     - "27017"
+  #   ports:
+  #     - "27017:27017"
+  #   networks:
+  #     - open-terra-network
+  #   volumes:
+  #     - mongo-db:/data
+  #   healthcheck:
+  #     test: ["CMD","mongo", "--eval", "db.adminCommand('ping')"]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 5
+  #     start_period: 40s
+
+# volumes:
+#   mongo-db:
+
+networks:
+  open-terra-network:
+    external: true
