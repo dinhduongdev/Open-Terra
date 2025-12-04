@@ -95,6 +95,19 @@ const LoginForm: React.FC = () => {
           </button>
         </div>
       </form>
+
+      {/* Register Link */}
+      <div className="mt-6 text-center">
+        <p className="text-sm text-gray-600">
+          Chưa có tài khoản?{' '}
+          <Link 
+            href="/register" 
+            className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline transition-all duration-300"
+          >
+            Đăng ký ngay
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

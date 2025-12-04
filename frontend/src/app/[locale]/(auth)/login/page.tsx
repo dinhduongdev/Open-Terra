@@ -29,7 +29,7 @@ export default function LoginPage() {
         <div className="relative z-10 flex items-center justify-center w-full p-12">
           <div className="text-white text-center max-w-4xl animate-fade-in">
             <h2 className="text-7xl font-bold mb-8 drop-shadow-2xl animate-float bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent animate-gradient">
-              Smart City Platform
+              Nền Tảng Thành Phố Thông Minh
             </h2>
             <p className="text-2xl opacity-90 drop-shadow-md leading-relaxed animate-slide-up" style={{ animationDelay: '0.3s' }}>
               Quản lý thông minh, Thành phố hiện đại

@@ -30,8 +30,8 @@ export default function Sidebar() {
 
   const menuItems: MenuItem[] = [
     {
-      id: 'dashboard',
-      labelKey: 'dashboard',
+      id: 'introduction',
+      labelKey: 'introduction',
       href: '/',
       icon: <DashboardIcon />,
     },
@@ -47,12 +47,12 @@ export default function Sidebar() {
       href: '/flood-map',
       icon: <FloodIcon />,
     },
-    {
-      id: 'traffic-jam',
-      labelKey: 'trafficJam',
-      href: '/traffic-jam',
-      icon: <TrafficJamIcon />,
-    },
+    // {
+    //   id: 'traffic-jam',
+    //   labelKey: 'trafficJam',
+    //   href: '/traffic-jam',
+    //   icon: <TrafficJamIcon />,
+    // },
     {
       id: 'air-quality',
       labelKey: 'airQuality',

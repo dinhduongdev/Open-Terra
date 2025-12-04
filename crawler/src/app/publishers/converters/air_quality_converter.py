@@ -66,12 +66,6 @@ class AirQualityObservedConverter(NGSILDConverter):
         """Get entity type name."""
         return "AirQualityObserved"
 
-    def get_context_url(self) -> str:
-        """Get Environment domain context URL."""
-        return (
-            "https://raw.githubusercontent.com/smart-data-models/dataModel.Environment/refs/heads/master/context.jsonld"
-        )
-
     def convert(self, entity: BaseModel, entity_id: str) -> dict[str, Any]:
         """
         Convert AirQualityObserved entity to NGSI-LD format.

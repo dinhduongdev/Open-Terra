@@ -1,0 +1,106 @@
+<svg width="340" height="380" viewBox="0 0 340 380" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- ===== EARTH BACKGROUND ===== -->
+  <defs>
+    <radialGradient id="oceanGrad" cx="50%" cy="45%" r="70%">
+      <stop offset="0%" stop-color="#E9FAFF"/>
+      <stop offset="60%" stop-color="#B6EBFF"/>
+      <stop offset="100%" stop-color="#4FB5E3"/>
+    </radialGradient>
+
+    <radialGradient id="sunGlow" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.85)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+
+  <circle cx="170" cy="170" r="140" fill="url(#oceanGrad)"/>
+  <circle cx="170" cy="170" r="140" fill="url(#sunGlow)" opacity="0.55"/>
+
+  <!-- ================================================== -->
+  <!-- ========== MAIN LARGE CONTINENT (center) ========= -->
+  <!-- ================================================== -->
+  <path d="
+        M125 145
+        C145 120, 185 118, 212 140
+        C228 155, 225 178, 205 195
+        C178 215, 145 210, 130 185
+        C118 168, 118 155, 125 145Z"
+        fill="#53C88F" opacity="0.92"/>
+
+  <!-- ================================================== -->
+  <!-- ========== ISLANDS (adjusted closer + inside Earth) -->
+  <!-- ================================================== -->
+
+  <!-- TOP ISLAND (closer & inside) -->
+  <path d="
+        M160 80
+        C175 78, 190 88, 192 100
+        C180 108, 165 108, 158 95
+        C156 88, 156 83, 160 80Z"
+        fill="#48BA80" opacity="0.9"/>
+
+  <!-- LEFT ISLAND (closer, NOT too far) -->
+  <path d="M90 135
+           C105 128, 118 135, 115 148
+           C103 155, 92 150, 88 142Z"
+        fill="#48BA80" opacity="0.9"/>
+
+  <!-- RIGHT ISLAND (pulled inwards) -->
+  <path d="M245 145
+           C258 150, 265 163, 256 172
+           C242 168, 237 158, 245 145Z"
+        fill="#45AF76" opacity="0.88"/>
+
+  <!-- LOWER LEFT ISLAND (closer & inside) -->
+  <path d="M110 245
+           C125 253, 134 267, 127 278
+           C112 273, 102 258, 105 248Z"
+        fill="#4CBB83" opacity="0.88"/>
+
+  <!-- LOWER RIGHT ISLAND (closer & inside) -->
+  <path d="M228 248
+           C240 255, 248 270, 240 280
+           C225 275, 218 260, 222 252Z"
+        fill="#43AD72" opacity="0.88"/>
+
+  <!-- SMALL BOTTOM ISLAND (moved slightly upward) -->
+  <path d="M165 265
+           C175 268, 182 278, 175 288
+           C165 287, 158 275, 160 268Z"
+        fill="#3EA96C" opacity="0.88"/>
+
+  <!-- ================================================== -->
+  <!-- ========== NGSI-LD GRAPH ========= -->
+  <!-- ================================================== -->
+
+  <circle cx="170" cy="170" r="22" fill="#1F8EF1" opacity="0.12"/>
+
+  <!-- Left nodes (cyan) -->
+  <circle cx="130" cy="110" r="12" fill="#4DD6FF" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="130" cy="240" r="12" fill="#4DD6FF" stroke="#FFFFFF" stroke-width="2"/>
+
+  <!-- Right nodes (blue) -->
+  <circle cx="230" cy="110" r="12" fill="#3498DB" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="230" cy="240" r="12" fill="#3498DB" stroke="#FFFFFF" stroke-width="2"/>
+
+  <circle cx="170" cy="170" r="15" fill="#1F8EF1" stroke="#FFFFFF" stroke-width="2"/>
+
+  <!-- Lines -->
+  <line x1="130" y1="110" x2="170" y2="170" stroke="#1F8EF1" stroke-width="4" opacity="0.85"/>
+  <line x1="230" y1="110" x2="170" y2="170" stroke="#1F8EF1" stroke-width="4" opacity="0.85"/>
+  <line x1="130" y1="240" x2="170" y2="170" stroke="#1F8EF1" stroke-width="4" opacity="0.85"/>
+  <line x1="230" y1="240" x2="170" y2="170" stroke="#1F8EF1" stroke-width="4" opacity="0.85"/>
+
+  <!-- TEXT -->
+  <text x="170" y="350" font-size="42" text-anchor="middle" fill="#1E2E3D" 
+        font-weight="700" style="letter-spacing: 1.5px;">
+    OpenTerra
+  </text>
+
+  <text x="170" y="372" font-size="15" text-anchor="middle" fill="#7F8C8D"
+        style="letter-spacing: 0.5px;">
+    Smart City Open Data Platform
+  </text>
+
+</svg>
