@@ -1,9 +1,9 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import { useTranslations } from 'next-intl';
+import ProgressLink from '@/components/common/ProgressLink';
 import DashboardIcon from '@/components/icon/DashboardIcon';
 import TrafficIcon from '@/components/icon/TrafficIcon';
 import FloodIcon from '@/components/icon/FloodIcon';
@@ -111,7 +111,7 @@ export default function Sidebar() {
             const isActive = pathname === item.href;
             return (
               <li key={item.id}>
-                <Link
+                <ProgressLink
                   href={item.href}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     isActive
@@ -121,7 +121,7 @@ export default function Sidebar() {
                 >
                   {item.icon}
                   <span className="font-medium">{t(item.labelKey)}</span>
-                </Link>
+                </ProgressLink>
               </li>
             );
           })}

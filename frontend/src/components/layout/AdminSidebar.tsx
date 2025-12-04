@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import ProgressLink from '../common/ProgressLink';
 import DashboardIcon from '../icon/DashboardIcon';
 import TrafficIcon from '../icon/TrafficIcon';
 import EnvironmentIcon from '../icon/EnvironmentIcon';
@@ -15,37 +15,37 @@ const menuItems = [
   {
     title: 'Dashboard',
     icon: DashboardIcon,
-    href: '/dashboard',
+    href: '/admin/dashboard',
   },
   {
     title: 'Giao thông',
     icon: TrafficIcon,
-    href: '/traffic',
+    href: '/admin/traffic',
   },
   {
     title: 'Môi trường',
     icon: EnvironmentIcon,
-    href: '/environment',
+    href: '/admin/environment',
   },
   {
     title: 'Cảnh báo',
     icon: AlertIcon,
-    href: '/alerts',
+    href: '/admin/alerts',
   },
   {
     title: 'Phân tích',
     icon: AnalyticsIcon,
-    href: '/analytics',
+    href: '/admin/analytics',
   },
   {
     title: 'Cơ sở hạ tầng',
     icon: InfrastructureIcon,
-    href: '/infrastructure',
+    href: '/admin/infrastructure',
   },
   {
     title: 'Dịch vụ công',
     icon: PublicServiceIcon,
-    href: '/services',
+    href: '/admin/services',
   },
 ];
 
@@ -92,7 +92,7 @@ const AdminSidebar: React.FC = () => {
         {menuItems.map((item) => {
           const isActive = pathname?.includes(item.href);
           return (
-            <Link
+            <ProgressLink
               key={item.href}
               href={item.href}
               className={`flex items-center ${
@@ -109,7 +109,7 @@ const AdminSidebar: React.FC = () => {
               {!isCollapsed && (
                 <span className="ml-3 font-medium">{item.title}</span>
               )}
-            </Link>
+            </ProgressLink>
           );
         })}
       </nav>
