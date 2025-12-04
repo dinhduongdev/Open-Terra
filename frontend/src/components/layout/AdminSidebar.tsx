@@ -15,37 +15,37 @@ const menuItems = [
   {
     title: 'Dashboard',
     icon: DashboardIcon,
-    href: '/dashboard',
+    href: '/admin/dashboard',
   },
   {
     title: 'Giao thông',
     icon: TrafficIcon,
-    href: '/traffic',
+    href: '/admin/traffic',
   },
   {
     title: 'Môi trường',
     icon: EnvironmentIcon,
-    href: '/environment',
+    href: '/admin/environment',
   },
   {
     title: 'Cảnh báo',
     icon: AlertIcon,
-    href: '/alerts',
+    href: '/admin/alerts',
   },
   {
     title: 'Phân tích',
     icon: AnalyticsIcon,
-    href: '/analytics',
+    href: '/admin/analytics',
   },
   {
     title: 'Cơ sở hạ tầng',
     icon: InfrastructureIcon,
-    href: '/infrastructure',
+    href: '/admin/infrastructure',
   },
   {
     title: 'Dịch vụ công',
     icon: PublicServiceIcon,
-    href: '/services',
+    href: '/admin/services',
   },
 ];
 
