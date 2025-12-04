@@ -16,12 +16,14 @@ class BaseDevice {
      * @param {number} deviceConfig.interval - Measurement interval in ms
      */
     constructor(deviceConfig) {
+        this.config = deviceConfig;
         this.deviceId = deviceConfig.deviceId;
         this.entityName = deviceConfig.entityName;
         this.entityType = deviceConfig.entityType;
         this.attributes = deviceConfig.attributes;
         this.interval = deviceConfig.interval;
         this.intervalId = null;
+        this.isRunning = false;
     }
 
     /**
@@ -80,6 +82,7 @@ class BaseDevice {
         }
 
         console.log(`[${this.deviceId}] Starting device (interval: ${this.interval}ms)`);
+        this.isRunning = true;
 
         // Send first measurement immediately
         const data = this.generateData();
@@ -99,6 +102,7 @@ class BaseDevice {
         if (this.intervalId) {
             clearInterval(this.intervalId);
             this.intervalId = null;
+            this.isRunning = false;
             console.log(`[${this.deviceId}] Stopped device`);
         }
     }
