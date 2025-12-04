@@ -6,6 +6,60 @@ from src.app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
+def normalize_temporal_entity(entity: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Normalize temporal NGSI-LD entity from expanded format to concise format.
+    Temporal entities have arrays of values with observedAt timestamps.
+    
+    Example input (expanded):
+    {
+        "id": "urn:ngsi-ld:WeatherObserved:weather:hcm:latest",
+        "https://smartdatamodels.org/dataModel.Weather/temperature": [
+            {"type": "Property", "value": 29.01, "observedAt": "2025-12-04T09:57:11Z", ...},
+            {"type": "Property", "value": 28.5, "observedAt": "2025-12-04T09:55:10Z", ...}
+        ]
+    }
+    
+    Example output (concise):
+    {
+        "id": "urn:ngsi-ld:WeatherObserved:weather:hcm:latest",
+        "temperature": [
+            {"type": "Property", "value": 29.01, "observedAt": "2025-12-04T09:57:11Z", ...},
+            {"type": "Property", "value": 28.5, "observedAt": "2025-12-04T09:55:10Z", ...}
+        ]
+    }
+    """
+    result = {}
+    
+    # Keep basic fields
+    if "id" in entity:
+        result["id"] = entity["id"]
+    if "type" in entity:
+        result["type"] = entity["type"]
+    if "@context" in entity:
+        result["@context"] = entity["@context"]
+    
+    # Process all properties
+    for key, value in entity.items():
+        if key in ["id", "type", "@context"]:
+            continue
+            
+        # Extract short name from URL
+        short_key = key.split("/")[-1].split("#")[-1] if ("/" in key or "#" in key) else key
+        
+        # Temporal entities have arrays or single objects
+        if isinstance(value, list):
+            # Keep array structure for temporal data
+            result[short_key] = value
+        elif isinstance(value, dict):
+            # Keep single object (for properties that haven't changed)
+            result[short_key] = value
+        else:
+            # Simple value
+            result[short_key] = value
+    
+    return result
+
 def normalize_entity(entity: Dict[str, Any]) -> Dict[str, Any]:
     """
     Normalize NGSI-LD entity from expanded format to concise format.
@@ -340,63 +394,57 @@ class ContextBrokerClient:
     
     async def get_temporal_entities(
         self,
-        entity_type: str,
+        entity_id: str,
         timerel: str = "before",
         time_at: Optional[datetime] = None,
         end_time_at: Optional[datetime] = None,
         last_n: Optional[int] = None,
-        limit: int = 100,
         attrs: Optional[List[str]] = None,
         entity_format: str = "temporalValues",
-        q: Optional[str] = None,
-        id_pattern: Optional[str] = None
-    ) -> List[Dict[str, Any]]:
+        q: Optional[str] = None
+    ) -> Dict[str, Any]:
         """
-        Query temporal data for multiple entities.
+        Query temporal data for a single entity.
         
-        Based on tutorial: Temporal Operations
-        Request: GET /temporal/entities/?type=WeatherObserved&lastN=24
+        Based on Mintaka API: GET /temporal/entities/{entityId}
+        Example: GET /temporal/entities/urn:ngsi-ld:AirQualityObserved:airquality:3276359:latest/?timerel=before&timeAt=2025-12-04T10:23:40Z&lastN=5
         
         Args:
-            entity_type: Type of entities
-            timerel: Time relationship
+            entity_id: Full entity URN (e.g., urn:ngsi-ld:AirQualityObserved:airquality:3276359:latest)
+            timerel: Time relationship (before/after/between)
             time_at: Start time
-            end_time_at: End time
+            end_time_at: End time (required for timerel=between)
             last_n: Get last N observations
-            limit: Maximum results
-            attrs: List of attributes
-            entity_format: Response format
+            attrs: List of attributes to retrieve
+            entity_format: Response format (not used by Mintaka)
             q: Query filter
-            id_pattern: Entity ID pattern (regex) for filtering
             
         Returns:
-            List of temporal entities
+            Single temporal entity as dict
         """
         try:
-            url = f"{self.temporal_url}/temporal/entities/"
-            params = {
-                "type": entity_type,
-                "limit": limit
-            }
+            # Mintaka expects entity ID in the path, not as a query parameter
+            url = f"{self.temporal_url}/temporal/entities/{entity_id}/"
+            params = {}
             
-            # Note: Mintaka doesn't support 'format' parameter for temporal queries
-            # It always returns in temporal format
+            # Note: Mintaka doesn't support 'format', 'limit', or 'type' parameters
+            # It returns temporal format by default
             
-            # timerel and timeAt are always required by Mintaka
-            # If not provided, use 'before' with current time
-            if not time_at and not last_n:
-                from datetime import datetime
+            # timerel and timeAt are required by Mintaka
+            if not time_at:
                 time_at = datetime.utcnow()
             
             params["timerel"] = timerel
-            if time_at:
-                # Convert to UTC and format as ISO 8601 with Z suffix
-                # Replace timezone info to avoid +00:00Z format
-                utc_time = time_at.replace(tzinfo=None) if time_at.tzinfo else time_at
-                params["timeAt"] = utc_time.strftime("%Y-%m-%dT%H:%M:%SZ")
+            
+            # Convert to UTC and format as ISO 8601 with Z suffix
+            # Remove timezone info to avoid +00:00Z format
+            utc_time = time_at.replace(tzinfo=None) if time_at.tzinfo else time_at
+            params["timeAt"] = utc_time.strftime("%Y-%m-%dT%H:%M:%SZ")
+            
             if end_time_at:
                 utc_end = end_time_at.replace(tzinfo=None) if end_time_at.tzinfo else end_time_at
                 params["endTimeAt"] = utc_end.strftime("%Y-%m-%dT%H:%M:%SZ")
+            
             if last_n:
                 params["lastN"] = last_n
             
@@ -404,8 +452,13 @@ class ContextBrokerClient:
                 params["attrs"] = ",".join(attrs)
             if q:
                 params["q"] = q
-            if id_pattern:
-                params["idPattern"] = id_pattern
+            
+            # Debug logging
+            print(f"[DEBUG] Temporal Query Request:")
+            print(f"[DEBUG]   URL: {url}")
+            print(f"[DEBUG]   Params: {params}")
+            print(f"[DEBUG]   Headers: {self._get_headers()}")
+            logger.info(f"Temporal query to {url} with params: {params}")
             
             response = await self.client.get(
                 url,
@@ -413,19 +466,46 @@ class ContextBrokerClient:
                 params=params
             )
             
-            if response.status_code == 200:
-                return response.json()
+            print(f"[DEBUG] Temporal Response Status: {response.status_code}")
+            logger.info(f"Temporal response status: {response.status_code}")
+            
+            # HTTP 200 OK: Full response
+            # HTTP 206 Partial Content: Partial response (e.g., with lastN parameter)
+            if response.status_code in [200, 206]:
+                data = response.json()
+                print(f"[DEBUG] Temporal Response Type: {type(data)}")
+                print(f"[DEBUG] Entity keys: {list(data.keys())[:10] if isinstance(data, dict) else 'Not a dict'}")
+                logger.info(f"Temporal response data type: {type(data)}")
+                
+                # Mintaka returns expanded format for a single entity
+                # Normalize to concise format
+                try:
+                    normalized = normalize_temporal_entity(data)
+                    print(f"[DEBUG] Normalized entity keys: {list(normalized.keys())[:10] if normalized else 'None'}")
+                    return normalized
+                except Exception as norm_error:
+                    logger.error(f"Error normalizing temporal entity: {str(norm_error)}")
+                    print(f"[ERROR] Normalization failed: {str(norm_error)}")
+                    import traceback
+                    print(f"[ERROR] Normalization traceback: {traceback.format_exc()}")
+                    # Return raw data if normalization fails
+                    return data
+            elif response.status_code == 404:
+                logger.warning(f"Temporal entity {entity_id} not found")
+                print(f"[DEBUG] Entity not found: {entity_id}")
+                return None
             else:
-                logger.error(f"Error querying temporal entities: {response.status_code}")
+                logger.error(f"Error querying temporal entity: {response.status_code}")
                 logger.error(f"Response body: {response.text}")
                 print(f"[ERROR] Temporal query failed with status {response.status_code}")
                 print(f"[ERROR] URL: {url}")
                 print(f"[ERROR] Params: {params}")
                 print(f"[ERROR] Response: {response.text}")
                 response.raise_for_status()
+                return None
                 
         except Exception as e:
-            logger.error(f"Exception querying temporal entities: {str(e)}")
+            logger.error(f"Exception querying temporal entity: {str(e)}")
             raise
 
     

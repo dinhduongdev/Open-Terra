@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     )
     
     ORION_LD_CONTEXT: str = Field(
-        default="",
+        default="<http://context/open-terra-context.jsonld>; rel='http://www.w3.org/ns/json-ld#context'; type='application/ld+json'",
         description="Default @context URLs for NGSI-LD entities"
     )
     

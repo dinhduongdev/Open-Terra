@@ -18,9 +18,7 @@ from src.app.services.context_broker_client import ContextBrokerClient
 from src.app.core.config import settings
 from src.app.core.constants import (
     AIR_QUALITY_STATION_IDS,
-    get_air_quality_entity_id,
-    get_air_quality_id_pattern,
-    AIR_QUALITY_ALL_STATIONS_PATTERN
+    get_air_quality_entity_id
 )
 import logging
 router = APIRouter(prefix="/v1/air-quality", tags=["air-quality"])
@@ -374,25 +372,32 @@ async def query_air_quality(
         
         query_string = ";" .join(conditions) if conditions else None
         
-        # Build idPattern for station filtering
+        # Build entity ID for station filtering
         if station_id:
             # Query specific station
-            id_pattern = get_air_quality_id_pattern(station_id)
+            entity_id = get_air_quality_entity_id(station_id)
         else:
-            # Query all known stations
-            id_pattern = AIR_QUALITY_ALL_STATIONS_PATTERN
+            # Cannot query all stations without entity ID - return error
+            return APIResponse(
+                success=False,
+                code=400,
+                message="station_id is required for query endpoint",
+                error="MISSING_STATION_ID",
+                result=None
+            )
         
         # Query temporal data with filters
-        entities = await context_broker_client.get_temporal_entities(
-            entity_type="AirQualityObserved",
+        temporal_data = await context_broker_client.get_temporal_entities(
+            entity_id=entity_id,
             timerel="between",
             time_at=start_time,
             end_time_at=end_time,
             q=query_string,
-            limit=limit,
-            entity_format="concise",
-            id_pattern=id_pattern
+            entity_format="concise"
         )
+        
+        # Wrap single entity result in list for consistency
+        entities = [temporal_data] if temporal_data else []
         
         result = {
             "total": len(entities),
@@ -426,6 +431,10 @@ async def query_air_quality(
     description="Retrieve historical air quality data for a time period"
 )
 async def get_air_quality_history(
+    station_id: Optional[str] = Query(
+        None,
+        description="Station ID to query (e.g., '3276359' or '6068138'). If not provided, queries all stations."
+    ),
     start_time: Optional[datetime] = Query(
         None,
         description="Start time (ISO 8601 format, e.g., 2025-12-01T00:00:00Z)"
@@ -508,22 +517,41 @@ async def get_air_quality_history(
                 result=None
             )
         
+        # Build entity ID for station filtering
+        if station_id:
+            # Query specific station
+            entity_id = get_air_quality_entity_id(station_id)
+        else:
+            # Cannot query all stations without entity ID - return error
+            return APIResponse(
+                success=False,
+                code=400,
+                message="station_id is required for history queries",
+                error="MISSING_STATION_ID",
+                result=None
+            )
+        
         entities = await context_broker_client.get_temporal_entities(
-            entity_type="AirQualityObserved",
+            entity_id=entity_id,
             timerel="between" if (start_time and end_time) else "before",
             time_at=start_time if start_time else datetime.utcnow(),
             end_time_at=end_time,
             last_n=last_n,
-            limit=limit,
             entity_format="concise"
         )
+        
+        # Handle None result (entity not found or error)
+        if entities is None:
+            items = []
+        else:
+            items = [entities]  # Wrap single entity in list
         
         return APIResponse(
             success=True,
             code=200,
             message="Air quality history retrieved successfully",
             error=None,
-            result={"total": len(entities), "items": entities}
+            result={"total": len(items), "items": items}
         )
     except Exception as e:
         import traceback
@@ -544,6 +572,10 @@ async def get_air_quality_history(
     description="Calculate statistical aggregations over time"
 )
 async def get_air_quality_statistics(
+    station_id: str = Query(
+        ...,
+        description="Station ID (e.g., 3276359)"
+    ),
     start_time: datetime = Query(
         ...,
         description="Start time (ISO 8601 format)"
@@ -559,13 +591,13 @@ async def get_air_quality_statistics(
     context_broker_client: ContextBrokerClient = Depends(get_context_broker)
 ):
     """
-    Get statistical aggregations for air quality data.
+    Get statistical aggregations for air quality data from a specific station.
     
     Returns min, max, avg, count for each requested attribute.
     
     **Example Request:**
     ```
-    GET /air-quality/statistics?start_time=2025-12-01T00:00:00Z&end_time=2025-12-02T00:00:00Z&attributes=pm25,aqi
+    GET /air-quality/statistics?station_id=3276359&start_time=2025-12-01T00:00:00Z&end_time=2025-12-02T00:00:00Z&attributes=pm25,airQualityIndex
     ```
     
     **Response Format:**
@@ -576,6 +608,7 @@ async def get_air_quality_statistics(
         "message": "Statistics calculated successfully",
         "error": null,
         "result": {
+            "station_id": "3276359",
             "period": {
                 "start": "2025-12-01T00:00:00Z",
                 "end": "2025-12-02T00:00:00Z",
@@ -602,9 +635,12 @@ async def get_air_quality_statistics(
     try:
         attr_list = [a.strip() for a in attributes.split(",")]
         
+        # Get entity ID for the specific station
+        entity_id = get_air_quality_entity_id(station_id)
+        
         # Get temporal data for the period
-        entities = await context_broker_client.get_temporal_entities(
-            entity_type="AirQualityObserved",
+        temporal_data = await context_broker_client.get_temporal_entities(
+            entity_id=entity_id,
             timerel="between",
             time_at=start_time,
             end_time_at=end_time,
@@ -612,37 +648,53 @@ async def get_air_quality_statistics(
             entity_format="temporalValues"
         )
         
-        if not entities:
-            return APIResponse.fail(
+        if not temporal_data:
+            return APIResponse(
+                success=False,
+                code=404,
                 message="No data available for the specified period",
-                error_code="NO_DATA",
-                code=404
+                error="NO_DATA",
+                result=None
             )
         
         # Calculate statistics for each attribute
+        # temporal_data is a single entity, not a list
         statistics = {}
         for attr in attr_list:
-            values = []
-            for entity in entities:
-                if attr in entity:
-                    # Extract values from temporal format
-                    temporal_data = entity[attr]
-                    if isinstance(temporal_data, list):
-                        values.extend([v for v in temporal_data if isinstance(v, (int, float))])
-                    elif isinstance(temporal_data, (int, float)):
-                        values.append(temporal_data)
-            
-            if values:
-                statistics[attr] = {
-                    "min": min(values),
-                    "max": max(values),
-                    "avg": sum(values) / len(values),
-                    "count": len(values)
-                }
+            if attr in temporal_data:
+                values = []
+                # Extract values from temporal format (array of {value, observedAt, ...})
+                attr_data = temporal_data[attr]
+                if isinstance(attr_data, list):
+                    # Temporal format: [{type: "Property", value: 29.01, observedAt: "...", ...}, ...]
+                    for item in attr_data:
+                        if isinstance(item, dict) and "value" in item:
+                            val = item["value"]
+                            if isinstance(val, (int, float)):
+                                values.append(val)
+                        elif isinstance(item, (int, float)):
+                            values.append(item)
+                elif isinstance(attr_data, dict) and "value" in attr_data:
+                    # Single value format
+                    val = attr_data["value"]
+                    if isinstance(val, (int, float)):
+                        values.append(val)
+                elif isinstance(attr_data, (int, float)):
+                    # Direct value
+                    values.append(attr_data)
+                
+                if values:
+                    statistics[attr] = {
+                        "min": min(values),
+                        "max": max(values),
+                        "avg": sum(values) / len(values),
+                        "count": len(values)
+                    }
         
         duration_hours = (end_time - start_time).total_seconds() / 3600
         
         result = {
+            "station_id": station_id,
             "period": {
                 "start": start_time.isoformat(),
                 "end": end_time.isoformat(),
@@ -651,9 +703,12 @@ async def get_air_quality_statistics(
             "statistics": statistics
         }
         
-        return APIResponse.success(
-            data=result,
-            message="Statistics calculated successfully"
+        return APIResponse(
+            success=True,
+            code=200,
+            message="Statistics calculated successfully",
+            error=None,
+            result=result
         )
         
     except Exception as e:

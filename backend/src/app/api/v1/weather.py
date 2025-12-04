@@ -230,20 +230,21 @@ async def query_weather(
         
         q_param = ";".join(conditions) if conditions else None
         
-        # Weather has only one station - use constant
-        id_pattern = WEATHER_ID_PATTERN
+        # Weather has only one station - use constant entity ID
+        entity_id = WEATHER_ENTITY_ID
         
         # Query temporal data with filters
-        entities = await context_broker_client.get_temporal_entities(
-            entity_type="WeatherObserved",
+        temporal_data = await context_broker_client.get_temporal_entities(
+            entity_id=entity_id,
             timerel="between",
             time_at=start_time,
             end_time_at=end_time,
             q=q_param,
-            limit=limit,
-            entity_format="concise",
-            id_pattern=id_pattern
+            entity_format="concise"
         )
+        
+        # Wrap single entity result in list for consistency
+        entities = [temporal_data] if temporal_data else []
         
         result = {
             "total": len(entities),
@@ -358,15 +359,20 @@ async def get_weather_history(
                 result=None
             )
         
-        entities = await context_broker_client.get_temporal_entities(
-            entity_type="WeatherObserved",
+        # Weather has only one station - use constant entity ID
+        entity_id = WEATHER_ENTITY_ID
+        
+        temporal_data = await context_broker_client.get_temporal_entities(
+            entity_id=entity_id,
             timerel="between" if (start_time and end_time) else "before",
             time_at=start_time if start_time else datetime.utcnow(),
             end_time_at=end_time,
             last_n=last_n,
-            limit=limit,
             entity_format="concise"
         )
+        
+        # Wrap single entity result in list for consistency
+        entities = [temporal_data] if temporal_data else []
         
         return APIResponse(
             success=True,
@@ -462,14 +468,20 @@ async def get_weather_statistics(
         # Parse attributes
         attr_list = [attr.strip() for attr in attributes.split(",")]
         
-        entities = await context_broker_client.get_temporal_entities(
-            entity_type="WeatherObserved",
+        # Weather has only one station - use constant entity ID
+        entity_id = WEATHER_ENTITY_ID
+        
+        temporal_data = await context_broker_client.get_temporal_entities(
+            entity_id=entity_id,
             timerel="between",
             time_at=start_time,
             end_time_at=end_time,
             attrs=attr_list,
             entity_format="temporalValues"
         )
+        
+        # Wrap single entity result in list for statistics calculation
+        entities = [temporal_data] if temporal_data else []
         
         duration_hours = (end_time - start_time).total_seconds() / 3600
         
