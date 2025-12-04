@@ -8,7 +8,7 @@
     }
   },
   "sidebar": {
-    "dashboard": "Tổng quan",
+    "introduction": "Giới thiệu",
     "traffic": "Giao thông",
     "floodMap": "Bản đồ ngập nước",
     "trafficJam": "Kẹt xe",
@@ -24,6 +24,63 @@
   "dashboard": {
     "welcome": "Chào mừng đến với Nền tảng Thành phố Thông minh",
     "description": "Nền tảng thông minh cho thành phố của bạn"
+  },
+  "introduction": {
+    "hero": {
+      "title": "Nền tảng Mở Thành phố Thông minh",
+      "subtitle": "Nền tảng mở để xây dựng thành phố thông minh và bền vững",
+      "description": "Tích hợp, quản lý và phân tích dữ liệu thời gian thực từ thành phố của bạn để tạo ra các giải pháp thông minh",
+      "cta": "Bắt đầu ngay",
+      "learnMore": "Tìm hiểu thêm"
+    },
+    "features": {
+      "title": "Tính năng nổi bật",
+      "subtitle": "Giải pháp toàn diện cho thành phố thông minh",
+      "realtime": {
+        "title": "Giám sát Thời gian Thực",
+        "description": "Theo dõi giao thông, thời tiết, chất lượng không khí và ngập lụt 24/7"
+      },
+      "analytics": {
+        "title": "Phân tích Dữ liệu",
+        "description": "Phân tích xu hướng và dự đoán vấn đề trước khi xảy ra"
+      },
+      "integration": {
+        "title": "Tích hợp Dễ dàng",
+        "description": "Kết nối với các hệ thống hiện có thông qua API chuẩn"
+      },
+      "opensource": {
+        "title": "Mã nguồn Mở",
+        "description": "Nền tảng minh bạch, linh hoạt và được cộng đồng phát triển"
+      }
+    },
+    "stats": {
+      "title": "Tác động của nền tảng",
+      "cities": "Thành phố",
+      "sensors": "Cảm biến IoT",
+      "users": "Người dùng",
+      "dataPoints": "Dữ liệu/Ngày"
+    },
+    "about": {
+      "title": "Về nền tảng",
+      "description": "Nền tảng Mở Thành phố Thông minh là giải pháp nguồn mở được xây dựng trên kiến trúc FIWARE, được thiết kế để giúp các thành phố trở nên thông minh hơn, bền vững hơn và đáng sống hơn.",
+      "mission": {
+        "title": "Sứ mệnh",
+        "description": "Cung cấp giải pháp công nghệ dễ tiếp cận để giúp các thành phố trên toàn thế giới chuyển đổi thành thành phố thông minh, nâng cao chất lượng cuộc sống cho người dân."
+      },
+      "vision": {
+        "title": "Tầm nhìn",
+        "description": "Tạo ra một mạng lưới toàn cầu các thành phố thông minh chia sẻ dữ liệu và thực tiễn tốt nhất để giải quyết các thách thức chung."
+      }
+    },
+    "modules": {
+      "title": "Các mô-đun có sẵn",
+      "traffic": "Giám sát giao thông và tối ưu hóa lộ trình theo thời gian thực",
+      "flood": "Hệ thống dự báo ngập lụt và cảnh báo sớm",
+      "air": "Giám sát chất lượng không khí và khuyến nghị sức khỏe",
+      "weather": "Dự báo thời tiết và cảnh báo thời tiết khắc nghiệt",
+      "parking": "Hệ thống quản lý bãi đỗ xe thông minh",
+      "infrastructure": "Giám sát và bảo trì cơ sở hạ tầng"
+    }
   },
   "floodMap": {
     "title": "Bản đồ ngập nước",

@@ -30,8 +30,8 @@ export default function Sidebar() {
 
   const menuItems: MenuItem[] = [
     {
-      id: 'dashboard',
-      labelKey: 'dashboard',
+      id: 'introduction',
+      labelKey: 'introduction',
       href: '/',
       icon: <DashboardIcon />,
     },
