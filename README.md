@@ -4,7 +4,7 @@
     <img src="assets/logo.png" alt="Open-Terra Logo" width="200" />
 </p>
 
-A comprehensive IoT and smart city data platform built with FIWARE-compliant components. Open-Terra provides an extensible architecture for collecting, processing, and managing real-time sensor data from smart city infrastructures.
+Open-Terra is an open-source IoT and smart city data platform built with FIWARE-compliant components. It provides an extensible architecture for collecting, processing, and managing real-time sensor data from smart city infrastructures.
 
 ## Skills & Badges
 <p align="center">
