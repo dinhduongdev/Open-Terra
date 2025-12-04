@@ -4,9 +4,12 @@
     "description": "Dummy IoT devices for traffic monitoring and flood detection using UltraLight 2.0 over MQTT",
     "main": "index.js",
     "scripts": {
-        "start": "node index.js",
+        "start": "node cli.js start",
         "dev": "node index.js",
-        "ui": "node server.js"
+        "ui": "node server.js",
+        "provision": "node cli.js provision",
+        "list": "node cli.js list",
+        "status": "node cli.js status"
     },
     "keywords": [
         "iot",

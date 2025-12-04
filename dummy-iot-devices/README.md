@@ -106,8 +106,87 @@ Data model: [WaterObserved](https://github.com/smart-data-models/dataModel.Envir
 - **Node.js**: JavaScript runtime for device simulation
 - **Express.js**: Web server for control dashboard
 - **MQTT.js**: MQTT client library
-- **Leaflet**: Interactive maps (future feature)
 
+## Usage
+
+### Headless CLI Mode
+
+The simulator provides a comprehensive command-line interface for headless operation:
+
+#### Provision Devices
+
+Register devices with the IoT Agent before first use:
+
+```bash
+# Provision all devices
+npm run provision
+
+# Provision only traffic devices
+node cli.js provision traffic
+
+# Provision only water devices
+node cli.js provision water
+```
+
+#### Start Devices
+
+```bash
+# Start all devices (default)
+npm start
+
+# Start only traffic devices
+node cli.js start --traffic
+
+# Start only water devices
+node cli.js start --water
+
+# Start a specific device
+node cli.js start --device=traffic001
+```
+
+#### List Devices
+
+```bash
+# List all configured devices
+npm run list
+
+# List only traffic devices
+node cli.js list traffic
+
+# List only water devices
+node cli.js list water
+```
+
+#### Check Status
+
+```bash
+# Show system status and connectivity
+npm run status
+```
+
+#### View Configuration
+
+```bash
+# Display current configuration
+node cli.js config
+```
+
+#### Help
+
+```bash
+# Show all available commands
+node cli.js help
+```
+
+### Web UI Mode
+
+For interactive control with a web dashboard:
+
+```bash
+npm run ui
+```
+
+Access the dashboard at `http://localhost:3030`
 
 ### Device Configuration
 
