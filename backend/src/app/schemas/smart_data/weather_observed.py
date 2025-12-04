@@ -2,6 +2,7 @@ from __future__ import annotations  # noqa: F821
 
 from enum import Enum
 from typing import Optional, Union
+from datetime import datetime
 
 from pydantic import (
     AnyUrl,
@@ -351,6 +352,166 @@ class WeatherObserved(BaseModel):
     )
     windSpeed: Optional[confloat(ge=0.0)] = Field(  # type: ignore[valid-type]
         None, description='Intensity of the wind'
+    )
+
+class LocationInfo(BaseModel):
+    """Simplified location information."""
+    
+    latitude: Optional[float] = Field(
+        None,
+        description="Latitude coordinate",
+        example=21.0285
+    )
+    longitude: Optional[float] = Field(
+        None,
+        description="Longitude coordinate", 
+        example=105.8542
+    )
+    address: Optional[str] = Field(
+        None,
+        description="Full address",
+        example="Hanoi, Vietnam"
+    )
+    area_served: Optional[str] = Field(
+        None,
+        description="Area where data is applicable",
+        example="Hanoi City"
+    )
+
+
+class TemperatureData(BaseModel):
+    """Temperature related data."""
+    
+    current: Optional[float] = Field(
+        None,
+        description="Current temperature in Celsius",
+        example=25.5
+    )
+    feels_like: Optional[float] = Field(
+        None,
+        description="Feels like temperature in Celsius",
+        example=27.0
+    )
+    dew_point: Optional[float] = Field(
+        None,
+        description="Dew point temperature in Celsius",
+        example=18.5
+    )
+
+
+class HumidityData(BaseModel):
+    """Humidity related data."""
+    
+    relative_humidity: Optional[float] = Field(
+        None,
+        description="Relative humidity (0-1)",
+        example=0.65,
+        ge=0.0,
+        le=1.0
+    )
+    relative_humidity_percent: Optional[float] = Field(
+        None,
+        description="Relative humidity in percentage",
+        example=65.0,
+        ge=0.0,
+        le=100.0
+    )
+
+
+class WindData(BaseModel):
+    """Wind related data."""
+    
+    speed: Optional[float] = Field(
+        None,
+        description="Wind speed in m/s",
+        example=3.5
+    )
+    direction: Optional[float] = Field(
+        None,
+        description="Wind direction in degrees (0-360)",
+        example=180.0,
+        ge=0.0,
+        le=360.0
+    )
+    gust_speed: Optional[float] = Field(
+        None,
+        description="Wind gust speed in m/s",
+        example=5.2
+    )
+
+
+class PressureData(BaseModel):
+    """Atmospheric pressure data."""
+    
+    atmospheric_pressure: Optional[float] = Field(
+        None,
+        description="Atmospheric pressure in hPa",
+        example=1013.25
+    )
+    pressure_tendency: Optional[str] = Field(
+        None,
+        description="Pressure trend: 'falling', 'rising', 'steady'",
+        example="steady"
+    )
+
+
+class PrecipitationData(BaseModel):
+    """Precipitation related data."""
+    
+    precipitation: Optional[float] = Field(
+        None,
+        description="Precipitation amount in mm",
+        example=2.5
+    )
+    snow_height: Optional[float] = Field(
+        None,
+        description="Snow height in cm",
+        example=0.0
+    )
+
+
+class IrradiationData(BaseModel):
+    """Solar irradiation data."""
+    
+    solar_radiation: Optional[float] = Field(
+        None,
+        description="Solar radiation in W/m²",
+        example=850.0
+    )
+    diffuse_irradiation: Optional[float] = Field(
+        None,
+        description="Diffuse irradiation in W/m²",
+        example=150.0
+    )
+    direct_irradiation: Optional[float] = Field(
+        None,
+        description="Direct irradiation in W/m²",
+        example=700.0
+    )
+    illuminance: Optional[float] = Field(
+        None,
+        description="Illuminance in lux",
+        example=50000.0
+    )
+    uv_index_max: Optional[float] = Field(
+        None,
+        description="Maximum UV index (0-11)",
+        example=7.0
+    )
+
+
+class AirQualityData(BaseModel):
+    """Air quality related data."""
+    
+    air_quality_index: Optional[float] = Field(
+        None,
+        description="Current Air Quality Index",
+        example=55.0
+    )
+    major_pollutant: Optional[str] = Field(
+        None,
+        description="Major pollutant affecting AQI",
+        example="PM2.5"
     )
 
 class WeatherObservedResponse(BaseModel):

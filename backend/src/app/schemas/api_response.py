@@ -79,7 +79,7 @@ class APIResponse(BaseModel, Generic[T]):
         cls,
         message: str,
         error_code: str = "ERROR",
-        code: int = 400,
+        code: int = 500,
         result: Optional[T] = None
     ) -> "APIResponse[T]":
         """Create a failed response."""

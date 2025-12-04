@@ -1,9 +1,13 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, Path, Query
+from typing import Optional
+from datetime import datetime
 from src.app.schemas.api_response import APIResponse
 from src.app.schemas.smart_data.weather_observed import WeatherObserved, WeatherObservedResponse, WeatherListResponse
 from src.app.services.context_broker_client import ContextBrokerClient
 from src.app.core.config import settings
 router = APIRouter(prefix="/v1/weather", tags=["weather"])
+
+# ==== BUG_FIXING: THIS API IS CURRENTLY UNAVAILABLE DUE TO ISSUES WITH CONTEXT BROKER INTERACTIONS. ====
 
 async def get_context_broker() -> ContextBrokerClient:
     client = ContextBrokerClient(
@@ -17,7 +21,6 @@ async def get_context_broker() -> ContextBrokerClient:
 
 @router.get(
     "/latest",
-    response_model=APIResponse[WeatherObservedResponse],
     summary="Get latest weather observation",
     description="Retrieve the most recent weather data from the station"
 )
@@ -51,7 +54,7 @@ async def get_latest_weather(
                 code=404
             )
         
-        # Convert to WeatherResponse format
+        # Convert to WeatherObservedResponse format
         weather_data = entities[0]
         
         return APIResponse.success(
@@ -70,7 +73,6 @@ async def get_latest_weather(
 
 @router.get(
     "/{entity_id}",
-    response_model=APIResponse[WeatherResponse],
     summary="Get weather observation by ID",
     description="Retrieve a specific weather observation by its entity ID"
 )
@@ -123,7 +125,6 @@ async def get_weather_by_id(
         
 @router.get(
     "/query",
-    response_model=APIResponse[list[WeatherResponse]],
     summary="Query weather data with filters",
     description="Filter weather observations by various conditions"
 )
@@ -288,7 +289,6 @@ async def query_weather(
 
 @router.get(
     "/history",
-    response_model=APIResponse[WeatherListResponse],
     summary="Get weather history",
     description="Retrieve historical weather data for a time period"
 )
@@ -347,17 +347,17 @@ async def get_weather_history(
     try:
         # Validate input
         if last_n and (start_time or end_time):
-            return APIResponse.bad_request(
+            return APIResponse.fail(
                 message="Cannot use both 'last_n' and time range"
             )
         
         if not last_n and not (start_time and end_time):
-            return APIResponse.bad_request(
+            return APIResponse.fail(
                 message="Must provide either 'last_n' or both 'start_time' and 'end_time'"
             )
         
         if start_time and end_time and start_time >= end_time:
-            return APIResponse.bad_request(
+            return APIResponse.fail(
                 message="start_time must be before end_time"
             )
         
@@ -384,7 +384,6 @@ async def get_weather_history(
 
 @router.get(
     "/statistics",
-    response_model=APIResponse[dict],
     summary="Get weather statistics",
     description="Calculate statistical aggregations over time"
 )
@@ -447,7 +446,7 @@ async def get_weather_statistics(
     try:
         # Validate time range
         if start_time >= end_time:
-            return APIResponse.bad_request(
+            return APIResponse.fail(
                 message="start_time must be before end_time"
             )
         

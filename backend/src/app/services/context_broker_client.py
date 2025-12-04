@@ -21,7 +21,7 @@ class ContextBrokerClient:
             context_url: URL of the @context file
             tenant: NGSILD-Tenant header value (optional)
         """
-        self.broker_url = (broker_url or settings.ORION_LD_BASE_URL).rstrip("/")
+        self.broker_url = "http://localhost:1026/".rstrip("/") if broker_url is None else broker_url.rstrip("/")
         self.context_url = context_url or settings.ORION_LD_CONTEXT
         self.tenant = tenant
         self.client = httpx.AsyncClient(timeout=30.0)
@@ -29,13 +29,13 @@ class ContextBrokerClient:
     def _get_headers(
         self, 
         content_type: str = "application/json",
-        accept: str = "application/json"
+        accept: str = "application/ld+json"
     ) -> Dict[str, str]:
         """Build common headers for requests."""
         headers = {
             "Content-Type": content_type,
             "Accept": accept,
-            "Link": f'<{self.context_url}>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"'
+            "Link": f'<https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"'
         }
         
         if self.tenant:
