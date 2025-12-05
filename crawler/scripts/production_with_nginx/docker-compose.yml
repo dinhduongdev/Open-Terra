@@ -65,16 +65,16 @@ services:
       - open-terra-network
 
   #-------- uncomment to run with nginx --------
-  nginx:
-    image: nginx:latest
-    ports:
-      - "80:80"
-    volumes:
-      - ./default.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - crawler
-    networks:
-      - open-terra-network
+  # nginx:
+  #   image: nginx:latest
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./default.conf:/etc/nginx/conf.d/default.conf
+  #   depends_on:
+  #     - crawler
+  #   networks:
+  #     - open-terra-network
   # -------- uncomment to create first superuser --------
   # create_superuser:
   #   build:

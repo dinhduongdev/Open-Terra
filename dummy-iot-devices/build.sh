@@ -21,9 +21,8 @@ echo ""
 
 # Directories
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
-echo "Building from: ${PROJECT_DIR}"
+echo "Building from: ${SCRIPT_DIR}"
 echo ""
 
 # Ensure buildx builder exists
@@ -42,7 +41,9 @@ docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -f "${SCRIPT_DIR}/Dockerfile" \
   -t "${IMAGE_TAG}" \
-  "${PROJECT_DIR}"
+  "${SCRIPT_DIR}" \
+  
+# --push
 
 echo ""
 echo "Build and push successful (multi-arch)!"
