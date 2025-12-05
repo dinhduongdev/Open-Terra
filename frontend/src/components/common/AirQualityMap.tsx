@@ -11,7 +11,38 @@
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { AirQualityStation, getAqiColor, getAqiLevel } from '@/constants/airQualityMockData';
+import { getAQIColor, getAQILabel } from '@/types/airQuality';
+
+interface AirQualityStation {
+  id: string;
+  name: string;
+  areaServed: string;
+  location: {
+    lat: number;
+    lng: number;
+  };
+  aqi: number;
+  level: string;
+  lastUpdate: Date;
+  pollutants: {
+    pm25?: number;
+    pm10?: number;
+    pm1?: number;
+    co?: number;
+    no2?: number;
+    o3?: number;
+    so2?: number;
+  };
+  weather: {
+    temperature?: number;
+    humidity?: number;
+  };
+  address: {
+    addressCountry: string;
+    addressLocality: string;
+  };
+  source: string;
+}
 
 // Fix for default marker icons in Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -39,7 +70,7 @@ export default function AirQualityMap({
     // Initialize map only once
     if (!mapRef.current) {
       const map = L.map('air-quality-map', {
-        center: [21.0285, 105.8542], // Hanoi center
+        center: [10.7769, 106.6625], // Ho Chi Minh City center
         zoom: 12,
         zoomControl: true,
       });
@@ -73,10 +104,10 @@ export default function AirQualityMap({
     if (showStations) {
       // Add station markers
       stations.forEach((station) => {
-        const color = getAqiColor(station.aqi);
-        const level = getAqiLevel(station.aqi);
+        const color = getAQIColor(station.aqi);
+        const level = getAQILabel(station.aqi);
 
-        const circle = L.circleMarker(station.position, {
+        const circle = L.circleMarker([station.location.lat, station.location.lng], {
           radius: 15,
           fillColor: color,
           color: '#fff',
@@ -84,6 +115,30 @@ export default function AirQualityMap({
           opacity: 1,
           fillOpacity: 0.8,
         });
+
+        // Build pollutants list
+        const pollutantsList = [];
+        if (station.pollutants.pm25 !== undefined) {
+          pollutantsList.push(`<div>PM2.5: <strong>${station.pollutants.pm25.toFixed(2)} µg/m³</strong></div>`);
+        }
+        if (station.pollutants.pm10 !== undefined) {
+          pollutantsList.push(`<div>PM10: <strong>${station.pollutants.pm10.toFixed(2)} µg/m³</strong></div>`);
+        }
+        if (station.pollutants.pm1 !== undefined) {
+          pollutantsList.push(`<div>PM1: <strong>${station.pollutants.pm1.toFixed(2)} µg/m³</strong></div>`);
+        }
+        if (station.pollutants.o3 !== undefined) {
+          pollutantsList.push(`<div>O₃: <strong>${station.pollutants.o3.toFixed(2)} ppb</strong></div>`);
+        }
+        if (station.pollutants.no2 !== undefined) {
+          pollutantsList.push(`<div>NO₂: <strong>${station.pollutants.no2.toFixed(2)} ppb</strong></div>`);
+        }
+        if (station.pollutants.so2 !== undefined) {
+          pollutantsList.push(`<div>SO₂: <strong>${station.pollutants.so2.toFixed(2)} ppb</strong></div>`);
+        }
+        if (station.pollutants.co !== undefined) {
+          pollutantsList.push(`<div>CO: <strong>${station.pollutants.co.toFixed(2)} ppm</strong></div>`);
+        }
 
         const popupContent = `
           <div style="min-width: 250px; font-family: system-ui, -apple-system, sans-serif;">
@@ -103,20 +158,18 @@ export default function AirQualityMap({
                 <strong style="color: #1f2937;">Chất ô nhiễm:</strong>
               </div>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 8px;">
-                <div>PM2.5: <strong>${station.pollutants.pm25} µg/m³</strong></div>
-                <div>PM10: <strong>${station.pollutants.pm10} µg/m³</strong></div>
-                <div>O₃: <strong>${station.pollutants.o3} µg/m³</strong></div>
-                <div>NO₂: <strong>${station.pollutants.no2} µg/m³</strong></div>
-                <div>SO₂: <strong>${station.pollutants.so2} µg/m³</strong></div>
-                <div>CO: <strong>${station.pollutants.co} mg/m³</strong></div>
+                ${pollutantsList.join('') || '<div>Không có dữ liệu</div>'}
               </div>
+              ${station.weather.temperature || station.weather.humidity ? `
               <div style="padding-top: 8px; border-top: 1px solid #e5e7eb;">
-                <div>🌡️ Nhiệt độ: <strong>${station.temperature}°C</strong></div>
-                <div>💧 Độ ẩm: <strong>${station.humidity}%</strong></div>
-                <div>💨 Gió: <strong>${station.windSpeed} km/h</strong></div>
+                ${station.weather.temperature ? `<div>🌡️ Nhiệt độ: <strong>${station.weather.temperature.toFixed(1)}°C</strong></div>` : ''}
+                ${station.weather.humidity ? `<div>💧 Độ ẩm: <strong>${station.weather.humidity.toFixed(0)}%</strong></div>` : ''}
               </div>
+              ` : ''}
               <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb; font-size: 11px; color: #6b7280;">
-                ⏰ Cập nhật: ${new Date(station.lastUpdated).toLocaleString('vi-VN')}
+                <div>📍 ${station.address.addressLocality}, ${station.address.addressCountry}</div>
+                <div>📡 Nguồn: ${station.source}</div>
+                <div>⏰ Cập nhật: ${station.lastUpdate.toLocaleString('vi-VN')}</div>
               </div>
             </div>
           </div>
@@ -148,7 +201,10 @@ export default function AirQualityMap({
           iconAnchor: [20, -15],
         });
 
-        L.marker(station.position, { icon: aqiIcon }).addTo(mapRef.current!);
+        const labelMarker = L.marker([station.location.lat, station.location.lng], { icon: aqiIcon });
+        labelMarker.addTo(mapRef.current!);
+        // Keep track of label markers too for cleanup
+        stationMarkersRef.current.push(labelMarker as any);
       });
     }
   }, [stations, showStations]);
