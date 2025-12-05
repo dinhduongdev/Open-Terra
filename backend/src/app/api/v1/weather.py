@@ -167,12 +167,12 @@ async def query_weather(
         description="End time (ISO 8601 format)"
     ),
     
-    # Pagination
-    limit: int = Query(
-        100, 
-        ge=1, 
+    # Limit results
+    last_n: Optional[int] = Query(
+        None,
+        ge=1,
         le=1000,
-        description="Maximum number of results"
+        description="Limit to last N observations"
     ),
     context_broker_client: ContextBrokerClient = Depends(get_context_broker)
 ):
@@ -222,34 +222,99 @@ async def query_weather(
                 result=None
             )
         
-        # Build NGSI-LD query string
+        # Build filter conditions for client-side filtering
+        # (Mintaka doesn't support 'q' parameter)
         conditions = []
         
         if min_temperature is not None:
-            conditions.append(f"temperature>={min_temperature}")
+            conditions.append(("temperature", ">=", min_temperature))
         if max_temperature is not None:
-            conditions.append(f"temperature<={max_temperature}")
+            conditions.append(("temperature", "<=", max_temperature))
         if min_humidity is not None:
-            conditions.append(f"relativeHumidity>={min_humidity}")
+            conditions.append(("relativeHumidity", ">=", min_humidity))
         if max_humidity is not None:
-            conditions.append(f"relativeHumidity<={max_humidity}")
+            conditions.append(("relativeHumidity", "<=", max_humidity))
         if weather_type:
-            conditions.append(f"weatherType=='{weather_type}'")
-        
-        q_param = ";".join(conditions) if conditions else None
+            conditions.append(("weatherType", "==", weather_type))
         
         # Weather has only one station - use constant entity ID
         entity_id = WEATHER_ENTITY_ID
         
-        # Query temporal data with filters
+        # Query temporal data (Mintaka doesn't support 'q' parameter)
         temporal_data = await context_broker_client.get_temporal_entities(
             entity_id=entity_id,
             timerel="between",
             time_at=start_time,
             end_time_at=end_time,
-            q=q_param,
+            last_n=last_n,
             entity_format="concise"
         )
+        
+        # Client-side filtering: Filter by timestamp/observedAt
+        # If conditions fail for a timestamp, remove that entire observation
+        if temporal_data and conditions:
+            # Step 1: Collect all unique timestamps and their values across attributes
+            timestamp_data = {}  # {observedAt: {attr_name: item, ...}}
+            
+            for attr_name, attr_values in temporal_data.items():
+                if attr_name in ["id", "type", "@context"]:
+                    continue
+                    
+                if isinstance(attr_values, list):
+                    for item in attr_values:
+                        if isinstance(item, dict) and "observedAt" in item:
+                            timestamp = item["observedAt"]
+                            if timestamp not in timestamp_data:
+                                timestamp_data[timestamp] = {}
+                            timestamp_data[timestamp][attr_name] = item
+            
+            # Step 2: Check which timestamps pass all filter conditions
+            valid_timestamps = set()
+            for timestamp, attrs in timestamp_data.items():
+                passes_all_conditions = True
+                
+                for cond_attr, operator, threshold in conditions:
+                    if cond_attr in attrs:
+                        value = attrs[cond_attr].get("value")
+                        if value is not None:
+                            if operator == ">=" and value < threshold:
+                                passes_all_conditions = False
+                                break
+                            elif operator == "<=" and value > threshold:
+                                passes_all_conditions = False
+                                break
+                            elif operator == "==" and value != threshold:
+                                passes_all_conditions = False
+                                break
+                
+                if passes_all_conditions:
+                    valid_timestamps.add(timestamp)
+            
+            # Step 3: Rebuild entity with only valid timestamps
+            if not valid_timestamps:
+                temporal_data = None
+            else:
+                filtered_entity = {"id": temporal_data["id"], "type": temporal_data["type"]}
+                if "@context" in temporal_data:
+                    filtered_entity["@context"] = temporal_data["@context"]
+                
+                for attr_name, attr_values in temporal_data.items():
+                    if attr_name in ["id", "type", "@context"]:
+                        continue
+                        
+                    if isinstance(attr_values, list):
+                        # Keep only items with valid timestamps
+                        filtered_values = [
+                            item for item in attr_values
+                            if isinstance(item, dict) and item.get("observedAt") in valid_timestamps
+                        ]
+                        if filtered_values:
+                            filtered_entity[attr_name] = filtered_values
+                    else:
+                        # Keep non-temporal attributes as-is
+                        filtered_entity[attr_name] = attr_values
+                
+                temporal_data = filtered_entity
         
         # Wrap single entity result in list for consistency
         entities = [temporal_data] if temporal_data else []
@@ -298,12 +363,6 @@ async def get_weather_history(
         ge=1,
         le=1000,
         description="Get last N observations (alternative to time range)"
-    ),
-    limit: int = Query(
-        100,
-        ge=1,
-        le=1000,
-        description="Maximum number of results"
     ),
     context_broker_client: ContextBrokerClient = Depends(get_context_broker)
 ):
@@ -479,19 +538,94 @@ async def get_weather_statistics(
         # Weather has only one station - use constant entity ID
         entity_id = WEATHER_ENTITY_ID
         
+        # Get temporal data in concise format (easier to process)
+        # Note: Don't pass attrs parameter initially to get all data,
+        # then filter by attributes we need
         temporal_data = await context_broker_client.get_temporal_entities(
             entity_id=entity_id,
             timerel="between",
             time_at=start_time,
             end_time_at=end_time,
-            attrs=attr_list,
-            entity_format="temporalValues"
+            entity_format="concise"
         )
         
-        # Wrap single entity result in list for statistics calculation
-        entities = [temporal_data] if temporal_data else []
+        if not temporal_data:
+            return APIResponse(
+                success=False,
+                code=404,
+                message=f"No temporal data found in the specified time range ({start_time.isoformat()} to {end_time.isoformat()}). Try a more recent time period.",
+                error="NO_DATA",
+                result=None
+            )
         
+        # Check if entity has any temporal attributes
+        has_temporal_data = False
+        for key, value in temporal_data.items():
+            if key not in ["id", "type", "@context"] and isinstance(value, list):
+                has_temporal_data = True
+                break
+        
+        if not has_temporal_data:
+            return APIResponse(
+                success=False,
+                code=404,
+                message=f"Entity exists but has no temporal data in the specified time range. Try a more recent time period (e.g., last 24 hours).",
+                error="NO_TEMPORAL_DATA",
+                result=None
+            )
+        
+        # Calculate statistics for each requested attribute
         duration_hours = (end_time - start_time).total_seconds() / 3600
+        statistics = {}
+        
+        for attr in attr_list:
+            if attr not in temporal_data:
+                # Attribute not found in response
+                statistics[attr] = {
+                    "min": None,
+                    "max": None,
+                    "avg": None,
+                    "count": 0,
+                    "error": f"Attribute '{attr}' not found in temporal data"
+                }
+                continue
+            
+            attr_data = temporal_data[attr]
+            
+            if not isinstance(attr_data, list):
+                # Not a temporal attribute (single value or non-temporal)
+                statistics[attr] = {
+                    "min": None,
+                    "max": None,
+                    "avg": None,
+                    "count": 0,
+                    "error": "Not a temporal attribute"
+                }
+                continue
+            
+            # Extract values from temporal array
+            values = []
+            for item in attr_data:
+                if isinstance(item, dict) and "value" in item:
+                    val = item["value"]
+                    if isinstance(val, (int, float)):
+                        values.append(float(val))
+            
+            if values:
+                statistics[attr] = {
+                    "min": round(min(values), 4),
+                    "max": round(max(values), 4),
+                    "avg": round(sum(values) / len(values), 4),
+                    "count": len(values)
+                }
+            else:
+                statistics[attr] = {
+                    "min": None,
+                    "max": None,
+                    "avg": None,
+                    "count": 0,
+                    "error": "No numeric values found"
+                }
         
         result = {
             "period": {
@@ -499,15 +633,7 @@ async def get_weather_statistics(
                 "end": end_time.isoformat(),
                 "duration_hours": duration_hours
             },
-            "statistics": {
-                attr: {
-                    "min": 0.0,
-                    "max": 0.0,
-                    "avg": 0.0,
-                    "count": len(entities)
-                }
-                for attr in attr_list
-            }
+            "statistics": statistics
         }
         
         return APIResponse(

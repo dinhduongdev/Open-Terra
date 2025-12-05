@@ -408,14 +408,16 @@ class ContextBrokerClient:
         end_time_at: Optional[datetime] = None,
         last_n: Optional[int] = None,
         attrs: Optional[List[str]] = None,
-        entity_format: str = "temporalValues",
-        q: Optional[str] = None
+        entity_format: str = "temporalValues"
     ) -> Dict[str, Any]:
         """
         Query temporal data for a single entity.
         
         Based on Mintaka API: GET /temporal/entities/{entityId}
         Example: GET /temporal/entities/urn:ngsi-ld:AirQualityObserved:airquality:3276359:latest/?timerel=before&timeAt=2025-12-04T10:23:40Z&lastN=5
+        
+        Note: Mintaka doesn't support 'q' parameter for filtering.
+        Filtering must be done client-side after retrieving temporal data.
         
         Args:
             entity_id: Full entity URN (e.g., urn:ngsi-ld:AirQualityObserved:airquality:3276359:latest)
@@ -425,7 +427,6 @@ class ContextBrokerClient:
             last_n: Get last N observations
             attrs: List of attributes to retrieve
             entity_format: Response format (not used by Mintaka)
-            q: Query filter
             
         Returns:
             Single temporal entity as dict
@@ -458,8 +459,6 @@ class ContextBrokerClient:
             
             if attrs:
                 params["attrs"] = ",".join(attrs)
-            if q:
-                params["q"] = q
             
             # Debug logging
             print(f"[DEBUG] Temporal Query Request:")
