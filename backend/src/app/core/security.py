@@ -16,10 +16,10 @@ from jose import JWTError, jwt
 from pydantic import SecretStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..crud.crud_users import crud_users
-from .config import settings
-from .db.crud_token_blacklist import crud_token_blacklist
-from .schemas import TokenBlacklistCreate, TokenData
+from app.crud.crud_users import crud_users
+from app.core.config import settings
+from app.core.db.crud_token_blacklist import crud_token_blacklist
+from app.core.schemas import TokenBlacklistCreate, TokenData
 
 SECRET_KEY: SecretStr = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM

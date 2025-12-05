@@ -1,120 +1,102 @@
+# ==============================================================================
+# Open Terra - Crawler Service Docker Compose
+# ==============================================================================
+# This file runs the Crawler service with its dependencies:
+#   - crawler: FastAPI crawler service
+#   - worker: ARQ background worker
+#   - db: PostgreSQL database
+#   - redis: Redis cache
+#
+# Prerequisites:
+#   - Network 'open-terra-network' must exist
+#
+# Usage:
+#   docker compose up -d
+# ==============================================================================
+
 services:
-  web:
+  crawler:
     build:
       context: .
       dockerfile: Dockerfile
-    # -------- Both of the following commands should be commented to run with nginx --------
-
-    # -------- replace with comment to run with gunicorn --------
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
-    # command: gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
+    container_name: open-terra-crawler
+    restart: unless-stopped
+    # Production: Use Gunicorn
+    command: gunicorn app.main:app -w 2 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8001
+    # Development: Use Uvicorn with reload
+    # command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
     env_file:
       - ./src/.env
-    # -------- replace with expose if you are using nginx --------
-    ports:
-      - "8001:8001"
-    # expose:
-    #    - "8001"
+    expose:
+      - "8001"
     depends_on:
       - db
       - redis
-    volumes:
-      - ./src/app:/app/src/app
-      - ./src/.env:/app/src/.env
+    # Development: Mount volumes for hot reload
+    # volumes:
+    #   - ./src/app:/app/src/app
+    #   - ./src/.env:/app/src/.env
     networks:
       - open-terra-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8001/docs" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   worker:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: open-terra-crawler-worker
+    restart: unless-stopped
     command: arq app.core.worker.settings.WorkerSettings
     env_file:
       - ./src/.env
     depends_on:
       - db
       - redis
-    volumes:
-      - ./src/app:/app/src/app
-      - ./src/.env:/app/src/.env
+    # Development: Mount volumes for hot reload
+    # volumes:
+    #   - ./src/app:/app/src/app
+    #   - ./src/.env:/app/src/.env
     networks:
       - open-terra-network
 
   db:
     image: postgres:13
+    container_name: open-terra-crawler-db
+    restart: unless-stopped
     env_file:
       - ./src/.env
+    expose:
+      - "5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    expose:
-      - "5433"
     networks:
       - open-terra-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:alpine
+    container_name: open-terra-crawler-redis
+    restart: unless-stopped
+    expose:
+      - "6379"
     volumes:
       - redis-data:/data
-    expose:
-      - "6380"
     networks:
       - open-terra-network
-      #-------- uncomment to run with nginx --------
-      # nginx:
-      #   image: nginx:latest
-      #   ports:
-      #     - "80:80"
-      #   volumes:
-      #     - ./default.conf:/etc/nginx/conf.d/default.conf
-      #   depends_on:
-      #     - web
-
-      #-------- uncomment to create first superuser --------
-      # create_superuser:
-      #   build:
-      #     context: .
-      #     dockerfile: Dockerfile
-      #   env_file:
-      #     - ./src/.env
-      #   depends_on:
-      #     - db
-      #     - web
-      #   command: python -m src.scripts.create_first_superuser
-      #   volumes:
-      #     - ./src:/app/src
-      #   networks:
-      #     - open-terra-network
-
-      #-------- uncomment to run tests --------
-      # pytest:
-      #   build:
-      #     context: .
-      #     dockerfile: Dockerfile
-      #   env_file:
-      #     - ./src/.env
-      #   depends_on:
-      #     - db
-      #     - create_superuser
-      #     - redis
-      #   command: python -m pytest ./tests
-      #   volumes:
-      #     - .:/app
-      #   networks:
-      #     - open-terra-network
-      #-------- uncomment to create first tier --------
-      # create_tier:
-      #   build: 
-      #     context: .
-      #     dockerfile: Dockerfile
-      #   env_file:
-      #     - ./src/.env
-      #   depends_on:
-      #     - create_superuser
-      #     - db
-      #     - web
-      #   command: python -m src.scripts.create_first_tier
-      #   volumes:
-      #     - ./src:/app/src
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
 volumes:
   postgres-data:

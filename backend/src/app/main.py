@@ -13,8 +13,8 @@ Open-Terra Backend - Simple FastAPI application for NGSI-LD Weather Data
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .api import router
-from .core.config import settings
+from app.api import router
+from app.core.config import settings
 
 def create_application() -> FastAPI:
     """Create and configure FastAPI application."""

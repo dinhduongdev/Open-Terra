@@ -8,8 +8,8 @@ Open-Terra - IoT and Smart City Data Platform
 
 from fastcrud import FastCRUD
 
-from ..models.tier import Tier
-from ..schemas.tier import TierCreateInternal, TierDelete, TierRead, TierUpdate, TierUpdateInternal
+from app.models.tier import Tier
+from app.schemas.tier import TierCreateInternal, TierDelete, TierRead, TierUpdate, TierUpdateInternal
 
 CRUDTier = FastCRUD[Tier, TierCreateInternal, TierUpdate, TierUpdateInternal, TierDelete, TierRead]
 crud_tiers = CRUDTier(Tier)

@@ -7,8 +7,14 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Configure npm registry to avoid Cloudflare blocking
+RUN npm config set registry https://registry.npmmirror.com
+
+# Install dependencies with retry logic
+RUN npm ci --omit=dev || npm ci --omit=dev || npm ci --omit=dev
+
+# Reset to default registry (optional, for runtime)
+RUN npm config set registry https://registry.npmjs.org
 
 # Copy application files
 COPY . .

@@ -8,8 +8,8 @@ Open-Terra - IoT and Smart City Data Platform
 
 from fastcrud import FastCRUD
 
-from ..models.rate_limit import RateLimit
-from ..schemas.rate_limit import (
+from app.models.rate_limit import RateLimit
+from app.schemas.rate_limit import (
     RateLimitCreateInternal,
     RateLimitDelete,
     RateLimitRead,

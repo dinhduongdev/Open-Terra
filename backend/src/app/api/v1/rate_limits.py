@@ -12,13 +12,13 @@ from fastapi import APIRouter, Depends, Request
 from fastcrud import PaginatedListResponse, compute_offset, paginated_response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ...api.dependencies import get_current_superuser
-from ...core.db.database import async_get_db
-from ...core.exceptions.http_exceptions import DuplicateValueException, NotFoundException
-from ...crud.crud_rate_limit import crud_rate_limits
-from ...crud.crud_tier import crud_tiers
-from ...schemas.rate_limit import RateLimitCreate, RateLimitCreateInternal, RateLimitRead, RateLimitUpdate
-from ...schemas.tier import TierRead
+from app.api.dependencies import get_current_superuser
+from app.core.db.database import async_get_db
+from app.core.exceptions.http_exceptions import DuplicateValueException, NotFoundException
+from app.crud.crud_rate_limit import crud_rate_limits
+from app.crud.crud_tier import crud_tiers
+from app.schemas.rate_limit import RateLimitCreate, RateLimitCreateInternal, RateLimitRead, RateLimitUpdate
+from app.schemas.tier import TierRead
 
 router = APIRouter(tags=["rate_limits"])
 

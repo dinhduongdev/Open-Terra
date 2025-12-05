@@ -1,0 +1,57 @@
+# ==============================================================================
+# Open Terra - Initial Nginx Configuration (HTTP Only for Certificate Setup)
+# ==============================================================================
+# This is a temporary configuration used only during initial SSL setup.
+# After certificates are generated, this will be replaced with nginx.conf
+# ==============================================================================
+
+# ==============================================================================
+# Backend API Server - backend.open-terra.io.vn
+# ==============================================================================
+server {
+    listen 80;
+    server_name backend.open-terra.io.vn;
+    
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+    
+    location / {
+        return 200 "OK - Waiting for SSL setup";
+        add_header Content-Type text/plain;
+    }
+}
+
+# ==============================================================================
+# Dummy IoT UI Server - dummy-iot.open-terra.io.vn
+# ==============================================================================
+server {
+    listen 80;
+    server_name dummy-iot.open-terra.io.vn;
+    
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+    
+    location / {
+        return 200 "OK - Waiting for SSL setup";
+        add_header Content-Type text/plain;
+    }
+}
+
+# ==============================================================================
+# Open Data Server (Orion Context Broker) - opendata.open-terra.io.vn
+# ==============================================================================
+server {
+    listen 80;
+    server_name opendata.open-terra.io.vn;
+    
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+    
+    location / {
+        return 200 "OK - Waiting for SSL setup";
+        add_header Content-Type text/plain;
+    }
+}

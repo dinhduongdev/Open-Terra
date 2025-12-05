@@ -1,3 +1,31 @@
+# ==============================================================================
+# Open Terra - Context Broker (FIWARE) Docker Compose
+# ==============================================================================
+# This file runs the FIWARE Orion-LD Context Broker stack:
+#   - orion: Orion-LD Context Broker (NGSI-LD API)
+#   - mongo-db: MongoDB (Orion database)
+#   - timescale-db: TimescaleDB (Temporal data storage)
+#   - ld-context: JSON-LD context server
+#   - mintaka: Temporal query service
+#   - mosquitto: MQTT broker
+#   - iot-agent: IoT Agent UltraLight 2.0
+#
+# Prerequisites:
+#   - Network 'open-terra-network' must exist
+#
+# Usage:
+#   docker compose up -d
+#
+# Ports (Internal - accessed via network):
+#   - Orion: 1026 (NGSI-LD API)
+#   - IoT Agent: 4041 (North Port), 7896 (South Port)
+#   - MQTT: 1883 (MQTT), 9001 (WebSocket)
+#   - MongoDB: 27017
+#   - TimescaleDB: 5432
+#   - Mintaka: 8080
+#   - LD Context: 80
+# ==============================================================================
+
 services:
   orion:
     platform: linux/amd64
@@ -12,8 +40,8 @@ services:
         condition: service_healthy
     networks:
       - open-terra-network
-    ports:
-      - "1026:1026"
+    expose:
+      - "1026"
     environment:
       - ORIONLD_TROE=TRUE
       - ORIONLD_TROE_USER=orion
@@ -22,7 +50,7 @@ services:
       - ORIONLD_MONGO_HOST=mongo-db
       - ORIONLD_MULTI_SERVICE=TRUE
       - ORIONLD_DISABLE_FILE_LOG=TRUE
-    command: -dbhost mongo-db -logLevel ERROR -troePoolSize 10 -forwarding
+    command: -dbhost mongo-db -logLevel WARN -troePoolSize 10 -forwarding
     healthcheck:
       test: curl --fail -s http://orion:1026/version || exit 1
       interval: 20s
@@ -34,10 +62,9 @@ services:
     image: mongo:4.2
     hostname: mongo-db
     container_name: db-mongo
+    restart: unless-stopped
     expose:
       - "27017"
-    ports:
-      - "27017:27017"
     networks:
       - open-terra-network
     volumes:
@@ -52,8 +79,8 @@ services:
     hostname: context
     container_name: fiware-ld-context
     restart: unless-stopped
-    ports:
-      - "3004:80"
+    expose:
+      - "80"
     volumes:
       - ./ld-context:/usr/local/apache2/htdocs:ro
     networks:
@@ -65,7 +92,6 @@ services:
       retries: 3
       start_period: 5s
 
-  # Temporal Operations
   mintaka:
     platform: linux/amd64
     image: fiware/mintaka:latest
@@ -87,8 +113,6 @@ services:
       - ENDPOINTS_INFO_SENSITIVE=false
     expose:
       - "8080"
-    ports:
-      - "8080:8080"
     networks:
       - open-terra-network
 
@@ -97,8 +121,9 @@ services:
     image: timescale/timescaledb-ha:pg14-latest
     hostname: timescale-db
     container_name: db-timescale
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U orion"]
+      test: [ "CMD-SHELL", "pg_isready -U orion" ]
       interval: 15s
       timeout: 15s
       retries: 5
@@ -107,38 +132,33 @@ services:
       - POSTGRES_USER=orion
       - POSTGRES_PASSWORD=orion
       - POSTGRES_HOST_AUTH_METHOD=trust
-    command: ["postgres", "-c", "log_statement=none"]
+    command: [ "postgres", "-c", "log_statement=none" ]
     expose:
       - "5432"
-    ports:
-      - "5432:5432"
     networks:
       - open-terra-network
     volumes:
       - timescale-db:/var/lib/postgresql/data
 
-  # MQTT Broker
   mosquitto:
     image: eclipse-mosquitto:1.6.14
     hostname: mosquitto
     container_name: mosquitto
+    restart: unless-stopped
     expose:
       - "1883"
       - "9001"
-    ports:
-      - "1883:1883"
-      - "9001:9001"
     volumes:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
     networks:
       - open-terra-network
 
-  # IoT Agent for UltraLight 2.0
   iot-agent:
     platform: linux/amd64
     image: fiware/iotagent-ul:latest
     hostname: iot-agent
     container_name: fiware-iot-agent
+    restart: unless-stopped
     depends_on:
       - mongo-db
       - mosquitto
@@ -148,15 +168,12 @@ services:
     expose:
       - "4041"
       - "7896"
-    ports:
-      - "4041:4041"
-      - "7896:7896"
     environment:
       - IOTA_CB_HOST=orion
       - IOTA_CB_PORT=1026
       - IOTA_NORTH_PORT=4041
       - IOTA_REGISTRY_TYPE=mongodb
-      - IOTA_LOG_LEVEL=DEBUG
+      - IOTA_LOG_LEVEL=WARN
       - IOTA_TIMESTAMP=true
       - IOTA_AUTOCAST=true
       - IOTA_MONGO_HOST=mongo-db
@@ -182,6 +199,6 @@ networks:
     external: true
 
 volumes:
-  timescale-db: ~
-  mongo-db: ~
-  mongo-config: ~
+  timescale-db:
+  mongo-db:
+  mongo-config:
