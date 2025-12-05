@@ -8,14 +8,23 @@
 
 'use client';
 
-import { AirQualityOverview, getAqiColor } from '@/constants/airQualityMockData';
+import { getAQIColor, getAQILabel } from '@/types/airQuality';
+
+interface AirQualityOverview {
+  averageAqi: number;
+  goodStations: number;
+  moderateStations: number;
+  unhealthyStations: number;
+  totalStations: number;
+}
 
 interface AirQualityOverviewProps {
   data: AirQualityOverview;
 }
 
 export default function AirQualityOverviewComponent({ data }: AirQualityOverviewProps) {
-  const aqiColor = getAqiColor(data.averageAqi);
+  const aqiColor = getAQIColor(data.averageAqi);
+  const level = getAQILabel(data.averageAqi);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-8">
@@ -31,27 +40,10 @@ export default function AirQualityOverviewComponent({ data }: AirQualityOverview
               {data.averageAqi}
             </p>
             <p className="text-sm font-medium mt-2" style={{ color: aqiColor }}>
-              {data.level}
+              {level}
             </p>
           </div>
           <div className="text-5xl">🌫️</div>
-        </div>
-        <div className="mt-4 flex items-center gap-2">
-          {data.trend === 'improving' && (
-            <span className="text-green-600 flex items-center gap-1 text-sm">
-              <span>↓</span> Đang cải thiện
-            </span>
-          )}
-          {data.trend === 'worsening' && (
-            <span className="text-red-600 flex items-center gap-1 text-sm">
-              <span>↑</span> Đang xấu đi
-            </span>
-          )}
-          {data.trend === 'stable' && (
-            <span className="text-gray-600 flex items-center gap-1 text-sm">
-              <span>→</span> Ổn định
-            </span>
-          )}
         </div>
       </div>
 
