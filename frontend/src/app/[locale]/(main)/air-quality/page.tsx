@@ -10,18 +10,22 @@
 
 import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  airQualityStations,
-  airQualityOverview,
-  airQualityStatsByTime,
-  mainPollutants,
-} from '@/constants/airQualityMockData';
+  getLatestAirQuality,
+  calculateAirQualityOverview,
+  extractPollutantsData,
+  formatStationForDisplay,
+} from '@/services/airQualityService';
+import { AirQualityStation } from '@/types/airQuality';
 import AirQualityOverviewComponent from '@/components/common/AirQualityOverview';
 import AirQualityStationsList from '@/components/common/AirQualityStationsList';
 import PollutantsOverview from '@/components/common/PollutantsOverview';
 import AirQualityStatistics from '@/components/common/AirQualityStatistics';
 import HealthRecommendations from '@/components/common/HealthRecommendations';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import ErrorMessage from '@/components/common/ErrorMessage';
+import StationSelector from '@/components/common/StationSelector';
 
 // Dynamically import Map component with no SSR to avoid window/document issues
 const AirQualityMapDynamic = dynamic(() => import('@/components/common/AirQualityMap'), {
@@ -36,6 +40,76 @@ const AirQualityMapDynamic = dynamic(() => import('@/components/common/AirQualit
 export default function AirQualityPage() {
   const t = useTranslations('sidebar');
   const [showStations, setShowStations] = useState(true);
+  const [stations, setStations] = useState<AirQualityStation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await getLatestAirQuality();
+        setStations(data);
+      } catch (err) {
+        console.error('Failed to fetch air quality data:', err);
+        setError(err instanceof Error ? err.message : 'Không thể tải dữ liệu chất lượng không khí');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+
+    // Refresh data every 5 minutes
+    const interval = setInterval(fetchData, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Calculate derived data from stations
+  const overview = calculateAirQualityOverview(stations);
+  const pollutants = extractPollutantsData(stations);
+  const formattedStations = stations.map(formatStationForDisplay);
+
+  // Extract station IDs for selector
+  const stationOptions = stations.map((station) => {
+    // Extract numeric ID from URN format: "urn:ngsi-ld:AirQualityObserved:airquality:3276359:latest"
+    const idMatch = station.id.match(/:(\d+):/);
+    const numericId = idMatch ? idMatch[1] : station.id;
+    
+    return {
+      id: numericId,
+      name: station.name,
+      areaServed: station.areaServed,
+    };
+  });
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <LoadingSpinner />
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <ErrorMessage message={error} />
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+        >
+          Thử lại
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -51,29 +125,46 @@ export default function AirQualityPage() {
       </div>
 
       {/* Overview Stats */}
-      <AirQualityOverviewComponent data={airQualityOverview} />
+      <AirQualityOverviewComponent data={overview} />
 
-      {/* Main Map */}
-      <div className="mt-8 bg-white rounded-lg shadow-md p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-700 flex items-center gap-2">
-            <span>🗺️</span>
-            Bản đồ chất lượng không khí - OpenStreetMap
-          </h2>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Hiển thị trạm quan trắc:</span>
-            <button
-              onClick={() => setShowStations(!showStations)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                showStations
-                  ? 'bg-blue-500 text-white hover:bg-blue-600'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
-            >
-              {showStations ? '✓ Đang bật' : 'Tắt'}
-            </button>
+      {/* No data message */}
+      {stations.length === 0 && (
+        <div className="mt-8 bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">⚠️</span>
+            <div>
+              <h3 className="font-semibold text-yellow-900 mb-1">Không có dữ liệu</h3>
+              <p className="text-yellow-800">
+                Hiện tại chưa có dữ liệu từ các trạm quan trắc chất lượng không khí. Vui lòng thử
+                lại sau.
+              </p>
+            </div>
           </div>
         </div>
+      )}
+
+      {/* Main Map */}
+      {stations.length > 0 && (
+        <div className="mt-8 bg-white rounded-lg shadow-md p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-gray-700 flex items-center gap-2">
+              <span>🗺️</span>
+              Bản đồ chất lượng không khí - OpenStreetMap
+            </h2>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Hiển thị trạm quan trắc:</span>
+              <button
+                onClick={() => setShowStations(!showStations)}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  showStations
+                    ? 'bg-blue-500 text-white hover:bg-blue-600'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                {showStations ? '✓ Đang bật' : 'Tắt'}
+              </button>
+            </div>
+          </div>
 
         {/* Instructions */}
         <div className="mb-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
@@ -140,24 +231,28 @@ export default function AirQualityPage() {
           </div>
         </div>
 
-        <AirQualityMapDynamic
-          stations={airQualityStations}
-          showStations={showStations}
-          onStationLayerToggle={setShowStations}
-        />
-      </div>
+          <AirQualityMapDynamic
+            stations={formattedStations}
+            showStations={showStations}
+            onStationLayerToggle={setShowStations}
+          />
+        </div>
+      )}
+
+      {/* Station Selector - View individual station details */}
+      {stations.length > 0 && <StationSelector stations={stationOptions} />}
 
       {/* Stations List */}
-      <AirQualityStationsList stations={airQualityStations} />
+      {stations.length > 0 && <AirQualityStationsList stations={formattedStations} />}
 
       {/* Pollutants Overview */}
-      <PollutantsOverview pollutants={mainPollutants} />
+      {pollutants.length > 0 && <PollutantsOverview pollutants={pollutants} />}
 
-      {/* Statistics */}
-      <AirQualityStatistics statsByTime={airQualityStatsByTime} />
+      {/* Statistics - Show only if we have historical data */}
+      {/* <AirQualityStatistics statsByTime={airQualityStatsByTime} /> */}
 
       {/* Health Recommendations */}
-      <HealthRecommendations aqi={airQualityOverview.averageAqi} />
+      {overview.averageAqi > 0 && <HealthRecommendations aqi={overview.averageAqi} />}
 
       {/* Additional Info */}
       <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md p-6 border-l-4 border-blue-500">

@@ -199,10 +199,15 @@ async def query_air_quality(
     start_time: Optional[datetime] = Query(
         None, description="Start time (ISO 8601 format, e.g., 2025-12-01T00:00:00Z)"
     ),
-    end_time: Optional[datetime] = Query(None, description="End time (ISO 8601 format)"),
-    # Pagination
-    limit: int = Query(100, ge=1, le=1000, description="Maximum number of results"),
-    context_broker_client: ContextBrokerClient = Depends(get_context_broker),
+    
+    # Limit results
+    last_n: Optional[int] = Query(
+        None,
+        ge=1,
+        le=1000,
+        description="Limit to last N observations"
+    ),
+    context_broker_client: ContextBrokerClient = Depends(get_context_broker)
 ):
     """
     Query air quality observations with multiple filters from historical data.
@@ -283,9 +288,42 @@ async def query_air_quality(
             conditions.append(f"so2<={max_so2}")
         if air_quality_level:
             conditions.append(f'airQualityLevel=="{air_quality_level}"')
-
-        query_string = ";".join(conditions) if conditions else None
-
+        
+        # Build filter conditions (not supported by Mintaka temporal interface)
+        # Filtering must be done client-side after retrieving temporal data
+        filter_conditions = []
+        
+        if min_aqi is not None:
+            filter_conditions.append(("airQualityIndex", ">=", min_aqi))
+        if max_aqi is not None:
+            filter_conditions.append(("airQualityIndex", "<=", max_aqi))
+        if min_pm25 is not None:
+            filter_conditions.append(("pm25", ">=", min_pm25))
+        if max_pm25 is not None:
+            filter_conditions.append(("pm25", "<=", max_pm25))
+        if min_pm10 is not None:
+            filter_conditions.append(("pm10", ">=", min_pm10))
+        if max_pm10 is not None:
+            filter_conditions.append(("pm10", "<=", max_pm10))
+        if min_co is not None:
+            filter_conditions.append(("co", ">=", min_co))
+        if max_co is not None:
+            filter_conditions.append(("co", "<=", max_co))
+        if min_no2 is not None:
+            filter_conditions.append(("no2", ">=", min_no2))
+        if max_no2 is not None:
+            filter_conditions.append(("no2", "<=", max_no2))
+        if min_o3 is not None:
+            filter_conditions.append(("o3", ">=", min_o3))
+        if max_o3 is not None:
+            filter_conditions.append(("o3", "<=", max_o3))
+        if min_so2 is not None:
+            filter_conditions.append(("so2", ">=", min_so2))
+        if max_so2 is not None:
+            filter_conditions.append(("so2", "<=", max_so2))
+        if air_quality_level:
+            filter_conditions.append(("airQualityLevel", "==", air_quality_level))
+        
         # Build entity ID for station filtering
         if station_id:
             # Query specific station
@@ -299,17 +337,83 @@ async def query_air_quality(
                 error="MISSING_STATION_ID",
                 result=None,
             )
-
-        # Query temporal data with filters
+        
+        # Query temporal data (Mintaka doesn't support 'q' parameter)
         temporal_data = await context_broker_client.get_temporal_entities(
             entity_id=entity_id,
             timerel="between",
             time_at=start_time,
             end_time_at=end_time,
-            q=query_string,
-            entity_format="concise",
+            last_n=last_n,
+            entity_format="concise"
         )
-
+        
+        # Client-side filtering: Filter by timestamp/observedAt
+        # If conditions fail for a timestamp, remove that entire observation
+        if temporal_data and filter_conditions:
+            # Step 1: Collect all unique timestamps and their values across attributes
+            timestamp_data = {}  # {observedAt: {attr_name: item, ...}}
+            
+            for attr_name, attr_values in temporal_data.items():
+                if attr_name in ["id", "type", "@context"]:
+                    continue
+                    
+                if isinstance(attr_values, list):
+                    for item in attr_values:
+                        if isinstance(item, dict) and "observedAt" in item:
+                            timestamp = item["observedAt"]
+                            if timestamp not in timestamp_data:
+                                timestamp_data[timestamp] = {}
+                            timestamp_data[timestamp][attr_name] = item
+            
+            # Step 2: Check which timestamps pass all filter conditions
+            valid_timestamps = set()
+            for timestamp, attrs in timestamp_data.items():
+                passes_all_conditions = True
+                
+                for cond_attr, operator, threshold in filter_conditions:
+                    if cond_attr in attrs:
+                        value = attrs[cond_attr].get("value")
+                        if value is not None:
+                            if operator == ">=" and value < threshold:
+                                passes_all_conditions = False
+                                break
+                            elif operator == "<=" and value > threshold:
+                                passes_all_conditions = False
+                                break
+                            elif operator == "==" and value != threshold:
+                                passes_all_conditions = False
+                                break
+                
+                if passes_all_conditions:
+                    valid_timestamps.add(timestamp)
+            
+            # Step 3: Rebuild entity with only valid timestamps
+            if not valid_timestamps:
+                temporal_data = None
+            else:
+                filtered_entity = {"id": temporal_data["id"], "type": temporal_data["type"]}
+                if "@context" in temporal_data:
+                    filtered_entity["@context"] = temporal_data["@context"]
+                
+                for attr_name, attr_values in temporal_data.items():
+                    if attr_name in ["id", "type", "@context"]:
+                        continue
+                        
+                    if isinstance(attr_values, list):
+                        # Keep only items with valid timestamps
+                        filtered_values = [
+                            item for item in attr_values
+                            if isinstance(item, dict) and item.get("observedAt") in valid_timestamps
+                        ]
+                        if filtered_values:
+                            filtered_entity[attr_name] = filtered_values
+                    else:
+                        # Keep non-temporal attributes as-is
+                        filtered_entity[attr_name] = attr_values
+                
+                temporal_data = filtered_entity
+        
         # Wrap single entity result in list for consistency
         entities = [temporal_data] if temporal_data else []
 
@@ -345,10 +449,12 @@ async def get_air_quality_history(
     ),
     end_time: Optional[datetime] = Query(None, description="End time (ISO 8601 format)"),
     last_n: Optional[int] = Query(
-        None, ge=1, le=1000, description="Get last N observations (alternative to time range)"
+        None,
+        ge=1,
+        le=1000,
+        description="Get last N observations (alternative to time range)"
     ),
-    limit: int = Query(100, ge=1, le=1000, description="Maximum number of results"),
-    context_broker_client: ContextBrokerClient = Depends(get_context_broker),
+    context_broker_client: ContextBrokerClient = Depends(get_context_broker)
 ):
     """
     Get historical air quality data.
@@ -522,13 +628,14 @@ async def get_air_quality_statistics(
         entity_id = get_air_quality_entity_id(station_id)
 
         # Get temporal data for the period
+        # Get temporal data in concise format (easier to process)
         temporal_data = await context_broker_client.get_temporal_entities(
             entity_id=entity_id,
             timerel="between",
             time_at=start_time,
             end_time_at=end_time,
             attrs=attr_list,
-            entity_format="temporalValues",
+            entity_format="concise"
         )
 
         if not temporal_data:
@@ -568,10 +675,10 @@ async def get_air_quality_statistics(
 
                 if values:
                     statistics[attr] = {
-                        "min": min(values),
-                        "max": max(values),
-                        "avg": sum(values) / len(values),
-                        "count": len(values),
+                        "min": round(min(values), 4),
+                        "max": round(max(values), 4),
+                        "avg": round(sum(values) / len(values), 4),
+                        "count": len(values)
                     }
 
         duration_hours = (end_time - start_time).total_seconds() / 3600
