@@ -1,4 +1,12 @@
 """
+Open-Terra - IoT and Smart City Data Platform
+@author Vibe Coders / HCMCOU
+@copyright (C) 2025 Vibe Coders / HCMCOU. All rights reserved
+@license MIT License
+@see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
+"""
+
+"""
 OpenAQ API Client
 Documentation: https://docs.openaq.org/
 API v3: https://api.openaq.org/v3/

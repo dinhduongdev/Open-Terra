@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 """
+Open-Terra - IoT and Smart City Data Platform
+@author Vibe Coders / HCMCOU
+@copyright (C) 2025 Vibe Coders / HCMCOU. All rights reserved
+@license MIT License
+@see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
+"""
+
+"""
 Test script for weather and air quality crawlers without publishing to Orion.
 This script fetches and normalizes data, then prints the entity ID and normalized data.
 """
