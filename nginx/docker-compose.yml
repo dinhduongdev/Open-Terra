@@ -1,0 +1,48 @@
+# ==============================================================================
+# Open Terra - Nginx Reverse Proxy Docker Compose
+# ==============================================================================
+# This file runs the Nginx reverse proxy for routing traffic to:
+#   - backend.open-terra.io.vn → Backend API
+#   - dummy-iot.open-terra.io.vn → Dummy IoT UI
+#   - opendata.open-terra.io.vn → Orion Context Broker
+#
+# Prerequisites:
+#   - Network 'open-terra-network' must exist
+#   - Backend, dummy-iot-devices, and orion services must be running
+#
+# Usage:
+#   docker compose up -d
+# ==============================================================================
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: open-terra-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - open-terra-network
+    volumes:
+      # SSL certificates (for production)
+      - ./ssl:/etc/nginx/ssl:ro
+      # Let's Encrypt certificates
+      - ./letsencrypt:/etc/letsencrypt:ro
+    healthcheck:
+      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/" ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  open-terra-network:
+    external: true

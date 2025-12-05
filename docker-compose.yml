@@ -1,0 +1,410 @@
+# ==============================================================================
+# Open Terra - Unified Docker Compose Configuration (Development)
+# ==============================================================================
+# This file orchestrates all Open Terra services for development environment.
+#
+# Usage:
+#   Development: docker compose up
+#   Production:  docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# Services:
+#   - nginx: Reverse proxy for backend, dummy-iot, and orion
+#   - backend: FastAPI backend API
+#   - crawler: Data crawler service with background worker
+#   - context-broker: FIWARE Orion-LD with MongoDB, TimescaleDB, MQTT, IoT Agent
+#   - dummy-iot-devices: IoT device simulator
+# ==============================================================================
+
+services:
+  # ============================================================================
+  # Nginx Reverse Proxy
+  # ============================================================================
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: open-terra-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+      - dummy-iot-devices
+      - orion
+    networks:
+      - open-terra-network
+    volumes:
+      # SSL certificates (for production)
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      # Let's Encrypt certificates
+      - ./nginx/letsencrypt:/etc/letsencrypt:ro
+    healthcheck:
+      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/" ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  # ============================================================================
+  # Backend API Service
+  # ============================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: open-terra-backend
+    restart: unless-stopped
+    command: uvicorn src.app.main:app --host 0.0.0.0 --port 8000 --reload
+    env_file:
+      - ./backend/src/.env
+    expose:
+      - "8000"
+    depends_on:
+      backend-db:
+        condition: service_started
+      backend-redis:
+        condition: service_started
+    volumes:
+      - ./backend/src/app:/code/src/app
+      - ./backend/src/.env:/code/src/.env
+    networks:
+      - open-terra-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/docs" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  backend-db:
+    image: postgres:13
+    container_name: open-terra-backend-db
+    restart: unless-stopped
+    env_file:
+      - ./backend/src/.env
+    expose:
+      - "5432"
+    volumes:
+      - backend-postgres-data:/var/lib/postgresql/data
+    networks:
+      - open-terra-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend-redis:
+    image: redis:alpine
+    container_name: open-terra-backend-redis
+    restart: unless-stopped
+    expose:
+      - "6379"
+    volumes:
+      - backend-redis-data:/data
+    networks:
+      - open-terra-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ============================================================================
+  # Crawler Service
+  # ============================================================================
+  crawler:
+    build:
+      context: ./crawler
+      dockerfile: Dockerfile
+    container_name: open-terra-crawler
+    restart: unless-stopped
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+    env_file:
+      - ./crawler/src/.env
+    expose:
+      - "8001"
+    depends_on:
+      crawler-db:
+        condition: service_started
+      crawler-redis:
+        condition: service_started
+    volumes:
+      - ./crawler/src/app:/app/src/app
+      - ./crawler/src/.env:/app/src/.env
+    networks:
+      - open-terra-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8001/docs" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  crawler-worker:
+    build:
+      context: ./crawler
+      dockerfile: Dockerfile
+    container_name: open-terra-crawler-worker
+    restart: unless-stopped
+    command: arq app.core.worker.settings.WorkerSettings
+    env_file:
+      - ./crawler/src/.env
+    depends_on:
+      - crawler-db
+      - crawler-redis
+    volumes:
+      - ./crawler/src/app:/app/src/app
+      - ./crawler/src/.env:/app/src/.env
+    networks:
+      - open-terra-network
+
+  crawler-db:
+    image: postgres:13
+    container_name: open-terra-crawler-db
+    restart: unless-stopped
+    env_file:
+      - ./crawler/src/.env
+    expose:
+      - "5432"
+    volumes:
+      - crawler-postgres-data:/var/lib/postgresql/data
+    networks:
+      - open-terra-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  crawler-redis:
+    image: redis:alpine
+    container_name: open-terra-crawler-redis
+    restart: unless-stopped
+    expose:
+      - "6379"
+    volumes:
+      - crawler-redis-data:/data
+    networks:
+      - open-terra-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ============================================================================
+  # Context Broker Services (FIWARE)
+  # ============================================================================
+  orion:
+    platform: linux/amd64
+    image: fiware/orion-ld:latest
+    hostname: orion
+    container_name: fiware-orion
+    restart: unless-stopped
+    depends_on:
+      mongo-db:
+        condition: service_healthy
+      timescale-db:
+        condition: service_healthy
+    networks:
+      - open-terra-network
+    expose:
+      - "1026"
+    environment:
+      - ORIONLD_TROE=TRUE
+      - ORIONLD_TROE_USER=orion
+      - ORIONLD_TROE_PWD=orion
+      - ORIONLD_TROE_HOST=timescale-db
+      - ORIONLD_MONGO_HOST=mongo-db
+      - ORIONLD_MULTI_SERVICE=TRUE
+      - ORIONLD_DISABLE_FILE_LOG=TRUE
+    command: -dbhost mongo-db -logLevel ERROR -troePoolSize 10 -forwarding
+    healthcheck:
+      test: curl --fail -s http://orion:1026/version || exit 1
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mongo-db:
+    image: mongo:4.2
+    hostname: mongo-db
+    container_name: db-mongo
+    restart: unless-stopped
+    expose:
+      - "27017"
+    networks:
+      - open-terra-network
+    volumes:
+      - mongo-db:/data/db
+      - mongo-config:/data/configdb
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
+      interval: 5s
+
+  ld-context:
+    image: httpd:alpine
+    hostname: context
+    container_name: fiware-ld-context
+    restart: unless-stopped
+    expose:
+      - "80"
+    volumes:
+      - ./context-broker/ld-context:/usr/local/apache2/htdocs:ro
+    networks:
+      - open-terra-network
+    healthcheck:
+      test: wget --spider -q http://localhost/open-terra-context.jsonld || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  mintaka:
+    platform: linux/amd64
+    image: fiware/mintaka:latest
+    hostname: mintaka
+    container_name: fiware-mintaka
+    restart: unless-stopped
+    depends_on:
+      timescale-db:
+        condition: service_started
+      orion:
+        condition: service_started
+    environment:
+      - DATASOURCES_DEFAULT_HOST=timescale-db
+      - DATASOURCES_DEFAULT_USERNAME=orion
+      - DATASOURCES_DEFAULT_PASSWORD=orion
+      - DATASOURCES_DEFAULT_DATABASE=orion
+      - DATASOURCES_DEFAULT_MAXIMUM_POOL_SIZE=2
+      - ENDPOINTS_INFO_ENABLED=true
+      - ENDPOINTS_INFO_SENSITIVE=false
+    expose:
+      - "8080"
+    networks:
+      - open-terra-network
+
+  timescale-db:
+    platform: linux/amd64
+    image: timescale/timescaledb-ha:pg14-latest
+    hostname: timescale-db
+    container_name: db-timescale
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U orion" ]
+      interval: 15s
+      timeout: 15s
+      retries: 5
+      start_period: 60s
+    environment:
+      - POSTGRES_USER=orion
+      - POSTGRES_PASSWORD=orion
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    command: [ "postgres", "-c", "log_statement=none" ]
+    expose:
+      - "5432"
+    networks:
+      - open-terra-network
+    volumes:
+      - timescale-db:/var/lib/postgresql/data
+
+  mosquitto:
+    image: eclipse-mosquitto:1.6.14
+    hostname: mosquitto
+    container_name: mosquitto
+    restart: unless-stopped
+    expose:
+      - "1883"
+      - "9001"
+    volumes:
+      - ./context-broker/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - open-terra-network
+
+  iot-agent:
+    platform: linux/amd64
+    image: fiware/iotagent-ul:latest
+    hostname: iot-agent
+    container_name: fiware-iot-agent
+    restart: unless-stopped
+    depends_on:
+      - mongo-db
+      - mosquitto
+      - orion
+    networks:
+      - open-terra-network
+    expose:
+      - "4041"
+      - "7896"
+    environment:
+      - IOTA_CB_HOST=orion
+      - IOTA_CB_PORT=1026
+      - IOTA_NORTH_PORT=4041
+      - IOTA_REGISTRY_TYPE=mongodb
+      - IOTA_LOG_LEVEL=DEBUG
+      - IOTA_TIMESTAMP=true
+      - IOTA_AUTOCAST=true
+      - IOTA_MONGO_HOST=mongo-db
+      - IOTA_MONGO_PORT=27017
+      - IOTA_MONGO_DB=iotagentul
+      - IOTA_PROVIDER_URL=http://iot-agent:4041
+      - IOTA_MQTT_HOST=mosquitto
+      - IOTA_MQTT_PORT=1883
+      - IOTA_DEFAULT_RESOURCE=
+      - IOTA_CB_NGSI_VERSION=ld
+      - IOTA_JSON_LD_CONTEXT=http://context/open-terra-context.jsonld
+      - IOTA_FALLBACK_TENANT=openiot
+      - IOTA_AMQP_DISABLED=true
+    healthcheck:
+      test: curl --fail -s http://iot-agent:4041/iot/about || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ============================================================================
+  # Dummy IoT Devices
+  # ============================================================================
+  dummy-iot-devices:
+    build:
+      context: ./dummy-iot-devices
+      dockerfile: Dockerfile
+    container_name: openterra-dummy-iot-devices
+    restart: unless-stopped
+    command: [ "node", "cli.js", "auto" ]
+    env_file:
+      - ./dummy-iot-devices/.env
+    expose:
+      - "3000"
+    depends_on:
+      - mosquitto
+      - iot-agent
+    networks:
+      - open-terra-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# ==============================================================================
+# Networks
+# ==============================================================================
+networks:
+  open-terra-network:
+    driver: bridge
+    name: open-terra-network
+
+# ==============================================================================
+# Volumes
+# ==============================================================================
+volumes:
+  backend-postgres-data:
+  backend-redis-data:
+  crawler-postgres-data:
+  crawler-redis-data:
+  timescale-db:
+  mongo-db:
+  mongo-config:
