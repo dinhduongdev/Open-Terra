@@ -1,53 +1,53 @@
 #!/bin/bash
 
-# Script to build dummy-iot-devices Docker image
+# Script to build dummy-iot-devices Docker image (multi-arch)
 # Usage: ./build.sh [image:tag]
 # Examples:
-#   ./build.sh                                              # Build as dummy-iot-devices:latest
-#   ./build.sh v1.0.0                                       # Build as dummy-iot-devices:v1.0.0
-#   ./build.sh yudhna04/openterra-dummy-iot-devices:latest  # Build with full image name
+#   ./build.sh
+#   ./build.sh v1.0.0
+#   ./build.sh yudhna04/openterra-dummy-iot-devices:latest
 
 set -e
 
-# Configuration
 DEFAULT_IMAGE="dummy-iot-devices:latest"
 IMAGE_TAG="${1:-$DEFAULT_IMAGE}"
 
 echo "====================================="
-echo "Building Dummy IoT Devices Docker Image"
+echo "Building Dummy IoT Devices (Multi-Arch)"
 echo "====================================="
 echo ""
 echo "Image: ${IMAGE_TAG}"
 echo ""
 
-# Get the directory of the script
+# Directories
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 echo "Building from: ${PROJECT_DIR}"
 echo ""
 
-# Build the image
-docker build \
+# Ensure buildx builder exists
+BUILDER_NAME="multiarch-builder"
+
+if ! docker buildx inspect $BUILDER_NAME >/dev/null 2>&1 ; then
+  echo "Creating buildx builder: $BUILDER_NAME"
+  docker buildx create --name $BUILDER_NAME --use
+else
+  echo "Using existing buildx builder: $BUILDER_NAME"
+  docker buildx use $BUILDER_NAME
+fi
+
+# Build and push multi-arch image
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
   -f "${SCRIPT_DIR}/Dockerfile" \
   -t "${IMAGE_TAG}" \
   "${PROJECT_DIR}"
 
-if [ $? -eq 0 ]; then
-  echo ""
-  echo "Build successful!"
-  echo ""
-  echo "Image: ${IMAGE_TAG}"
-  echo ""
-  echo "To run the container:"
-  echo "  docker run -d -p 3030:3000 --name dummy-iot-devices ${IMAGE_TAG}"
-  echo ""
-  echo "To run with docker-compose:"
-  echo "  cd docker && docker compose up -d"
-  echo ""
-  echo "To push to registry:"
-  echo "  docker push ${IMAGE_TAG}"
-else
-  echo "Build failed"
-  exit 1
-fi
+echo ""
+echo "Build and push successful (multi-arch)!"
+echo ""
+echo "Image pushed to registry: ${IMAGE_TAG}"
+echo ""
+echo "To run locally:"
+echo "  docker run -d -p 3030:3000 --name dummy-iot-devices ${IMAGE_TAG}"

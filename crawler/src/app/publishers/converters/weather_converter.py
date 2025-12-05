@@ -4,8 +4,8 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from src.app.publishers.converters.base import NGSILDConverter
-from src.app.schemas.smart_data.weather_observed import WeatherObserved
+from app.publishers.converters.base import NGSILDConverter
+from app.schemas.smart_data.weather_observed import WeatherObserved
 
 
 class WeatherObservedConverter(NGSILDConverter):
