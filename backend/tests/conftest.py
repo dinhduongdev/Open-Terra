@@ -18,8 +18,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 
-from src.app.core.config import settings
-from src.app.main import app
+from app.core.config import settings
+from app.main import app
 
 DATABASE_URI = settings.POSTGRES_URI
 DATABASE_PREFIX = settings.POSTGRES_SYNC_PREFIX
@@ -82,7 +82,7 @@ def sample_user_read():
     """Generate a sample UserRead object."""
     from uuid6 import uuid7
 
-    from src.app.schemas.user import UserRead
+    from app.schemas.user import UserRead
 
     return UserRead(
         id=1,

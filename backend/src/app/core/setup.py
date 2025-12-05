@@ -20,11 +20,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
 
-from ..api.dependencies import get_current_superuser
-from ..core.utils.rate_limit import rate_limiter
-from ..middleware.client_cache_middleware import ClientCacheMiddleware
-from ..models import *  # noqa: F403
-from .config import (
+from app.api.dependencies import get_current_superuser
+from app.core.utils.rate_limit import rate_limiter
+from app.middleware.client_cache_middleware import ClientCacheMiddleware
+from app.models import *  # noqa: F403
+from app.core.config import (
     AppSettings,
     ClientSideCacheSettings,
     CORSSettings,
@@ -36,9 +36,9 @@ from .config import (
     RedisRateLimiterSettings,
     settings,
 )
-from .db.database import Base
-from .db.database import async_engine as engine
-from .utils import cache, queue
+from app.core.db.database import Base
+from app.core.db.database import async_engine as engine
+from app.core.utils import cache, queue
 
 
 # -------------- database --------------
