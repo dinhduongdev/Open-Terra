@@ -9,8 +9,8 @@ Open-Terra - IoT and Smart City Data Platform
 from sqlalchemy.orm import Session
 from uuid6 import uuid7  # 126
 
-from src.app import models
-from src.app.core.security import get_password_hash
+from app import models
+from app.core.security import get_password_hash
 from tests.conftest import fake
 
 

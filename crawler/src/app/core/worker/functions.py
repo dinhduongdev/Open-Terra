@@ -12,14 +12,15 @@ import logging
 import uvloop
 from arq.worker import Worker
 
-from src.app.core.config import settings
-from src.app.normalizers.air_quality_normalizer import air_quality_normalizer
-from src.app.normalizers.weather_normalizer import weather_normalizer
-from src.app.publishers.orion_ld_publisher import orion_ld_publisher
-from src.app.services.openaq_client import OpenAQClient
-from src.app.services.openweather_map_client import open_weather_map_client
+from app.core.config import settings
+from app.normalizers.air_quality_normalizer import air_quality_normalizer
+from app.normalizers.weather_normalizer import weather_normalizer
+from app.publishers.orion_ld_publisher import orion_ld_publisher
+from app.services.openaq_client import OpenAQClient
+from app.services.openweather_map_client import open_weather_map_client
 
-asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+# asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+# Note: uvloop is configured in WorkerSettings instead to avoid conflicts with arq
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")

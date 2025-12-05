@@ -20,10 +20,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
 
-from ..api.dependencies import get_current_superuser
-from ..core.utils.rate_limit import rate_limiter
-from ..middleware.client_cache_middleware import ClientCacheMiddleware
-from ..models import *  # noqa: F403
+from app.api.dependencies import get_current_superuser
+from app.core.utils.rate_limit import rate_limiter
+from app.middleware.client_cache_middleware import ClientCacheMiddleware
+from app.models import *  # noqa: F403
 from .config import (
     AppSettings,
     ClientSideCacheSettings,

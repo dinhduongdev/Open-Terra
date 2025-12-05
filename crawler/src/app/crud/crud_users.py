@@ -8,8 +8,8 @@ Open-Terra - IoT and Smart City Data Platform
 
 from fastcrud import FastCRUD
 
-from ..models.user import User
-from ..schemas.user import UserCreateInternal, UserDelete, UserRead, UserUpdate, UserUpdateInternal
+from app.models.user import User
+from app.schemas.user import UserCreateInternal, UserDelete, UserRead, UserUpdate, UserUpdateInternal
 
 CRUDUser = FastCRUD[User, UserCreateInternal, UserUpdate, UserUpdateInternal, UserDelete, UserRead]
 crud_users = CRUDUser(User)

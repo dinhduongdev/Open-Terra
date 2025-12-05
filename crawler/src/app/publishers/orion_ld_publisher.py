@@ -14,10 +14,10 @@ from typing import Any
 import requests
 from pydantic import BaseModel
 
-from src.app.core.config import settings
-from src.app.publishers.converters.air_quality_converter import AirQualityObservedConverter
-from src.app.publishers.converters.base import NGSILDConverter
-from src.app.publishers.converters.weather_converter import WeatherObservedConverter
+from app.core.config import settings
+from app.publishers.converters.air_quality_converter import AirQualityObservedConverter
+from app.publishers.converters.base import NGSILDConverter
+from app.publishers.converters.weather_converter import WeatherObservedConverter
 
 logger = logging.getLogger(__name__)
 

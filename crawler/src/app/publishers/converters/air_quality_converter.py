@@ -10,9 +10,9 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from src.app.normalizers.utils import METADATA_FIELDS
-from src.app.publishers.converters.base import NGSILDConverter
-from src.app.schemas.smart_data.air_quality_observed import AirQualityObserved
+from app.normalizers.utils import METADATA_FIELDS
+from app.publishers.converters.base import NGSILDConverter
+from app.schemas.smart_data.air_quality_observed import AirQualityObserved
 
 
 class AirQualityObservedConverter(NGSILDConverter):

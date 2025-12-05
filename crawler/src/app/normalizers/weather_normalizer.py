@@ -11,7 +11,7 @@ Open-Terra - IoT and Smart City Data Platform
 import logging
 from typing import Any
 
-from src.app.schemas.smart_data.weather_observed import WeatherObserved
+from app.schemas.smart_data.weather_observed import WeatherObserved
 
 logger = logging.getLogger(__name__)
 

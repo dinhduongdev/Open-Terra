@@ -36,6 +36,8 @@ USAGE:
   node cli.js <command> [options]
 
 COMMANDS:
+  auto                Auto mode: provision and start all devices automatically
+  
   provision [type]    Provision devices with IoT Agent
                       type: traffic, water, or all (default: all)
   
@@ -57,6 +59,10 @@ COMMANDS:
   help                Show this help message
 
 EXAMPLES:
+  # Auto mode - provision and start all devices
+  node cli.js auto
+  npm run auto
+
   # Provision all devices
   node cli.js provision
 
@@ -117,6 +123,76 @@ function parseOptions(args) {
     }
 
     return options;
+}
+
+/**
+ * Auto mode - provision and start all devices
+ */
+async function autoCommand() {
+    console.log('═══════════════════════════════════════════════════════════════');
+    console.log('  Auto Mode - Provision & Start Devices');
+    console.log('═══════════════════════════════════════════════════════════════\n');
+
+    try {
+        // Step 1: Provision
+        console.log('[1/2] Provisioning devices...\n');
+        
+        // Check IoT Agent connection
+        console.log('Checking IoT Agent connection...');
+        const isConnected = await provisioning.checkIoTAgent();
+
+        if (!isConnected) {
+            console.error('✗ Cannot connect to IoT Agent');
+            console.error(`  Make sure IoT Agent is running at: ${provisioning.IOTA_URL}`);
+            process.exit(1);
+        }
+        console.log('✓ IoT Agent is reachable\n');
+
+        // Provision service group
+        console.log('Provisioning service group...');
+        const serviceResult = await provisioning.provisionServiceGroup();
+        if (serviceResult.status === 409) {
+            console.log('  Service group already exists (skipped)');
+        } else {
+            console.log('✓ Service group provisioned');
+        }
+
+        // Provision devices
+        console.log('\nProvisioning devices...');
+        const deviceResult = await provisioning.provisionDevices('all');
+        if (deviceResult.status === 409) {
+            console.log(`  ${deviceResult.count} devices already exist (skipped)`);
+        } else {
+            console.log(`✓ ${deviceResult.count} devices provisioned`);
+        }
+
+        console.log('\n✓ Provisioning complete!\n');
+
+        // Step 2: Start devices
+        console.log('[2/2] Starting all devices...\n');
+        console.log('Simulating multiple sensors across the city');
+        console.log('Traffic: Rush hours 6:30-9am, 12-1pm, 5-7pm');
+        console.log('Water: Tidal surge on full moon & new moon (±1-2 days)\n');
+
+        // Initialize devices
+        deviceManager.initializeDevices();
+
+        // Connect to MQTT
+        await deviceManager.connect();
+
+        // Start all devices
+        deviceManager.startAll();
+
+        console.log('✓ Auto mode complete - all devices running!\n');
+        console.log('Press Ctrl+C to stop\n');
+
+        // Keep process running
+        process.stdin.resume();
+
+    } catch (error) {
+        console.error('\n✗ Auto mode failed:', error.message);
+        process.exit(1);
+    }
 }
 
 /**
@@ -311,6 +387,10 @@ async function main() {
     }
 
     switch (command) {
+        case 'auto':
+            await autoCommand();
+            break;
+
         case 'provision':
             const provisionType = args[1] || 'all';
             if (!['all', 'traffic', 'water'].includes(provisionType)) {

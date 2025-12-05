@@ -1,6 +1,6 @@
 services:
   web:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     # -------- Both of the following commands should be commented to run with nginx --------
@@ -14,18 +14,18 @@ services:
     # ports:
     #    - "8000:8000"
     expose:
-       - "8000"
+      - "8000"
     depends_on:
       - db
       - redis
     volumes:
-      - ./src/app:/code/app
-      - ./src/.env:/code/.env
+      - ./src/app:/app/src/app
+      - ./src/.env:/app/src/.env
     networks:
       - open-terra-network
 
   worker:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     command: arq app.core.worker.settings.WorkerSettings
@@ -35,8 +35,8 @@ services:
       - db
       - redis
     volumes:
-      - ./src/app:/code/app
-      - ./src/.env:/code/.env
+      - ./src/app:/app/src/app
+      - ./src/.env:/app/src/.env
     networks:
       - open-terra-network
 
@@ -71,21 +71,19 @@ services:
       - web
     networks:
       - open-terra-network
-
   # -------- uncomment to create first superuser --------
-  create_superuser:
-    build: 
-      context: .
-      dockerfile: Dockerfile
-    env_file:
-      - ./src/.env
-    depends_on:
-      - db
-      - web
-    command: python -m src.scripts.create_first_superuser
-    volumes:
-      - ./src:/code/src
-
+  # create_superuser:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   env_file:
+  #     - ./src/.env
+  #   depends_on:
+  #     - db
+  #     - web
+  #   command: python -m src.scripts.create_first_superuser
+  #   volumes:
+  #     - ./src:/app/src
   #-------- uncomment to run tests --------
   # pytest:
   #   build: 
@@ -98,7 +96,7 @@ services:
   #     - redis
   #   command: python -m pytest ./tests
   #   volumes:
-  #     - .:/code
+  #     - .:/app
 
   #-------- uncomment to create first tier --------
   # create_tier:
@@ -113,11 +111,12 @@ services:
   #     - web
   #   command: python -m src.scripts.create_first_tier
   #   volumes:
-  #     - ./src:/code/src
+  #     - ./src:/app/src
 
 volumes:
   postgres-data:
   redis-data:
+
 
 networks:
   open-terra-network:

@@ -8,8 +8,8 @@ Open-Terra - IoT and Smart City Data Platform
 
 from fastcrud import FastCRUD
 
-from ..db.token_blacklist import TokenBlacklist
-from ..schemas import TokenBlacklistCreate, TokenBlacklistRead, TokenBlacklistUpdate
+from app.core.db.token_blacklist import TokenBlacklist
+from app.core.schemas import TokenBlacklistCreate, TokenBlacklistRead, TokenBlacklistUpdate
 
 CRUDTokenBlacklist = FastCRUD[
     TokenBlacklist,

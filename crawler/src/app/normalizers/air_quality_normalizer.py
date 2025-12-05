@@ -10,9 +10,9 @@ import logging
 from datetime import UTC, datetime
 from typing import Any, Optional
 
-from src.app.normalizers.utils import POLLUTANT_MAPPING
-from src.app.schemas.smart_data.air_quality_observed import AirQualityObserved
-from src.app.services.openaq_client import OpenAQClient
+from app.normalizers.utils import POLLUTANT_MAPPING
+from app.schemas.smart_data.air_quality_observed import AirQualityObserved
+from app.services.openaq_client import OpenAQClient
 
 logger = logging.getLogger(__name__)
 

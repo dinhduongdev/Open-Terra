@@ -9,7 +9,7 @@ Open-Terra - IoT and Smart City Data Platform
 from arq.connections import RedisSettings
 from arq.cron import cron
 
-from ...core.config import settings
+from app.core.config import settings
 from .functions import crawl_air_quality_data, crawl_weather_data, sample_background_task, shutdown, startup
 
 REDIS_QUEUE_HOST = settings.REDIS_QUEUE_HOST
