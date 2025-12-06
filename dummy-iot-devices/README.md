@@ -58,7 +58,7 @@ The simulator is built with Node.js using an object-oriented architecture:
 - Real-time data visualization
 - Individual device start/stop controls
 - Adjustable transmission intervals
-- Accessible on port 3030
+- Accessible on port 3000
 
 ### Data Flow
 
@@ -186,7 +186,7 @@ For interactive control with a web dashboard:
 npm run ui
 ```
 
-Access the dashboard at `http://localhost:3030`
+Access the dashboard at `http://localhost:3000`
 
 ### Device Configuration
 
@@ -226,7 +226,7 @@ Features:
 - Connection status monitoring
 - Log viewer for MQTT messages
 
-Access at: `http://localhost:3030`
+Access at: `http://localhost:3000`
 
 ## Docker Deployment
 
@@ -234,7 +234,7 @@ The simulator runs in a containerized environment:
 
 **Container Specification**
 - Base image: Node.js Alpine
-- Exposed port: 3030 (web UI)
+- Exposed port: 3000 (web UI)
 - Network: `open-terra-network`
 - Automatic restart policy
 - Volume mounts for configuration

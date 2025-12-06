@@ -34,7 +34,7 @@ services:
       WATER_DEVICE_ID_3: ${WATER_DEVICE_ID_3:-water003}
       WATER_ENTITY_NAME_3: ${WATER_ENTITY_NAME_3:-urn:ngsi-ld:WaterObserved:003}
     ports:
-      - 3030:3000
+      - 3000:3000
     networks:
       - open-terra-network
     logging:
