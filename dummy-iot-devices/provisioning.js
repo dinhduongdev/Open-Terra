@@ -12,7 +12,7 @@ const fetch = require('node-fetch');
 /**
  * IoT Agent provisioning configuration
  */
-const IOTA_URL = process.env.IOTA_URL || 'http://localhost:4041';
+const IOTA_URL = process.env.IOTA_URL || 'http://iot-agent:4041';
 
 /**
  * Get service group configuration
@@ -42,16 +42,17 @@ function getDeviceAttributes(deviceType) {
             { object_id: "d", name: "dateObserved", type: "DateTime" },
             { object_id: "loc", name: "location", type: "geo:point" }
         ];
-    } else if (deviceType === 'WaterObserved') {
+    } else if (deviceType === 'FloodMonitoring') {
         return [
-            { object_id: "w", name: "waterLevel", type: "Float" },
-            { object_id: "f", name: "flow", type: "Float" },
-            { object_id: "h", name: "height", type: "Float" },
+            { object_id: "md", name: "measuredDistance", type: "Float" },
+            { object_id: "cl", name: "currentLevel", type: "Float" },
+            { object_id: "rl", name: "referenceLevel", type: "Float" },
+            { object_id: "al", name: "alertLevel", type: "Float" },
+            { object_id: "dl", name: "dangerLevel", type: "Float" },
+            { object_id: "fls", name: "floodLevelStatus", type: "Text" },
             { object_id: "d", name: "dateObserved", type: "DateTime" },
-            { object_id: "fs", name: "floodStatus", type: "Text" },
             { object_id: "loc", name: "location", type: "geo:point" },
-            { object_id: "ts", name: "tidalSurge", type: "Boolean" },
-            { object_id: "ld", name: "lunarDay", type: "Integer" }
+            { object_id: "sid", name: "stationID", type: "Text" }
         ];
     }
     return [];

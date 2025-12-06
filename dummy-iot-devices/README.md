@@ -33,7 +33,7 @@ The simulator is built with Node.js using an object-oriented architecture:
 **Device Classes** (`devices/`)
 - `BaseDevice.js`: Abstract base class defining device interface and common functionality
 - `trafficFlowObserved.js`: Traffic monitoring device with rush hour simulation (6:30-9 AM, 12-1 PM, 5-7 PM)
-- `waterObserved.js`: Water level monitoring with flood detection and tidal calculations
+- `floodMonitoring.js`: Water level monitoring with flood detection and tidal calculations
 
 **Utilities** (`utils/`)
 - `mqttClient.js`: MQTT connection manager for broker communication
@@ -58,7 +58,7 @@ The simulator is built with Node.js using an object-oriented architecture:
 - Real-time data visualization
 - Individual device start/stop controls
 - Adjustable transmission intervals
-- Accessible on port 3030
+- Accessible on port 3000
 
 ### Data Flow
 
@@ -89,7 +89,7 @@ Simulates flood monitoring sensors with:
 - Tidal surge prediction using lunar calendar
 - Seasonal variation modeling
 
-Data model: [WaterObserved](https://github.com/smart-data-models/dataModel.Environment)
+Data model: [FloodMonitoring](https://github.com/smart-data-models/dataModel.Environment)
 
 ## Key Features
 
@@ -186,7 +186,7 @@ For interactive control with a web dashboard:
 npm run ui
 ```
 
-Access the dashboard at `http://localhost:3030`
+Access the dashboard at `http://localhost:3000`
 
 ### Device Configuration
 
@@ -226,7 +226,7 @@ Features:
 - Connection status monitoring
 - Log viewer for MQTT messages
 
-Access at: `http://localhost:3030`
+Access at: `http://localhost:3000`
 
 ## Docker Deployment
 
@@ -234,7 +234,7 @@ The simulator runs in a containerized environment:
 
 **Container Specification**
 - Base image: Node.js Alpine
-- Exposed port: 3030 (web UI)
+- Exposed port: 3000 (web UI)
 - Network: `open-terra-network`
 - Automatic restart policy
 - Volume mounts for configuration

@@ -1,51 +1,30 @@
-# --------- Builder Stage ---------
-FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim AS builder
+# --------- requirements ---------
 
-# Set environment variables for uv
-ENV UV_COMPILE_BYTECODE=1
-ENV UV_LINK_MODE=copy
+FROM python:3.11 AS requirements-stage
+
+WORKDIR /tmp
+
+RUN pip install --upgrade poetry poetry-plugin-export
+
+COPY ./pyproject.toml ./poetry.lock* /tmp/
+
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+
+# --------- final image build ---------
+FROM python:3.11
 
 WORKDIR /app
 
-# Install dependencies first (for better layer caching)
-RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project --all-extras
+COPY --from=requirements-stage /tmp/requirements.txt /app/requirements.txt
 
-# Copy the project source code
-COPY . /app
+RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
-# Install the project in non-editable mode
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-editable --all-extras
-
-# --------- Final Stage ---------
-FROM python:3.11-slim-bookworm
-
-# Create a non-root user for security
-RUN groupadd --gid 1000 app \
-    && useradd --uid 1000 --gid app --shell /bin/bash --create-home app
-
-# Copy the virtual environment from the builder stage
-COPY --from=builder --chown=app:app /app/.venv /app/.venv
-
-# Copy the source code from the builder stage
-COPY --from=builder --chown=app:app /app/src /app/src
-
-# Ensure the virtual environment is in the PATH
-ENV PATH="/app/.venv/bin:$PATH"
+COPY ./src /app/src
 
 # Set PYTHONPATH so Python can find the app module
 ENV PYTHONPATH="/app/src:$PYTHONPATH"
 
-# Switch to the non-root user
-USER app
-
-# Set the working directory
-WORKDIR /app
-
 # -------- replace with comment to run with gunicorn --------
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001", "--reload"]
-# CMD ["gunicorn", "app.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:8001"]
-
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# CMD ["gunicorn", "app.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:8000"]

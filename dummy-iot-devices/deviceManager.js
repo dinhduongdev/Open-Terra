@@ -9,7 +9,7 @@
 const mqttClient = require('./utils/mqttClient');
 const config = require('./config');
 const TrafficFlowObserved = require('./devices/trafficFlowObserved');
-const WaterObserved = require('./devices/waterObserved');
+const FloodMonitoring = require('./devices/floodMonitoring');
 
 /**
  * Device Manager
@@ -35,12 +35,12 @@ class DeviceManager {
             console.log(`  [${index + 1}] ${deviceConfig.deviceId} at (${deviceConfig.location.lat}, ${deviceConfig.location.lon})`);
         });
 
-        // Initialize water devices
-        console.log('\nWater Level Sensors:');
+        // Initialize flood monitoring devices
+        console.log('\nFlood Monitoring Sensors:');
         config.devices.waterDevices.forEach((deviceConfig, index) => {
-            const device = new WaterObserved(deviceConfig);
+            const device = new FloodMonitoring(deviceConfig);
             this.devices.push(device);
-            console.log(`  [${index + 1}] ${deviceConfig.deviceId} at (${deviceConfig.location.lat}, ${deviceConfig.location.lon}) - capacity: ${deviceConfig.drainageCapacity}m`);
+            console.log(`  [${index + 1}] ${deviceConfig.deviceId} at (${deviceConfig.location.lat}, ${deviceConfig.location.lon}) - ref: ${deviceConfig.referenceLevel}m, danger: ${deviceConfig.dangerLevel}m`);
         });
 
         console.log(`\n✓ ${this.devices.length} devices initialized\n`);
@@ -68,13 +68,22 @@ class DeviceManager {
     /**
      * Start all devices
      */
-    startAll() {
+    async startAll() {
         if (this.devices.length === 0) {
             throw new Error('No devices initialized. Call initializeDevices() first.');
         }
 
         console.log('Starting all devices...');
-        this.devices.forEach(device => device.start());
+        
+        // Start devices with staggered delays to avoid race conditions
+        for (let i = 0; i < this.devices.length; i++) {
+            this.devices[i].start();
+            // Wait 5000ms between starting each device
+            if (i < this.devices.length - 1) {
+                await new Promise(resolve => setTimeout(resolve, 5000));
+            }
+        }
+        
         console.log(`✓ ${this.devices.length} devices started\n`);
     }
 
@@ -87,7 +96,7 @@ class DeviceManager {
             if (type === 'traffic') {
                 return device.config.entityType === 'TrafficFlowObserved';
             } else if (type === 'water') {
-                return device.config.entityType === 'WaterObserved';
+                return device.config.entityType === 'FloodMonitoring';
             }
             return false;
         });
@@ -136,7 +145,7 @@ class DeviceManager {
             if (type === 'traffic') {
                 return device.config.entityType === 'TrafficFlowObserved';
             } else if (type === 'water') {
-                return device.config.entityType === 'WaterObserved';
+                return device.config.entityType === 'FloodMonitoring';
             }
             return false;
         });
@@ -175,6 +184,21 @@ class DeviceManager {
     }
 
     /**
+     * Get all devices (alias for getDevices)
+     */
+    getAll() {
+        return this.devices;
+    }
+
+    /**
+     * Get device by ID
+     * @param {string} deviceId - Device ID to get
+     */
+    getById(deviceId) {
+        return this.devices.find(d => d.deviceId === deviceId || d.config.deviceId === deviceId);
+    }
+
+    /**
      * Get devices by type
      * @param {string} type - 'traffic' or 'water'
      */
@@ -183,7 +207,7 @@ class DeviceManager {
             if (type === 'traffic') {
                 return device.config.entityType === 'TrafficFlowObserved';
             } else if (type === 'water') {
-                return device.config.entityType === 'WaterObserved';
+                return device.config.entityType === 'FloodMonitoring';
             }
             return false;
         });

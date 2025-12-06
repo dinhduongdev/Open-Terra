@@ -12,8 +12,8 @@ services:
     env_file:
       - ./src/.env
     # -------- replace ports with expose if you are using nginx --------
-    # ports:
-    #    - "8001:8001"
+    ports:
+      - "8001:8001"
     expose:
       - "8001"
     depends_on:
@@ -45,10 +45,13 @@ services:
   db:
     image: postgres:13
     container_name: open-terra-crawler-db
+    hostname: open-terra-crawler-db
     env_file:
       - ./src/.env
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
     expose:
       - "5432"
     networks:
@@ -57,8 +60,11 @@ services:
   redis:
     image: redis:alpine
     container_name: open-terra-crawler-redis
+    hostname: open-terra-crawler-redis
     volumes:
       - redis-data:/data
+    ports:
+      - "6380:6379"
     expose:
       - "6379"
     networks:

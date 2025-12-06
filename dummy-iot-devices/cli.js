@@ -11,6 +11,10 @@
 const DeviceManager = require('./deviceManager');
 const provisioning = require('./provisioning');
 const config = require('./config');
+const express = require('express');
+const http = require('http');
+const WebSocket = require('ws');
+const path = require('path');
 
 /**
  * CLI for managing IoT devices in headless mode
@@ -22,6 +26,162 @@ const command = args[0];
 
 // Create device manager instance
 const deviceManager = new DeviceManager();
+
+/**
+ * Start with Web UI
+ */
+async function startWithUI() {
+    const app = express();
+    const server = http.createServer(app);
+    const wss = new WebSocket.Server({ server });
+    const clients = new Set();
+
+    // Middleware
+    app.use(express.json());
+    app.use(express.static(path.join(__dirname, 'public')));
+
+    // API: IoT Agent status
+    app.get('/api/iot-agent/status', async (req, res) => {
+        try {
+            const isConnected = await provisioning.checkIoTAgent();
+            const provisionedDevices = await provisioning.getProvisionedDevices();
+            
+            res.json({
+                connected: isConnected,
+                url: provisioning.IOTA_URL,
+                devicesCount: provisionedDevices.count || 0,
+                devices: provisionedDevices.devices || []
+            });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    // API: Get all devices
+    app.get('/api/devices', (req, res) => {
+        const devices = deviceManager.getAll().map(device => ({
+            deviceId: device.deviceId,
+            entityName: device.entityName,
+            entityType: device.entityType,
+            interval: device.interval,
+            running: device.intervalId !== null
+        }));
+        res.json(devices);
+    });
+
+    // WebSocket connection
+    wss.on('connection', (ws) => {
+        console.log('New client connected');
+        clients.add(ws);
+
+        const devices = deviceManager.getAll().map(device => ({
+            deviceId: device.deviceId,
+            entityName: device.entityName,
+            entityType: device.entityType,
+            interval: device.interval,
+            running: device.intervalId !== null
+        }));
+
+        ws.send(JSON.stringify({
+            type: 'deviceList',
+            devices: devices
+        }));
+
+        ws.on('message', (message) => {
+            try {
+                const data = JSON.parse(message);
+                handleClientMessage(data, clients);
+            } catch (error) {
+                console.error('Error handling message:', error.message);
+            }
+        });
+
+        ws.on('close', () => {
+            console.log('Client disconnected');
+            clients.delete(ws);
+        });
+    });
+
+    // Initialize and connect
+    deviceManager.initializeDevices();
+    await deviceManager.connect();
+    await deviceManager.startAll();
+
+    const PORT = process.env.PORT || 3000;
+    server.listen(PORT, () => {
+        console.log(`✓ Auto mode complete - all devices running!\n`);
+        console.log(`Server running on http://localhost:${PORT}`);
+        console.log(`Open the web interface to control devices\n`);
+        console.log('Press Ctrl+C to stop\n');
+    });
+
+    // Handle shutdown
+    const shutdownWithUI = async () => {
+        console.log('\n\nShutting down...');
+        deviceManager.stopAll();
+        clients.forEach(client => client.close());
+        wss.close();
+        await deviceManager.disconnect();
+        server.close(() => {
+            console.log('✓ Shutdown complete');
+            process.exit(0);
+        });
+    };
+
+    process.removeListener('SIGINT', shutdown);
+    process.removeListener('SIGTERM', shutdown);
+    process.on('SIGINT', shutdownWithUI);
+    process.on('SIGTERM', shutdownWithUI);
+}
+
+/**
+ * Handle WebSocket messages from clients
+ */
+function handleClientMessage(message, clients) {
+    const { type, deviceId } = message;
+    const device = deviceManager.getById(deviceId);
+
+    if (!device) {
+        console.error(`Device not found: ${deviceId}`);
+        return;
+    }
+
+    const broadcast = (type, data) => {
+        const msg = JSON.stringify({ type, ...data });
+        clients.forEach(client => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(msg);
+            }
+        });
+    };
+
+    switch (type) {
+        case 'start':
+            if (!device.intervalId) {
+                device.start();
+                console.log(`[${deviceId}] Started by user`);
+                broadcast('deviceStatus', { deviceId, status: { running: true } });
+            }
+            break;
+
+        case 'stop':
+            if (device.intervalId) {
+                device.stop();
+                console.log(`[${deviceId}] Stopped by user`);
+                broadcast('deviceStatus', { deviceId, status: { running: false } });
+            }
+            break;
+
+        case 'updateInterval':
+            const wasRunning = device.intervalId !== null;
+            if (wasRunning) device.stop();
+            device.interval = message.interval;
+            console.log(`[${deviceId}] Interval updated to ${message.interval}ms`);
+            if (wasRunning) device.start();
+            broadcast('deviceStatus', { deviceId, status: { running: wasRunning } });
+            break;
+    }
+}
 
 /**
  * Display help information
@@ -36,7 +196,8 @@ USAGE:
   node cli.js <command> [options]
 
 COMMANDS:
-  auto                Auto mode: provision and start all devices automatically
+  auto [--ui]         Auto mode: provision and start all devices automatically
+                      --ui: Start with web interface (default: headless)
   
   provision [type]    Provision devices with IoT Agent
                       type: traffic, water, or all (default: all)
@@ -59,9 +220,12 @@ COMMANDS:
   help                Show this help message
 
 EXAMPLES:
-  # Auto mode - provision and start all devices
+  # Auto mode - provision and start all devices (headless)
   node cli.js auto
   npm run auto
+
+  # Auto mode with web interface
+  node cli.js auto --ui
 
   # Provision all devices
   node cli.js provision
@@ -89,7 +253,7 @@ EXAMPLES:
 
 ENVIRONMENT:
   MQTT_BROKER_URL     MQTT broker URL (default: mqtt://localhost:1883)
-  IOTA_URL            IoT Agent URL (default: http://localhost:4041)
+  IOTA_URL            IoT Agent URL (default: http://iot-agent:4041)
   FIWARE_SERVICE      FIWARE service name (default: openiot)
   FIWARE_SERVICEPATH  FIWARE service path (default: /)
 
@@ -128,9 +292,9 @@ function parseOptions(args) {
 /**
  * Auto mode - provision and start all devices
  */
-async function autoCommand() {
+async function autoCommand(withUI = false) {
     console.log('═══════════════════════════════════════════════════════════════');
-    console.log('  Auto Mode - Provision & Start Devices');
+    console.log(`  Auto Mode - Provision & Start Devices${withUI ? ' (with UI)' : ''}`);
     console.log('═══════════════════════════════════════════════════════════════\n');
 
     try {
@@ -168,26 +332,36 @@ async function autoCommand() {
 
         console.log('\n✓ Provisioning complete!\n');
 
+        // Wait for IoT Agent and Orion-LD to process provisioning
+        console.log('Waiting 1 minute for provisioning to complete...\n');
+        await new Promise(resolve => setTimeout(resolve, 60000));
+
         // Step 2: Start devices
         console.log('[2/2] Starting all devices...\n');
         console.log('Simulating multiple sensors across the city');
         console.log('Traffic: Rush hours 6:30-9am, 12-1pm, 5-7pm');
         console.log('Water: Tidal surge on full moon & new moon (±1-2 days)\n');
 
-        // Initialize devices
-        deviceManager.initializeDevices();
+        if (withUI) {
+            // Start with web UI
+            await startWithUI();
+        } else {
+            // Headless mode
+            // Initialize devices
+            deviceManager.initializeDevices();
 
-        // Connect to MQTT
-        await deviceManager.connect();
+            // Connect to MQTT
+            await deviceManager.connect();
 
-        // Start all devices
-        deviceManager.startAll();
+            // Start all devices (with staggered delays)
+            await deviceManager.startAll();
 
-        console.log('✓ Auto mode complete - all devices running!\n');
-        console.log('Press Ctrl+C to stop\n');
+            console.log('✓ Auto mode complete - all devices running!\n');
+            console.log('Press Ctrl+C to stop\n');
 
-        // Keep process running
-        process.stdin.resume();
+            // Keep process running
+            process.stdin.resume();
+        }
 
     } catch (error) {
         console.error('\n✗ Auto mode failed:', error.message);
@@ -268,7 +442,7 @@ async function startCommand(options) {
         } else if (options.water) {
             deviceManager.startByType('water');
         } else {
-            deviceManager.startAll();
+            await deviceManager.startAll();
         }
 
         console.log('Press Ctrl+C to stop\n');
@@ -388,7 +562,8 @@ async function main() {
 
     switch (command) {
         case 'auto':
-            await autoCommand();
+            const withUI = args.includes('--ui');
+            await autoCommand(withUI);
             break;
 
         case 'provision':
