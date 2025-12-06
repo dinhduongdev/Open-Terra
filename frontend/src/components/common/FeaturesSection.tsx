@@ -60,18 +60,18 @@ export default function FeaturesSection() {
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-12 md:py-20 bg-gray-50">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">
+        <div className="text-center mb-8 md:mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4">
             {t('features.title')}
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-lg md:text-xl text-gray-600">
             {t('features.subtitle')}
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {features.map((feature, index) => (
             <FeatureCard
               key={index}

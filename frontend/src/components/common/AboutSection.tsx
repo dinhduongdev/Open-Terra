@@ -19,14 +19,14 @@ interface AboutCardProps {
 
 function AboutCard({ icon, title, description, colorClass, animation, iconDelay }: AboutCardProps) {
   return (
-    <div className={`bg-white p-8 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 ${animation}`}>
-      <div className={`w-12 h-12 ${colorClass} rounded-lg flex items-center justify-center mb-4 animate-bounce-in ${iconDelay || ''}`}>
+    <div className={`bg-white p-6 md:p-8 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 ${animation}`}>
+      <div className={`w-10 h-10 md:w-12 md:h-12 ${colorClass} rounded-lg flex items-center justify-center mb-3 md:mb-4 animate-bounce-in ${iconDelay || ''}`}>
         {icon}
       </div>
-      <h3 className="text-2xl font-semibold mb-4 text-gray-800">
+      <h3 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4 text-gray-800">
         {title}
       </h3>
-      <p className="text-gray-600">
+      <p className="text-sm md:text-base text-gray-600">
         {description}
       </p>
     </div>
@@ -64,17 +64,17 @@ export default function AboutSection() {
   ];
 
   return (
-    <section id="about" className="py-20 bg-gray-50">
+    <section id="about" className="py-12 md:py-20 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-bold text-center text-gray-800 mb-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-6 md:mb-8">
             {t('about.title')}
           </h2>
-          <p className="text-lg text-gray-600 text-center mb-12">
+          <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12">
             {t('about.description')}
           </p>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {cards.map((card, index) => (
               <AboutCard
                 key={index}

@@ -61,43 +61,79 @@ export default function FloodMap({
     stationsLayerRef.current = L.layerGroup().addTo(map);
     warningsLayerRef.current = L.layerGroup().addTo(map);
 
-    // Add legend
+    // Add legend with collapse functionality
     const Legend = L.Control.extend({
       options: { position: 'bottomright' },
       onAdd: function () {
         const div = L.DomUtil.create('div', 'flood-legend');
-        div.innerHTML = `
-          <div style="background: white; padding: 12px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); color: #000000;">
-            <div style="font-weight: bold; margin-bottom: 10px; font-size: 14px; color: #000000;">Mức độ ngập úng</div>
-            <div style="display: flex; align-items: center; margin-bottom: 6px;">
-              <div style="width: 20px; height: 20px; background: rgba(34, 197, 94, 0.3); border: 2px solid #22c55e; margin-right: 8px; border-radius: 3px;"></div>
-              <span style="font-size: 12px; color: #000000;">Thấp (&lt; 30cm)</span>
-            </div>
-            <div style="display: flex; align-items: center; margin-bottom: 6px;">
-              <div style="width: 20px; height: 20px; background: rgba(234, 179, 8, 0.3); border: 2px solid #eab308; margin-right: 8px; border-radius: 3px;"></div>
-              <span style="font-size: 12px; color: #000000;">Trung bình (30-50cm)</span>
-            </div>
-            <div style="display: flex; align-items: center; margin-bottom: 6px;">
-              <div style="width: 20px; height: 20px; background: rgba(249, 115, 22, 0.3); border: 2px solid #f97316; margin-right: 8px; border-radius: 3px;"></div>
-              <span style="font-size: 12px; color: #000000;">Cao (50-80cm)</span>
-            </div>
-            <div style="display: flex; align-items: center; margin-bottom: 12px;">
-              <div style="width: 20px; height: 20px; background: rgba(220, 38, 38, 0.3); border: 2px solid #dc2626; margin-right: 8px; border-radius: 3px;"></div>
-              <span style="font-size: 12px; color: #000000;">Nguy hiểm (&gt; 80cm)</span>
-            </div>
-            <div style="border-top: 1px solid #e5e7eb; padding-top: 10px; margin-top: 10px;">
-              <div style="font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #000000;">Ký hiệu</div>
-              <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                <span style="font-size: 18px; margin-right: 8px;">📍</span>
-                <span style="font-size: 12px; color: #000000;">Trạm đo</span>
+        let isCollapsed = false;
+        
+        const updateLegend = () => {
+          if (isCollapsed) {
+            div.innerHTML = `
+              <div style="background: white; padding: 8px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); color: #000000; cursor: pointer;" id="legend-toggle">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span style="font-weight: bold; font-size: 11px; color: #000000;">Mức độ ngập úng</span>
+                  <span style="font-size: 12px; margin-left: 8px;">▼</span>
+                </div>
               </div>
-              <div style="display: flex; align-items: center;">
-                <span style="font-size: 18px; margin-right: 8px;">⚠️</span>
-                <span style="font-size: 12px; color: #000000;">Cảnh báo</span>
+            `;
+          } else {
+            div.innerHTML = `
+              <div style="background: white; padding: 8px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); color: #000000;">
+                <div style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; margin-bottom: 6px;" id="legend-toggle">
+                  <span style="font-weight: bold; font-size: 11px; color: #000000;">Mức độ ngập úng</span>
+                  <span style="font-size: 12px; margin-left: 8px;">▲</span>
+                </div>
+                <div id="legend-content">
+                  <div style="display: flex; align-items: center; margin-bottom: 3px;">
+                    <div style="width: 14px; height: 14px; background: rgba(34, 197, 94, 0.3); border: 1.5px solid #22c55e; margin-right: 5px; border-radius: 2px;"></div>
+                    <span style="font-size: 10px; color: #000000;">Thấp (&lt; 30cm)</span>
+                  </div>
+                  <div style="display: flex; align-items: center; margin-bottom: 3px;">
+                    <div style="width: 14px; height: 14px; background: rgba(234, 179, 8, 0.3); border: 1.5px solid #eab308; margin-right: 5px; border-radius: 2px;"></div>
+                    <span style="font-size: 10px; color: #000000;">Trung bình (30-50cm)</span>
+                  </div>
+                  <div style="display: flex; align-items: center; margin-bottom: 3px;">
+                    <div style="width: 14px; height: 14px; background: rgba(249, 115, 22, 0.3); border: 1.5px solid #f97316; margin-right: 5px; border-radius: 2px;"></div>
+                    <span style="font-size: 10px; color: #000000;">Cao (50-80cm)</span>
+                  </div>
+                  <div style="display: flex; align-items: center; margin-bottom: 6px;">
+                    <div style="width: 14px; height: 14px; background: rgba(220, 38, 38, 0.3); border: 1.5px solid #dc2626; margin-right: 5px; border-radius: 2px;"></div>
+                    <span style="font-size: 10px; color: #000000;">Nguy hiểm (&gt; 80cm)</span>
+                  </div>
+                  <div style="border-top: 1px solid #e5e7eb; padding-top: 6px; margin-top: 6px;">
+                    <div style="font-weight: bold; margin-bottom: 4px; font-size: 11px; color: #000000;">Ký hiệu</div>
+                    <div style="display: flex; align-items: center; margin-bottom: 2px;">
+                      <span style="font-size: 14px; margin-right: 5px;">📍</span>
+                      <span style="font-size: 10px; color: #000000;">Trạm đo</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                      <span style="font-size: 14px; margin-right: 5px;">⚠️</span>
+                      <span style="font-size: 10px; color: #000000;">Cảnh báo</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        `;
+            `;
+          }
+          
+          const toggleBtn = div.querySelector('#legend-toggle');
+          if (toggleBtn) {
+            L.DomEvent.on(toggleBtn as HTMLElement, 'click', function(e) {
+              L.DomEvent.stopPropagation(e);
+              isCollapsed = !isCollapsed;
+              updateLegend();
+            });
+          }
+        };
+        
+        updateLegend();
+        
+        // Prevent map interactions when clicking on legend
+        L.DomEvent.disableClickPropagation(div);
+        L.DomEvent.disableScrollPropagation(div);
+        
         return div;
       },
     });
@@ -309,6 +345,6 @@ export default function FloodMap({
   }, [showFloodLayer]);
 
   return (
-    <div id="flood-map" className="h-[600px] w-full rounded-lg overflow-hidden shadow-sm" />
+    <div id="flood-map" className="h-[300px] md:h-[400px] w-full rounded-lg overflow-hidden shadow-sm" />
   );
 }

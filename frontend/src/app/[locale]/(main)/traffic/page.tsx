@@ -67,8 +67,8 @@ export default function TrafficPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">{t('traffic')}</h1>
+    <div className="container mx-auto px-3 md:px-4 py-4 md:py-8">
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-6">{t('traffic')}</h1>
 
       <RoutingPanel
         enableRouting={enableRouting}
@@ -82,16 +82,16 @@ export default function TrafficPage() {
 
       {currentRoute && <RouteInfo route={currentRoute} />}
 
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-700">
+      <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
+          <h2 className="text-lg md:text-xl font-semibold text-gray-700">
             Traffic Map - OpenStreetMap
           </h2>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Lớp giao thông real-time:</span>
+            <span className="text-xs md:text-sm text-gray-600">Lớp giao thông real-time:</span>
             <button
               onClick={() => setShowTrafficLayer(!showTrafficLayer)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-3 md:px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
                 showTrafficLayer
                   ? 'bg-blue-500 text-white hover:bg-blue-600'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'

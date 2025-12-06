@@ -211,7 +211,7 @@ export default function AirQualityMap({
 
   return (
     <div>
-      <div id="air-quality-map" style={{ height: '600px', width: '100%', borderRadius: '8px' }} />
+      <div id="air-quality-map" className="h-[400px] md:h-[600px] w-full rounded-lg" />
       <style jsx global>{`
         .air-quality-popup .leaflet-popup-content-wrapper {
           border-radius: 8px;

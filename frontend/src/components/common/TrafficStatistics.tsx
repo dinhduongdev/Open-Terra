@@ -19,10 +19,10 @@ export default function TrafficStatistics({
   routeStats,
 }: TrafficStatisticsProps) {
   return (
-    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="mt-4 md:mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
       {/* Stats by Time */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold text-gray-700 mb-4">
+      <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
+        <h3 className="text-base md:text-lg font-semibold text-gray-700 mb-3 md:mb-4">
           Thống kê theo giờ
         </h3>
         <div className="space-y-3">
@@ -47,8 +47,8 @@ export default function TrafficStatistics({
       </div>
 
       {/* Route Statistics */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold text-gray-700 mb-4">
+      <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
+        <h3 className="text-base md:text-lg font-semibold text-gray-700 mb-3 md:mb-4">
           Tuyến đường chính
         </h3>
         <div className="space-y-3">

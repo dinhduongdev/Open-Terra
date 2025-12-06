@@ -112,14 +112,14 @@ export default function AirQualityPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-3 md:px-4 py-4 md:py-8">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-3">
-          <span className="text-4xl">🌫️</span>
+      <div className="mb-4 md:mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2 flex items-center gap-2 md:gap-3">
+          <span className="text-3xl md:text-4xl">🌫️</span>
           {t('airQuality')}
         </h1>
-        <p className="text-gray-600">
+        <p className="text-sm md:text-base text-gray-600">
           Theo dõi chất lượng không khí và các chỉ số ô nhiễm theo thời gian thực
         </p>
       </div>
@@ -129,12 +129,12 @@ export default function AirQualityPage() {
 
       {/* No data message */}
       {stations.length === 0 && (
-        <div className="mt-8 bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg">
-          <div className="flex items-center gap-3">
-            <span className="text-3xl">⚠️</span>
+        <div className="mt-6 md:mt-8 bg-yellow-50 border-l-4 border-yellow-500 p-4 md:p-6 rounded-lg">
+          <div className="flex items-center gap-2 md:gap-3">
+            <span className="text-2xl md:text-3xl">⚠️</span>
             <div>
-              <h3 className="font-semibold text-yellow-900 mb-1">Không có dữ liệu</h3>
-              <p className="text-yellow-800">
+              <h3 className="font-semibold text-yellow-900 mb-1 text-sm md:text-base">Không có dữ liệu</h3>
+              <p className="text-yellow-800 text-xs md:text-sm">
                 Hiện tại chưa có dữ liệu từ các trạm quan trắc chất lượng không khí. Vui lòng thử
                 lại sau.
               </p>
@@ -145,17 +145,17 @@ export default function AirQualityPage() {
 
       {/* Main Map */}
       {stations.length > 0 && (
-        <div className="mt-8 bg-white rounded-lg shadow-md p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-700 flex items-center gap-2">
+        <div className="mt-6 md:mt-8 bg-white rounded-lg shadow-md p-4 md:p-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
+            <h2 className="text-lg md:text-xl font-semibold text-gray-700 flex items-center gap-2">
               <span>🗺️</span>
               Bản đồ chất lượng không khí - OpenStreetMap
             </h2>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Hiển thị trạm quan trắc:</span>
+              <span className="text-xs md:text-sm text-gray-600">Hiển thị trạm quan trắc:</span>
               <button
                 onClick={() => setShowStations(!showStations)}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`px-3 md:px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
                   showStations
                     ? 'bg-blue-500 text-white hover:bg-blue-600'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -167,12 +167,12 @@ export default function AirQualityPage() {
           </div>
 
         {/* Instructions */}
-        <div className="mb-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">ℹ️</span>
+        <div className="mb-4 p-3 md:p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+          <div className="flex items-start gap-2 md:gap-3">
+            <span className="text-xl md:text-2xl">ℹ️</span>
             <div>
-              <h3 className="font-semibold text-blue-900 mb-1">Hướng dẫn sử dụng</h3>
-              <ul className="text-sm text-blue-800 space-y-1">
+              <h3 className="font-semibold text-blue-900 mb-1 text-sm md:text-base">Hướng dẫn sử dụng</h3>
+              <ul className="text-xs md:text-sm text-blue-800 space-y-1">
                 <li>• Click vào các điểm màu để xem chi tiết trạm quan trắc</li>
                 <li>• Màu sắc thể hiện mức độ chất lượng không khí (Xanh = Tốt, Đỏ = Kém)</li>
                 <li>• Số hiển thị là chỉ số AQI (Air Quality Index)</li>
@@ -183,7 +183,7 @@ export default function AirQualityPage() {
         </div>
 
         {/* AQI Scale Legend */}
-        <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+        <div className="mb-4 p-3 md:p-4 bg-gray-50 rounded-lg">
           <h3 className="font-semibold text-gray-800 mb-3 text-sm">Thang đo chỉ số AQI:</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 text-xs">
             <div className="flex items-center gap-2">
@@ -255,12 +255,12 @@ export default function AirQualityPage() {
       {overview.averageAqi > 0 && <HealthRecommendations aqi={overview.averageAqi} />}
 
       {/* Additional Info */}
-      <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md p-6 border-l-4 border-blue-500">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+      <div className="mt-6 md:mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md p-4 md:p-6 border-l-4 border-blue-500">
+        <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 flex items-center gap-2">
           <span>📚</span>
           Thông tin thêm về chỉ số AQI
         </h2>
-        <div className="space-y-3 text-sm text-gray-700">
+        <div className="space-y-2 md:space-y-3 text-xs md:text-sm text-gray-700">
           <p>
             <strong>Chỉ số chất lượng không khí (AQI)</strong> là thước đo được sử dụng để đánh giá
             mức độ ô nhiễm không khí và tác động của nó đến sức khỏe con người.

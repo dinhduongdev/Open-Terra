@@ -9,14 +9,14 @@ const WeatherTipCard = ({
   tips: string[]; 
   gradient: string;
 }) => (
-  <div className={`${gradient} rounded-lg shadow-md p-6 border-l-4 ${
+  <div className={`${gradient} rounded-lg shadow-md p-4 sm:p-6 border-l-4 ${
     icon === '☀️' ? 'border-orange-500' : 'border-blue-500'
   }`}>
-    <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+    <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
       <span>{icon}</span>
-      {title}
+      <span>{title}</span>
     </h2>
-    <ul className="space-y-2 text-sm text-gray-700">
+    <ul className="space-y-2 text-xs sm:text-sm text-gray-700">
       {tips.map((tip, index) => (
         <li key={index} className="flex items-start gap-2">
           <span>•</span>
@@ -45,7 +45,7 @@ export default function WeatherTips() {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
       <WeatherTipCard
         icon="☀️"
         title="Khuyến nghị phòng tránh nắng"

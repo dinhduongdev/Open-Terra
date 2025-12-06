@@ -53,43 +53,44 @@ export default function FloodMapPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-6">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-3">
-              <span className="text-4xl">🌊</span>
-              {t('floodMap')}
-            </h1>
-            <p className="text-gray-600">
-              Theo dõi tình trạng ngập úng và cảnh báo lũ lụt theo thời gian thực
-            </p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-3">
+                <span className="text-4xl">🌊</span>
+                {t('floodMap')}
+              </h1>
+              <p className="text-gray-600">
+                Theo dõi tình trạng ngập úng và cảnh báo lũ lụt theo thời gian thực
+              </p>
+            </div>
+            <button
+              onClick={() => setShowReportForm(true)}
+              className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2 whitespace-nowrap"
+            >
+              <span className="text-xl">📝</span>
+              Báo cáo ngập lụt
+            </button>
           </div>
-          <button
-            onClick={() => setShowReportForm(true)}
-            className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2 whitespace-nowrap"
-          >
-            <span className="text-xl">📝</span>
-            Báo cáo ngập lụt
-          </button>
         </div>
-      </div>
 
       {/* Overview Stats */}
       <FloodOverview data={floodOverview} />
 
       {/* Main Map */}
-      <div className="mt-8 bg-white rounded-lg shadow-md p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-700 flex items-center gap-2">
+      <div className="mt-6 md:mt-8 bg-white rounded-lg shadow-md p-4 md:p-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
+          <h2 className="text-lg md:text-xl font-semibold text-gray-700 flex items-center gap-2">
             <span>🗺️</span>
             Bản đồ ngập lụt - OpenStreetMap
           </h2>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Lớp vùng ngập:</span>
+            <span className="text-xs md:text-sm text-gray-600">Lớp vùng ngập:</span>
             <button
               onClick={() => setShowFloodLayer(!showFloodLayer)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-3 md:px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
                 showFloodLayer
                   ? 'bg-blue-500 text-white hover:bg-blue-600'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -99,12 +100,12 @@ export default function FloodMapPage() {
             </button>
           </div>
         </div>
-        <div className="mb-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">ℹ️</span>
+        <div className="mb-4 p-3 md:p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+          <div className="flex items-start gap-2 md:gap-3">
+            <span className="text-xl md:text-2xl">ℹ️</span>
             <div>
-              <h3 className="font-semibold text-blue-900 mb-1">Hướng dẫn sử dụng</h3>
-              <ul className="text-sm text-blue-800 space-y-1">
+              <h3 className="font-semibold text-blue-900 mb-1 text-sm md:text-base">Hướng dẫn sử dụng</h3>
+              <ul className="text-xs md:text-sm text-blue-800 space-y-1">
                 <li>• Click vào các vùng màu để xem chi tiết mức độ ngập</li>
                 <li>• Click vào biểu tượng 📍 để xem thông tin trạm đo</li>
                 <li>• Click vào biểu tượng ⚠️ để xem cảnh báo chi tiết</li>
@@ -190,13 +191,14 @@ export default function FloodMapPage() {
         </div>
       </div>
 
-      {/* Report Form Modal */}
-      {showReportForm && (
-        <FloodReportForm
-          onSubmit={handleSubmitReport}
-          onClose={() => setShowReportForm(false)}
-        />
-      )}
+        {/* Report Form Modal */}
+        {showReportForm && (
+          <FloodReportForm
+            onSubmit={handleSubmitReport}
+            onClose={() => setShowReportForm(false)}
+          />
+        )}
+      </div>
     </div>
   );
 }

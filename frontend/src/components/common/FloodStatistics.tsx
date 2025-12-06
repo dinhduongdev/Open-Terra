@@ -63,10 +63,10 @@ export default function FloodStatistics({ statsByTime, stations }: FloodStatisti
   };
 
   return (
-    <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="mt-6 md:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
       {/* Water level chart */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+      <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
+        <h2 className="text-base md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 flex items-center gap-2">
           <span>📊</span> Biểu đồ mực nước & lượng mưa
         </h2>
         <ResponsiveContainer width="100%" height={300}>
@@ -124,11 +124,11 @@ export default function FloodStatistics({ statsByTime, stations }: FloodStatisti
       </div>
 
       {/* Stations status */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+      <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
+        <h2 className="text-base md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 flex items-center gap-2">
           <span>🌊</span> Trạm đo mực nước
         </h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
           {stations.map((station) => {
             // Calculate alert level percentage
             const alertPercentage = Math.min(
@@ -150,13 +150,13 @@ export default function FloodStatistics({ statsByTime, stations }: FloodStatisti
             ];
 
             return (
-              <div key={station.id} className="border border-gray-200 rounded-lg p-4">
+              <div key={station.id} className="border border-gray-200 rounded-lg p-3 md:p-4">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-800 text-sm">{station.name}</h3>
+                    <h3 className="font-semibold text-gray-800 text-xs md:text-sm">{station.name}</h3>
                   </div>
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    className={`px-1.5 md:px-2 py-0.5 md:py-1 rounded-full text-xs font-medium ${
                       station.status === 'normal'
                         ? 'bg-green-100 text-green-800'
                         : station.status === 'warning'
@@ -172,9 +172,9 @@ export default function FloodStatistics({ statsByTime, stations }: FloodStatisti
                   </span>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 md:gap-4">
                   <div className="flex-shrink-0">
-                    <ResponsiveContainer width={100} height={100}>
+                    <ResponsiveContainer width={80} height={80} className="md:!w-[100px] md:!h-[100px]">
                       <RadialBarChart
                         cx="50%"
                         cy="50%"
@@ -201,7 +201,7 @@ export default function FloodStatistics({ statsByTime, stations }: FloodStatisti
                           y="50%"
                           textAnchor="middle"
                           dominantBaseline="middle"
-                          className="text-lg font-bold"
+                          className="text-sm md:text-lg font-bold"
                           fill="#1f2937"
                         >
                           {alertPercentage}%
@@ -210,20 +210,20 @@ export default function FloodStatistics({ statsByTime, stations }: FloodStatisti
                     </ResponsiveContainer>
                   </div>
 
-                  <div className="flex-1 space-y-2">
-                    <div className="flex items-center justify-between text-xs">
+                  <div className="flex-1 space-y-1 md:space-y-2">
+                    <div className="flex items-center justify-between text-xs md:text-sm">
                       <span className="text-gray-600">Hiện tại:</span>
                       <span className="font-semibold text-gray-900">
                         {station.waterLevel.toFixed(2)}m
                       </span>
                     </div>
-                    <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center justify-between text-xs md:text-sm">
                       <span className="text-gray-600">Mức 3:</span>
                       <span className="font-semibold text-gray-900">
                         {station.alertLevel3}m
                       </span>
                     </div>
-                    <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center justify-between text-xs md:text-sm">
                       <span className="text-gray-600">Trạng thái:</span>
                       <span
                         className={`font-semibold ${

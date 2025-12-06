@@ -27,63 +27,63 @@ export default function AirQualityOverviewComponent({ data }: AirQualityOverview
   const level = getAQILabel(data.averageAqi);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 my-6 md:my-8">
       {/* Average AQI */}
       <div
-        className="bg-white rounded-lg shadow-md p-6 border-l-4"
+        className="bg-white rounded-lg shadow-md p-4 md:p-6 border-l-4"
         style={{ borderColor: aqiColor }}
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-gray-600 mb-1">AQI Trung bình</p>
-            <p className="text-4xl font-bold" style={{ color: aqiColor }}>
+            <p className="text-xs md:text-sm text-gray-600 mb-1">AQI Trung bình</p>
+            <p className="text-3xl md:text-4xl font-bold" style={{ color: aqiColor }}>
               {data.averageAqi}
             </p>
-            <p className="text-sm font-medium mt-2" style={{ color: aqiColor }}>
+            <p className="text-xs md:text-sm font-medium mt-2" style={{ color: aqiColor }}>
               {level}
             </p>
           </div>
-          <div className="text-5xl">🌫️</div>
+          <div className="text-4xl md:text-5xl">🌫️</div>
         </div>
       </div>
 
       {/* Total Stations */}
-      <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+      <div className="bg-white rounded-lg shadow-md p-4 md:p-6 border-l-4 border-blue-500">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-gray-600 mb-1">Tổng số trạm</p>
-            <p className="text-4xl font-bold text-blue-600">{data.totalStations}</p>
-            <p className="text-sm text-gray-500 mt-2">Đang hoạt động</p>
+            <p className="text-xs md:text-sm text-gray-600 mb-1">Tổng số trạm</p>
+            <p className="text-3xl md:text-4xl font-bold text-blue-600">{data.totalStations}</p>
+            <p className="text-xs md:text-sm text-gray-500 mt-2">Đang hoạt động</p>
           </div>
-          <div className="text-5xl">📍</div>
+          <div className="text-4xl md:text-5xl">📍</div>
         </div>
       </div>
 
       {/* Good Stations */}
-      <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+      <div className="bg-white rounded-lg shadow-md p-4 md:p-6 border-l-4 border-green-500">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-gray-600 mb-1">Trạm tốt</p>
-            <p className="text-4xl font-bold text-green-600">{data.goodStations}</p>
-            <p className="text-sm text-gray-500 mt-2">AQI ≤ 50</p>
+            <p className="text-xs md:text-sm text-gray-600 mb-1">Trạm tốt</p>
+            <p className="text-3xl md:text-4xl font-bold text-green-600">{data.goodStations}</p>
+            <p className="text-xs md:text-sm text-gray-500 mt-2">AQI ≤ 50</p>
           </div>
-          <div className="text-5xl">✅</div>
+          <div className="text-4xl md:text-5xl">✅</div>
         </div>
       </div>
 
       {/* Moderate + Unhealthy Stations */}
-      <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-orange-500">
+      <div className="bg-white rounded-lg shadow-md p-4 md:p-6 border-l-4 border-orange-500">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-gray-600 mb-1">Trạm cảnh báo</p>
-            <p className="text-4xl font-bold text-orange-600">
+            <p className="text-xs md:text-sm text-gray-600 mb-1">Trạm cảnh báo</p>
+            <p className="text-3xl md:text-4xl font-bold text-orange-600">
               {data.moderateStations + data.unhealthyStations}
             </p>
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-xs md:text-sm text-gray-500 mt-2">
               TB: {data.moderateStations} | Kém: {data.unhealthyStations}
             </p>
           </div>
-          <div className="text-5xl">⚠️</div>
+          <div className="text-4xl md:text-5xl">⚠️</div>
         </div>
       </div>
     </div>
