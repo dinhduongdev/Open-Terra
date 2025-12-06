@@ -83,7 +83,7 @@ class FloodMonitoring extends BaseDevice {
         const currentLevel = parseFloat((this.referenceLevel - actualMeasuredDistance).toFixed(2));
 
         // Current observation timestamp
-        const observationDateTime = now.toISOString();
+        const dateObserved = now.toISOString();
 
         // Determine flood level status based on thresholds
         let floodLevelStatus;
@@ -102,7 +102,7 @@ class FloodMonitoring extends BaseDevice {
             alertLevel: this.alertLevel,
             dangerLevel: this.dangerLevel,
             floodLevelStatus: floodLevelStatus,
-            observationDateTime: observationDateTime,
+            dateObserved: dateObserved,
             location: `${this.location.lon},${this.location.lat}`, // "lon,lat" format for GeoJSON
             stationID: this.config.deviceId
         };

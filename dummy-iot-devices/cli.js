@@ -105,7 +105,7 @@ async function startWithUI() {
     // Initialize and connect
     deviceManager.initializeDevices();
     await deviceManager.connect();
-    deviceManager.startAll();
+    await deviceManager.startAll();
 
     const PORT = process.env.PORT || 3000;
     server.listen(PORT, () => {
@@ -332,6 +332,10 @@ async function autoCommand(withUI = false) {
 
         console.log('\n✓ Provisioning complete!\n');
 
+        // Wait for IoT Agent and Orion-LD to process provisioning
+        console.log('Waiting 3 seconds for provisioning to complete...\n');
+        await new Promise(resolve => setTimeout(resolve, 5000));
+
         // Step 2: Start devices
         console.log('[2/2] Starting all devices...\n');
         console.log('Simulating multiple sensors across the city');
@@ -349,8 +353,8 @@ async function autoCommand(withUI = false) {
             // Connect to MQTT
             await deviceManager.connect();
 
-            // Start all devices
-            deviceManager.startAll();
+            // Start all devices (with staggered delays)
+            await deviceManager.startAll();
 
             console.log('✓ Auto mode complete - all devices running!\n');
             console.log('Press Ctrl+C to stop\n');
@@ -438,7 +442,7 @@ async function startCommand(options) {
         } else if (options.water) {
             deviceManager.startByType('water');
         } else {
-            deviceManager.startAll();
+            await deviceManager.startAll();
         }
 
         console.log('Press Ctrl+C to stop\n');

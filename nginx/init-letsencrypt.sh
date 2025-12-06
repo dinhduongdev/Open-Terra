@@ -47,7 +47,7 @@ echo ""
 
 # Create necessary directories
 echo -e "${YELLOW}Creating directories...${NC}"
-mkdir -p "$WEBROOT_PATH"
+mkdir -p "$WEBROOT_PATH/.well-known/acme-challenge"
 mkdir -p "$CERT_PATH/live"
 mkdir -p "$CERT_PATH/archive"
 echo -e "${GREEN}✓ Directories created${NC}"
@@ -122,50 +122,24 @@ elif [ "$cert_choice" = "2" ]; then
     echo -e "${YELLOW}Using staging server (test mode)${NC}"
   fi
   
-  # Use initial nginx config for certificate validation
-  echo -e "${YELLOW}Setting up nginx with HTTP-only config for certificate validation...${NC}"
-  
-  # Backup current nginx.conf if it exists and copy initial config
-  if [ -f "$SCRIPT_DIR/nginx.conf" ]; then
-    cp "$SCRIPT_DIR/nginx.conf" "$SCRIPT_DIR/nginx.conf.backup"
-    echo -e "${GREEN}✓ Backed up current nginx.conf${NC}"
-  fi
-  
-  cp "$SCRIPT_DIR/nginx.conf.initial" "$SCRIPT_DIR/nginx.conf"
-  echo -e "${GREEN}✓ Using initial HTTP-only configuration${NC}"
-  
-  # Stop nginx if running to reload config
-  docker compose down nginx 2>/dev/null || true
-  
-  # Start nginx with initial config
-  echo -e "${YELLOW}Starting nginx with HTTP-only configuration...${NC}"
-  docker compose up -d nginx
-  sleep 10
-  
-  # Verify nginx is running
-  if docker compose ps | grep -q "open-terra-nginx"; then
-    echo -e "${GREEN}✓ Nginx is running and ready for certificate validation${NC}"
-  else
-    echo -e "${RED}✗ Failed to start nginx${NC}"
-    exit 1
-  fi
-  echo ""
-
-  # Request Let's Encrypt certificates
+  # Request Let's Encrypt certificates using certbot container
   echo -e "${YELLOW}Requesting Let's Encrypt certificates...${NC}"
-  echo -e "${YELLOW}Note: This may take a few minutes${NC}"
   echo ""
+  
+  # Stop any running certbot/nginx containers
+  docker compose down 2>/dev/null || true
   
   for domain in "${domains[@]}"; do
     echo -e "${YELLOW}Processing $domain...${NC}"
     
-    # Request certificate using certbot on host
-    sudo certbot certonly \
-      --webroot \
-      --webroot-path="$WEBROOT_PATH" \
-      --config-dir="$CERT_PATH" \
-      --work-dir="$CERT_PATH/work" \
-      --logs-dir="$CERT_PATH/logs" \
+    # Run certbot in standalone mode using docker
+    docker run --rm \
+      -v "$CERT_PATH:/etc/letsencrypt" \
+      -v "$WEBROOT_PATH:/var/www/certbot" \
+      -p 80:80 \
+      -p 443:443 \
+      certbot/certbot certonly \
+      --standalone \
       --email "$email" \
       --agree-tos \
       --no-eff-email \
@@ -184,25 +158,8 @@ elif [ "$cert_choice" = "2" ]; then
   
   # Set proper permissions
   echo -e "${YELLOW}Setting permissions...${NC}"
-  sudo chown -R $(whoami):$(whoami) "$CERT_PATH"
+  chmod -R 755 "$CERT_PATH"
   echo -e "${GREEN}✓ Permissions set${NC}"
-  
-  # Restore full nginx configuration
-  echo ""
-  echo -e "${YELLOW}Restoring full nginx configuration...${NC}"
-  if [ -f "$SCRIPT_DIR/nginx.conf.backup" ]; then
-    cp "$SCRIPT_DIR/nginx.conf.backup" "$SCRIPT_DIR/nginx.conf"
-    rm "$SCRIPT_DIR/nginx.conf.backup"
-    echo -e "${GREEN}✓ Restored previous nginx.conf${NC}"
-  else
-    echo -e "${YELLOW}Note: Please ensure nginx.conf has the full HTTPS configuration${NC}"
-  fi
-  
-  # Reload nginx with new certificates
-  echo -e "${YELLOW}Reloading nginx with SSL certificates...${NC}"
-  docker compose restart nginx
-  sleep 5
-  echo -e "${GREEN}✓ Nginx reloaded with SSL configuration${NC}"
   
   echo ""
   echo -e "${GREEN}================================${NC}"
@@ -239,12 +196,11 @@ echo -e "${GREEN}Setup Complete!${NC}"
 echo -e "${GREEN}================================${NC}"
 echo ""
 echo -e "${YELLOW}Next steps:${NC}"
+echo "1. Start nginx: docker compose up -d"
 if [ "$cert_choice" = "1" ]; then
-  echo "1. Start/restart nginx: docker compose up -d"
   echo "2. Test your HTTPS endpoints (browsers will show security warnings)"
 else
-  echo "1. Nginx is already running with HTTPS configuration"
   echo "2. Test your HTTPS endpoints"
-  echo "3. Verify certificates: sudo certbot certificates --config-dir=$CERT_PATH"
+  echo "3. Verify certificates: ls -la $CERT_PATH/live/"
 fi
 echo ""

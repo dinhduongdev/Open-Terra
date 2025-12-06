@@ -123,7 +123,7 @@ module.exports = {
 					alertLevel: "al", // Alert threshold
 					dangerLevel: "dl", // Danger threshold
 					floodLevelStatus: "fls", // Flood status (Normal/Alert/Danger)
-					observationDateTime: "d", // Observation timestamp
+					dateObserved: "d", // Observation timestamp
 					location: "loc", // GPS coordinates
 					stationID: "sid", // Station identifier
 				},
@@ -138,20 +138,20 @@ module.exports = {
 					lat: 10.751735, // Tran Xuan Soan, District 7, HCMC (near canal)
 					lon: 106.70371,
 				},
-				referenceLevel: 3.0, // Distance from river bed to sensor (meters)
-				alertLevel: 2.2, // Alert threshold level (meters from river bed)
-				dangerLevel: 1.8, // Danger threshold level (meters from river bed)
-				attributes: {
-					measuredDistance: "md",
-					currentLevel: "cl",
-					referenceLevel: "rl",
-					alertLevel: "al",
-					dangerLevel: "dl",
-					floodLevelStatus: "fls",
-					observationDateTime: "d",
-					location: "loc",
-					stationID: "sid",
-				},
+			referenceLevel: 3.0, // Distance from river bed to sensor (meters)
+			alertLevel: 2.2, // Alert threshold level (meters from river bed)
+			dangerLevel: 1.8, // Danger threshold level (meters from river bed)
+			attributes: {
+				measuredDistance: "md",
+				currentLevel: "cl",
+				referenceLevel: "rl",
+				alertLevel: "al",
+				dangerLevel: "dl",
+				floodLevelStatus: "fls",
+				dateObserved: "d",
+				location: "loc",
+				stationID: "sid",
+			},
 			},
 			{
 				deviceId: process.env.WATER_DEVICE_ID_3 || "flood003",
@@ -163,20 +163,20 @@ module.exports = {
 					lat: 10.85345, // Pham Van Chieu, Go Vap, HCMC
 					lon: 106.663544,
 				},
-				referenceLevel: 2.0, // Distance from river bed to sensor (meters)
-				alertLevel: 1.5, // Alert threshold level (meters from river bed)
-				dangerLevel: 1.2, // Danger threshold level (meters from river bed)
-				attributes: {
-					measuredDistance: "md",
-					currentLevel: "cl",
-					referenceLevel: "rl",
-					alertLevel: "al",
-					dangerLevel: "dl",
-					floodLevelStatus: "fls",
-					observationDateTime: "d",
-					location: "loc",
-					stationID: "sid",
-				},
+			referenceLevel: 2.0, // Distance from river bed to sensor (meters)
+			alertLevel: 1.5, // Alert threshold level (meters from river bed)
+			dangerLevel: 1.2, // Danger threshold level (meters from river bed)
+			attributes: {
+				measuredDistance: "md",
+				currentLevel: "cl",
+				referenceLevel: "rl",
+				alertLevel: "al",
+				dangerLevel: "dl",
+				floodLevelStatus: "fls",
+				dateObserved: "d",
+				location: "loc",
+				stationID: "sid",
+			},
 			},
 		],
 	},

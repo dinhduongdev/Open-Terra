@@ -38,6 +38,7 @@ fi
 
 # Build and push multi-arch image
 docker buildx build \
+  --no-cache \
   --platform linux/amd64,linux/arm64 \
   -f "${SCRIPT_DIR}/Dockerfile" \
   -t "${IMAGE_TAG}" \

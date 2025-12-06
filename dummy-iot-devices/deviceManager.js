@@ -68,13 +68,22 @@ class DeviceManager {
     /**
      * Start all devices
      */
-    startAll() {
+    async startAll() {
         if (this.devices.length === 0) {
             throw new Error('No devices initialized. Call initializeDevices() first.');
         }
 
         console.log('Starting all devices...');
-        this.devices.forEach(device => device.start());
+        
+        // Start devices with staggered delays to avoid race conditions
+        for (let i = 0; i < this.devices.length; i++) {
+            this.devices[i].start();
+            // Wait 500ms between starting each device
+            if (i < this.devices.length - 1) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+        
         console.log(`✓ ${this.devices.length} devices started\n`);
     }
 
