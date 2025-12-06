@@ -54,7 +54,10 @@ class TrafficReportConverter(NGSILDConverter):
             ngsi_ld["address"] = self._add_property("address", address_data.model_dump(exclude_none=True))
 
         # Add temporal information
-        observed_at = str(entity.created_at)
+        # Format datetime to ISO 8601 with timezone
+        observed_at = (
+            entity.created_at.isoformat() if hasattr(entity.created_at, "isoformat") else str(entity.created_at)
+        )
         ngsi_ld["dateObserved"] = self._add_datetime_property(entity.created_at)
         ngsi_ld["dateCreated"] = self._add_datetime_property(entity.created_at)
 
@@ -67,14 +70,15 @@ class TrafficReportConverter(NGSILDConverter):
 
         # Map severity to congested flag and description
         # High severity = congested, otherwise not congested
-        ngsi_ld["congested"] = self._add_property("congested", entity.severity.value == "High", observed_at=observed_at)
+        severity_value = entity.severity.value if hasattr(entity.severity, "value") else entity.severity
+        ngsi_ld["congested"] = self._add_property("congested", severity_value == "High", observed_at=observed_at)
 
         # Add custom properties for user report data
         # Reporter information
         ngsi_ld["reportedBy"] = self._add_property("reportedBy", entity.reporter_username)
 
         # Severity level
-        ngsi_ld["severityLevel"] = self._add_property("severityLevel", entity.severity.value, observed_at=observed_at)
+        ngsi_ld["severityLevel"] = self._add_property("severityLevel", severity_value, observed_at=observed_at)
 
         # Add photo URLs if available
         if entity.photo_urls:

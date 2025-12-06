@@ -1,4 +1,21 @@
 services:
+  # Database initialization service - runs once to create tables
+  db-init:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    command: python -m src.scripts.init_db
+    env_file:
+      - ./src/.env
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./src:/code/src
+    networks:
+      - open-terra-network
+    restart: "no"
+
   backend:
     build: 
       context: .
@@ -16,8 +33,8 @@ services:
     expose:
        - "8000"
     depends_on:
-      - db
-      - redis
+      db-init:
+        condition: service_completed_successfully
     volumes:
       - ./src/app:/code/app
       - ./src/.env:/code/.env
@@ -32,8 +49,8 @@ services:
     env_file:
       - ./src/.env
     depends_on:
-      - db
-      - redis
+      db-init:
+        condition: service_completed_successfully
     volumes:
       - ./src/app:/code/app
       - ./src/.env:/code/.env
