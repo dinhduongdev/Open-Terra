@@ -1,8 +1,5 @@
 FROM nginx:alpine
 
-# Install required tools for certificate management
-RUN apk add --no-cache openssl wget curl
-
 # Remove default nginx configuration
 RUN rm /etc/nginx/conf.d/default.conf
 
