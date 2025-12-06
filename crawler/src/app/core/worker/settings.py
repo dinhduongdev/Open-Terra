@@ -22,11 +22,12 @@ class WorkerSettings:
     on_startup = startup
     on_shutdown = shutdown
     handle_signals = False
+    queue_name = "crawler-queue"
 
     # Cron jobs
     # - Weather: every 5 minutes
     # - Air quality: every 15 minutes
     cron_jobs = [
-        cron(crawl_weather_data, minute={0, 15, 30, 45}),
-        cron(crawl_air_quality_data, minute={0, 15, 30, 45}),
+        cron(crawl_weather_data, second={0, 15, 30, 45}),
+        cron(crawl_air_quality_data, second={0, 15, 30, 45}),
     ]

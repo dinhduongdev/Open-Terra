@@ -28,11 +28,11 @@ services:
       # Water Devices Configuration
       WATER_INTERVAL: ${WATER_INTERVAL:-30000}
       WATER_DEVICE_ID_1: ${WATER_DEVICE_ID_1:-water001}
-      WATER_ENTITY_NAME_1: ${WATER_ENTITY_NAME_1:-urn:ngsi-ld:WaterObserved:001}
+      WATER_ENTITY_NAME_1: ${WATER_ENTITY_NAME_1:-urn:ngsi-ld:FloodMonitoring:001}
       WATER_DEVICE_ID_2: ${WATER_DEVICE_ID_2:-water002}
-      WATER_ENTITY_NAME_2: ${WATER_ENTITY_NAME_2:-urn:ngsi-ld:WaterObserved:002}
+      WATER_ENTITY_NAME_2: ${WATER_ENTITY_NAME_2:-urn:ngsi-ld:FloodMonitoring:002}
       WATER_DEVICE_ID_3: ${WATER_DEVICE_ID_3:-water003}
-      WATER_ENTITY_NAME_3: ${WATER_ENTITY_NAME_3:-urn:ngsi-ld:WaterObserved:003}
+      WATER_ENTITY_NAME_3: ${WATER_ENTITY_NAME_3:-urn:ngsi-ld:FloodMonitoring:003}
     ports:
       - 3000:3000
     networks:

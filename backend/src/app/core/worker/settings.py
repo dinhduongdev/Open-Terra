@@ -22,6 +22,7 @@ class WorkerSettings:
     on_startup = startup
     on_shutdown = shutdown
     handle_signals = False
+    queue_name = "backend-queue"
 
     # Cron jobs
     cron_jobs = [cron(sample_background_task, minute={0, 15, 30, 45})]

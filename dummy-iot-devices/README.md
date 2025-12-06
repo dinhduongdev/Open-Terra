@@ -33,7 +33,7 @@ The simulator is built with Node.js using an object-oriented architecture:
 **Device Classes** (`devices/`)
 - `BaseDevice.js`: Abstract base class defining device interface and common functionality
 - `trafficFlowObserved.js`: Traffic monitoring device with rush hour simulation (6:30-9 AM, 12-1 PM, 5-7 PM)
-- `waterObserved.js`: Water level monitoring with flood detection and tidal calculations
+- `floodMonitoring.js`: Water level monitoring with flood detection and tidal calculations
 
 **Utilities** (`utils/`)
 - `mqttClient.js`: MQTT connection manager for broker communication
@@ -89,7 +89,7 @@ Simulates flood monitoring sensors with:
 - Tidal surge prediction using lunar calendar
 - Seasonal variation modeling
 
-Data model: [WaterObserved](https://github.com/smart-data-models/dataModel.Environment)
+Data model: [FloodMonitoring](https://github.com/smart-data-models/dataModel.Environment)
 
 ## Key Features
 

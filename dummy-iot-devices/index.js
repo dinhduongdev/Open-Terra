@@ -9,7 +9,7 @@
 const mqttClient = require('./utils/mqttClient');
 const config = require('./config');
 const TrafficFlowObserved = require('./devices/trafficFlowObserved');
-const WaterObserved = require("./devices/waterObserved");
+const FloodMonitoring = require("./devices/floodMonitoring");
 
 // Store device instances
 const devices = [];
@@ -38,7 +38,7 @@ async function startDevices() {
         // Initialize all water observation devices
         console.log('\nInitializing Water Level Sensors:');
         config.devices.waterDevices.forEach((deviceConfig, index) => {
-            const device = new WaterObserved(deviceConfig);
+            const device = new FloodMonitoring(deviceConfig);
             devices.push(device);
             console.log(`  [${index + 1}] ${deviceConfig.deviceId} at (${deviceConfig.location.lat}, ${deviceConfig.location.lon}) - capacity: ${deviceConfig.drainageCapacity}m`);
         });

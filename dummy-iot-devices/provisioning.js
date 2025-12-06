@@ -42,7 +42,7 @@ function getDeviceAttributes(deviceType) {
             { object_id: "d", name: "dateObserved", type: "DateTime" },
             { object_id: "loc", name: "location", type: "geo:point" }
         ];
-    } else if (deviceType === 'WaterObserved') {
+    } else if (deviceType === 'FloodMonitoring') {
         return [
             { object_id: "w", name: "waterLevel", type: "Float" },
             { object_id: "f", name: "flow", type: "Float" },
