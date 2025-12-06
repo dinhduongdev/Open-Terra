@@ -11,8 +11,8 @@ services:
     env_file:
       - ./src/.env
     # -------- replace ports with expose if you are using nginx --------
-    # ports:
-    #    - "8000:8000"
+    ports:
+       - "8000:8000"
     expose:
        - "8000"
     depends_on:
@@ -46,6 +46,8 @@ services:
       - ./src/.env
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     expose:
       - "5432"
 
@@ -53,6 +55,8 @@ services:
     image: redis:alpine
     volumes:
       - redis-data:/data
+    ports:
+      - "6379:6379"
     expose:
       - "6379"
 

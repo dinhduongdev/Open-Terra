@@ -40,6 +40,8 @@ services:
         condition: service_healthy
     networks:
       - open-terra-network
+    ports:
+      - "1026:1026"
     expose:
       - "1026"
     environment:
@@ -63,6 +65,8 @@ services:
     hostname: mongo-db
     container_name: db-mongo
     restart: unless-stopped
+    ports:
+      - "27017:27017"
     expose:
       - "27017"
     networks:
@@ -79,6 +83,8 @@ services:
     hostname: context
     container_name: fiware-ld-context
     restart: unless-stopped
+    ports:
+      - "8888:80"
     expose:
       - "80"
     volumes:
@@ -111,6 +117,8 @@ services:
       - DATASOURCES_DEFAULT_MAXIMUM_POOL_SIZE=2
       - ENDPOINTS_INFO_ENABLED=true
       - ENDPOINTS_INFO_SENSITIVE=false
+    ports:
+      - "8080:8080"
     expose:
       - "8080"
     networks:
@@ -139,6 +147,8 @@ services:
       - POSTGRES_PASSWORD=orion
       - POSTGRES_HOST_AUTH_METHOD=trust
     command: [ "postgres", "-c", "log_statement=none" ]
+    ports:
+      - "5434:5432"
     expose:
       - "5432"
     networks:
@@ -151,6 +161,9 @@ services:
     hostname: mosquitto
     container_name: mosquitto
     restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
     expose:
       - "1883"
       - "9001"
@@ -171,6 +184,9 @@ services:
       - orion
     networks:
       - open-terra-network
+    ports:
+      - "4041:4041"
+      - "7896:7896"
     expose:
       - "4041"
       - "7896"
