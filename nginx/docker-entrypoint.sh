@@ -10,7 +10,7 @@
 set -e
 
 # List of domains that need certificates
-DOMAINS="backend.open-terra.io.vn dummy-iot.open-terra.io.vn opendata.open-terra.io.vn temporal.open-terra.io.vn"
+DOMAINS="sta-backend.open-terra.io.vn sta-dummy-iot.open-terra.io.vn sta-opendata.open-terra.io.vn sta-temporal.open-terra.io.vn"
 
 echo "Checking SSL certificates..."
 echo ""
