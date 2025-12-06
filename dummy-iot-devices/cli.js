@@ -322,19 +322,22 @@ async function autoCommand(withUI = false) {
         }
 
         // Provision devices
-        console.log('\nProvisioning devices...');
+        console.log('\nProvisioning devices (one by one with delay)...');
         const deviceResult = await provisioning.provisionDevices('all');
-        if (deviceResult.status === 409) {
-            console.log(`  ${deviceResult.count} devices already exist (skipped)`);
-        } else {
-            console.log(`✓ ${deviceResult.count} devices provisioned`);
+        
+        if (deviceResult.provisioned > 0) {
+            console.log(`✓ ${deviceResult.provisioned} new devices provisioned`);
         }
+        if (deviceResult.alreadyExists > 0) {
+            console.log(`⊙ ${deviceResult.alreadyExists} devices already existed`);
+        }
+        console.log(`  Total: ${deviceResult.count} devices`);
 
         console.log('\n✓ Provisioning complete!\n');
 
-        // Wait for IoT Agent and Orion-LD to process provisioning
-        console.log('Waiting 1 minute for provisioning to complete...\n');
-        await new Promise(resolve => setTimeout(resolve, 60000));
+        // Wait for temporal subscriptions to be fully initialized
+        console.log('Waiting 30 seconds for temporal subscriptions to be ready...\n');
+        await new Promise(resolve => setTimeout(resolve, 30000));
 
         // Step 2: Start devices
         console.log('[2/2] Starting all devices...\n');
@@ -399,16 +402,19 @@ async function provisionCommand(type = 'all') {
         }
 
         // Provision devices
-        console.log('\nProvisioning devices...');
+        console.log('\nProvisioning devices (one by one with delay)...');
         const deviceResult = await provisioning.provisionDevices(type);
-        if (deviceResult.status === 409) {
-            console.log(`  ${deviceResult.count} devices already exist (skipped)`);
-        } else {
-            console.log(`✓ ${deviceResult.count} devices provisioned`);
+        
+        if (deviceResult.provisioned > 0) {
+            console.log(`✓ ${deviceResult.provisioned} new devices provisioned`);
         }
+        if (deviceResult.alreadyExists > 0) {
+            console.log(`⊙ ${deviceResult.alreadyExists} devices already existed`);
+        }
+        console.log(`  Total: ${deviceResult.count} devices`);
 
         console.log('\n✓ Provisioning complete!\n');
-        console.log('You can now start the devices with: npm start\n');
+        console.log('Wait 30 seconds, then start devices with: npm start\n');
 
     } catch (error) {
         console.error('\n✗ Provisioning failed:', error.message);

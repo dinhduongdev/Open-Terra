@@ -122,6 +122,7 @@ async function provisionServiceGroup() {
 
 /**
  * Provision devices to IoT Agent
+ * Provisions devices ONE BY ONE with delay to ensure temporal subscriptions are properly set up
  */
 async function provisionDevices(deviceType) {
     const url = `${IOTA_URL}/iot/devices`;
@@ -131,34 +132,58 @@ async function provisionDevices(deviceType) {
         'fiware-servicepath': config.fiware.servicePath
     };
 
-    let devices;
+    let deviceConfigs;
     if (deviceType === 'traffic') {
-        devices = getTrafficDevicesConfig();
+        deviceConfigs = getTrafficDevicesConfig();
     } else if (deviceType === 'water') {
-        devices = getWaterDevicesConfig();
+        deviceConfigs = getWaterDevicesConfig();
     } else {
-        devices = [...getTrafficDevicesConfig(), ...getWaterDevicesConfig()];
+        deviceConfigs = [...getTrafficDevicesConfig(), ...getWaterDevicesConfig()];
     }
 
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify({ devices })
-        });
+    // Provision devices one by one with delay to avoid race conditions
+    // This ensures each device's temporal subscription is properly initialized
+    let successCount = 0;
+    let alreadyExistsCount = 0;
 
-        if (!response.ok && response.status !== 409) { // 409 = already exists
-            const text = await response.text();
-            throw new Error(`Failed to provision devices: ${response.status} ${text}`);
-        }
+    for (const device of deviceConfigs) {
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ devices: [device] })
+            });
 
-        return { success: true, status: response.status, count: devices.length };
-    } catch (error) {
-        if (error.code === 'ECONNREFUSED') {
-            throw new Error('Cannot connect to IoT Agent. Is it running?');
+            if (response.ok) {
+                successCount++;
+                console.log(`  ✓ Provisioned: ${device.device_id}`);
+                // Wait 2 seconds between each device to allow temporal subscription setup
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            } else if (response.status === 409) {
+                alreadyExistsCount++;
+                console.log(`  ⊙ Already exists: ${device.device_id}`);
+            } else {
+                const text = await response.text();
+                console.error(`  ✗ Failed to provision ${device.device_id}: ${response.status} ${text}`);
+            }
+        } catch (error) {
+            if (error.code === 'ECONNREFUSED') {
+                throw new Error('Cannot connect to IoT Agent. Is it running?');
+            }
+            console.error(`  ✗ Error provisioning ${device.device_id}: ${error.message}`);
         }
-        throw error;
     }
+
+    const totalCount = deviceConfigs.length;
+    const status = alreadyExistsCount === totalCount ? 409 : 201;
+
+    return { 
+        success: true, 
+        status: status, 
+        count: totalCount,
+        provisioned: successCount,
+        alreadyExists: alreadyExistsCount
+    };
 }
 
 /**
