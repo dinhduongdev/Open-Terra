@@ -94,20 +94,17 @@ sleep 5
 compose_up "Backend" "$BACKEND_DIR"
 sleep 5
 
-# Nginx - chmod +x init script and run it
+# Nginx - Start with docker compose (will use self-signed certs initially)
+compose_up "Nginx" "$NGINX_DIR"
+
+# Optional: Generate Let's Encrypt certificates
 echo "----------------------------------------"
-echo "Starting Nginx..."
+echo "Setting up SSL certificates..."
 echo "----------------------------------------"
-if [ -f "$NGINX_DIR/init-letsencrypt.sh" ]; then
-    cd "$NGINX_DIR"
-    chmod +x init-letsencrypt.sh
-    echo "✓ Made init-letsencrypt.sh executable"
-    ./init-letsencrypt.sh
-    echo "✓ Nginx started successfully"
-else
-    echo "⚠ init-letsencrypt.sh not found, trying regular compose up"
-    compose_up "Nginx" "$NGINX_DIR"
-fi
+echo "To generate Let's Encrypt certificates, run:"
+echo "  cd $NGINX_DIR && ./init-letsencrypt.sh"
+echo ""
+echo "Note: Nginx is currently running with self-signed certificates"
 echo ""
 
 echo "======================================"
