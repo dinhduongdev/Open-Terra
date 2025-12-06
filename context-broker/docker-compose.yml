@@ -115,6 +115,12 @@ services:
       - "8080"
     networks:
       - open-terra-network
+    healthcheck:
+      test: curl --fail -s http://mintaka:8080/health || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   timescale-db:
     platform: linux/amd64

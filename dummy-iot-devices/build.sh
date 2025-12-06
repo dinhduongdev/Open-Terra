@@ -42,8 +42,7 @@ docker buildx build \
   -f "${SCRIPT_DIR}/Dockerfile" \
   -t "${IMAGE_TAG}" \
   "${SCRIPT_DIR}" \
-  
-# --push
+  --push
 
 echo ""
 echo "Build and push successful (multi-arch)!"

@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 # -------- background tasks --------
-async def sample_background_task(ctx: Worker, name: str) -> str:
+async def sample_background_task(ctx: Worker, name: str = "scheduled") -> str:
     await asyncio.sleep(5)
     return f"Task {name} is complete!"
 

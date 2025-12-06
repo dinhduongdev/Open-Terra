@@ -22,6 +22,7 @@ domains=(
   "backend.open-terra.io.vn"
   "dummy-iot.open-terra.io.vn"
   "opendata.open-terra.io.vn"
+  "temporal.open-terra.io.vn"
 )
 
 # Email for Let's Encrypt notifications

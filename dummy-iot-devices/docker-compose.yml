@@ -3,7 +3,7 @@ services:
     image: yudhna04/openterra-dummy-iot-devices:latest
     container_name: openterra-dummy-iot-devices
     restart: unless-stopped
-    command: ["node", "cli.js", "auto"]
+    command: ["node", "cli.js", "auto", "--ui"]
     environment:
       # MQTT Broker Configuration
       MQTT_BROKER_URL: ${MQTT_BROKER_URL:-mqtt://mosquitto:1883}

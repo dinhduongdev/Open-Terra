@@ -12,7 +12,7 @@ const fetch = require('node-fetch');
 /**
  * IoT Agent provisioning configuration
  */
-const IOTA_URL = process.env.IOTA_URL || 'http://localhost:4041';
+const IOTA_URL = process.env.IOTA_URL || 'http://iot-agent:4041';
 
 /**
  * Get service group configuration
