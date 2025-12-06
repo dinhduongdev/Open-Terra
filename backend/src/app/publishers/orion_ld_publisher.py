@@ -115,6 +115,8 @@ class OrionLDPublisher:
         logger.info(f"Creating new entity: {entity_urn}")
 
         response = requests.post(self.entities_endpoint, json=ngsi_ld_data, headers=self.headers, timeout=10)
+        if response.status_code >= 400:
+            logger.error(f"Orion-LD error response: {response.text}")
         response.raise_for_status()
         logger.info(f"Successfully created entity {entity_urn}")
         return response
@@ -167,6 +169,7 @@ class OrionLDPublisher:
             entity_urn = ngsi_ld_data["id"]
 
             logger.info(f"Publishing entity to Orion-LD: {entity_urn}")
+            logger.debug(f"NGSI-LD data: {ngsi_ld_data}")
 
             # Check if entity exists first
             entity_exists = self._entity_exists(entity_urn)

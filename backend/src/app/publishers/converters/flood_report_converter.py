@@ -56,8 +56,11 @@ class FloodReportConverter(NGSILDConverter):
             ngsi_ld["address"] = self._add_property("address", address_data.model_dump(exclude_none=True))
 
         # Add temporal information
-        observed_at = str(entity.created_at)
-        ngsi_ld["observationDateTime"] = self._add_datetime_property(entity.created_at)
+        # Format datetime to ISO 8601 with timezone
+        observed_at = (
+            entity.created_at.isoformat() if hasattr(entity.created_at, "isoformat") else str(entity.created_at)
+        )
+        ngsi_ld["dateObserved"] = self._add_datetime_property(entity.created_at)
         ngsi_ld["dateCreated"] = self._add_datetime_property(entity.created_at)
 
         if entity.updated_at:
@@ -69,9 +72,10 @@ class FloodReportConverter(NGSILDConverter):
 
         # Map severity to floodLevelStatus
         # This is a standard field in FloodMonitoring
+        severity_value = entity.severity.value if hasattr(entity.severity, "value") else entity.severity
         severity_to_status = {"Low": "Normal", "Medium": "Alert", "High": "Danger"}
         ngsi_ld["floodLevelStatus"] = self._add_property(
-            "floodLevelStatus", severity_to_status.get(entity.severity.value, "Alert"), observed_at=observed_at
+            "floodLevelStatus", severity_to_status.get(severity_value, "Alert"), observed_at=observed_at
         )
 
         # Add custom properties for user report data
@@ -79,7 +83,7 @@ class FloodReportConverter(NGSILDConverter):
         ngsi_ld["reportedBy"] = self._add_property("reportedBy", entity.reporter_username)
 
         # Severity level
-        ngsi_ld["severityLevel"] = self._add_property("severityLevel", entity.severity.value, observed_at=observed_at)
+        ngsi_ld["severityLevel"] = self._add_property("severityLevel", severity_value, observed_at=observed_at)
 
         # Add photo URLs if available
         if entity.photo_urls:

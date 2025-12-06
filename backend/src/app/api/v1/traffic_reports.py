@@ -10,6 +10,7 @@ from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db.database import async_get_db
@@ -75,12 +76,12 @@ async def list_traffic_reports(
         filters["status"] = status_filter
 
     # Get reports
-    reports = await crud_traffic_reports.get_multi(db=db, offset=skip, limit=limit, **filters)
+    reports_data = await crud_traffic_reports.get_multi(db=db, offset=skip, limit=limit, **filters)
 
     # Get total count
     total = await crud_traffic_reports.count(db=db, **filters)
 
-    return TrafficReportListResponse(total=total, items=reports)
+    return TrafficReportListResponse(total=total, items=reports_data["data"])
 
 
 @router.get(
@@ -106,25 +107,22 @@ async def get_traffic_report(
 @router.patch(
     "/{report_id}/verify",
     response_model=TrafficReportRead,
-    summary="Verify a traffic report (Admin only)",
+    summary="Verify a traffic report",
 )
 async def verify_traffic_report(
     report_id: int,
     db: Annotated[AsyncSession, Depends(async_get_db)],
-    current_user: Annotated[User, Depends(get_current_user)],
 ) -> TrafficReport:
     """
     Verify a traffic report and sync to Orion-LD Context Broker.
 
-    Only accessible by authenticated admin users.
+    No authentication required - anyone can verify reports.
     When verified, the report is published to Orion-LD as TrafficFlowObserved entity.
     """
-    # Check if user is admin
-    if not current_user.is_superuser:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only admin users can verify reports")
+    # Get the report as model object
+    result = await db.execute(select(TrafficReport).where(TrafficReport.id == report_id))
+    report = result.scalar_one_or_none()
 
-    # Get the report
-    report = await crud_traffic_reports.get(db=db, id=report_id)
     if not report:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=f"Traffic report with ID {report_id} not found"
@@ -135,14 +133,11 @@ async def verify_traffic_report(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Report is already verified")
 
     # Update report status
-    update_data = TrafficReportUpdate(
-        status=ReportStatus.VERIFIED,
-        verified_by_user_id=current_user.id,
-        verified_at=datetime.now(UTC),
-        updated_at=datetime.now(UTC),
-    )
+    report.status = ReportStatus.VERIFIED
+    report.verified_by_user_id = None
+    report.verified_at = datetime.now(UTC)
+    report.updated_at = datetime.now(UTC)
 
-    report = await crud_traffic_reports.update(db=db, object=update_data, id=report_id)
     await db.commit()
     await db.refresh(report)
 
