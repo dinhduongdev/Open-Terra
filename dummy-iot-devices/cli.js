@@ -333,8 +333,8 @@ async function autoCommand(withUI = false) {
         console.log('\n✓ Provisioning complete!\n');
 
         // Wait for IoT Agent and Orion-LD to process provisioning
-        console.log('Waiting 3 seconds for provisioning to complete...\n');
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        console.log('Waiting 1 minute for provisioning to complete...\n');
+        await new Promise(resolve => setTimeout(resolve, 60000));
 
         // Step 2: Start devices
         console.log('[2/2] Starting all devices...\n');

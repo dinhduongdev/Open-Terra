@@ -78,9 +78,9 @@ class DeviceManager {
         // Start devices with staggered delays to avoid race conditions
         for (let i = 0; i < this.devices.length; i++) {
             this.devices[i].start();
-            // Wait 500ms between starting each device
+            // Wait 1000ms between starting each device
             if (i < this.devices.length - 1) {
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await new Promise(resolve => setTimeout(resolve, 1000));
             }
         }
         
