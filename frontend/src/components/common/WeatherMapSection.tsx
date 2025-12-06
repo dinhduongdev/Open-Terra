@@ -13,10 +13,10 @@ const TemperatureLegendItem = ({
   label: string;
 }) => (
   <div className="flex items-center gap-2">
-    <div className="w-8 h-8 rounded-full" style={{ backgroundColor: color }} />
+    <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
     <div>
-      <div className="font-semibold">{range}</div>
-      <div className="text-gray-600">{label}</div>
+      <div className="font-semibold text-xs sm:text-sm">{range}</div>
+      <div className="text-gray-600 text-xs">{label}</div>
     </div>
   </div>
 );
@@ -27,16 +27,16 @@ export default function WeatherMapSection({
 }: WeatherMapControlsProps) {
   return (
     <>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-gray-700 flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-700 flex items-center gap-2">
           <span>🗺️</span>
-          Bản đồ thời tiết - OpenStreetMap
+          <span className="break-words">Bản đồ thời tiết - OpenStreetMap</span>
         </h2>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600">Hiển thị trạm quan trắc:</span>
+          <span className="text-xs sm:text-sm text-gray-600">Hiển thị trạm:</span>
           <button
             onClick={() => onToggle(!showStations)}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
               showStations
                 ? 'bg-blue-500 text-white hover:bg-blue-600'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -48,12 +48,12 @@ export default function WeatherMapSection({
       </div>
 
       {/* Instructions */}
-      <div className="mb-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
-        <div className="flex items-start gap-3">
-          <span className="text-2xl">ℹ️</span>
+      <div className="mb-4 p-3 sm:p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+        <div className="flex items-start gap-2 sm:gap-3">
+          <span className="text-xl sm:text-2xl">ℹ️</span>
           <div>
-            <h3 className="font-semibold text-blue-900 mb-1">Hướng dẫn sử dụng</h3>
-            <ul className="text-sm text-blue-800 space-y-1">
+            <h3 className="font-semibold text-blue-900 mb-1 text-sm sm:text-base">Hướng dẫn sử dụng</h3>
+            <ul className="text-xs sm:text-sm text-blue-800 space-y-1">
               <li>• Click vào các điểm tròn màu để xem chi tiết trạm quan trắc</li>
               <li>
                 • Màu sắc thể hiện nhiệt độ (Đỏ = Nóng &gt;30°C, Cam = Ấm 25-30°C, Xanh =
@@ -67,9 +67,9 @@ export default function WeatherMapSection({
       </div>
 
       {/* Temperature Legend */}
-      <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-        <h3 className="font-semibold text-gray-800 mb-3 text-sm">Chú thích nhiệt độ:</h3>
-        <div className="flex flex-wrap gap-4 text-xs">
+      <div className="mb-4 p-3 sm:p-4 bg-gray-50 rounded-lg">
+        <h3 className="font-semibold text-gray-800 mb-2 sm:mb-3 text-xs sm:text-sm">Chú thích nhiệt độ:</h3>
+        <div className="flex flex-wrap gap-3 sm:gap-4 text-xs">
           <TemperatureLegendItem color="#3b82f6" range="< 25°C" label="Mát mẻ" />
           <TemperatureLegendItem color="#f59e0b" range="25-30°C" label="Ấm áp" />
           <TemperatureLegendItem color="#ef4444" range="> 30°C" label="Nóng bức" />

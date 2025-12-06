@@ -14,56 +14,56 @@ interface FloodOverviewProps {
 
 export default function FloodOverview({ data }: FloodOverviewProps) {
   return (
-    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-      <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="mt-4 md:mt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+      <div className="bg-white rounded-lg shadow-md p-3 md:p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-gray-600 mb-1">Tổng diện tích ngập</p>
-            <p className="text-2xl font-bold text-blue-600">{data.totalAffectedArea} km²</p>
+            <p className="text-xs md:text-sm text-gray-600 mb-1">Tổng diện tích ngập</p>
+            <p className="text-lg md:text-2xl font-bold text-blue-600">{data.totalAffectedArea} km²</p>
           </div>
-          <div className="text-3xl">🗺️</div>
+          <div className="text-2xl md:text-3xl">🗺️</div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-md p-3 md:p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-gray-600 mb-1">Dân số ảnh hưởng</p>
-            <p className="text-2xl font-bold text-orange-600">
+            <p className="text-xs md:text-sm text-gray-600 mb-1">Dân số ảnh hưởng</p>
+            <p className="text-lg md:text-2xl font-bold text-orange-600">
               {data.totalAffectedPopulation.toLocaleString()}
             </p>
           </div>
-          <div className="text-3xl">👥</div>
+          <div className="text-2xl md:text-3xl">👥</div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-md p-3 md:p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-gray-600 mb-1">Độ sâu trung bình</p>
-            <p className="text-2xl font-bold text-cyan-600">{data.averageDepth} cm</p>
+            <p className="text-xs md:text-sm text-gray-600 mb-1">Độ sâu trung bình</p>
+            <p className="text-lg md:text-2xl font-bold text-cyan-600">{data.averageDepth} cm</p>
           </div>
-          <div className="text-3xl">📏</div>
+          <div className="text-2xl md:text-3xl">📏</div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-md p-3 md:p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-gray-600 mb-1">Vùng nguy hiểm</p>
-            <p className="text-2xl font-bold text-red-600">{data.criticalZones}</p>
+            <p className="text-xs md:text-sm text-gray-600 mb-1">Vùng nguy hiểm</p>
+            <p className="text-lg md:text-2xl font-bold text-red-600">{data.criticalZones}</p>
           </div>
-          <div className="text-3xl">🚨</div>
+          <div className="text-2xl md:text-3xl">🚨</div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-md p-3 md:p-6 col-span-2 md:col-span-1">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-gray-600 mb-1">Cảnh báo hoạt động</p>
-            <p className="text-2xl font-bold text-yellow-600">{data.activeWarnings}</p>
+            <p className="text-xs md:text-sm text-gray-600 mb-1">Cảnh báo hoạt động</p>
+            <p className="text-lg md:text-2xl font-bold text-yellow-600">{data.activeWarnings}</p>
           </div>
-          <div className="text-3xl">⚠️</div>
+          <div className="text-2xl md:text-3xl">⚠️</div>
         </div>
       </div>
     </div>

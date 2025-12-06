@@ -65,69 +65,71 @@ export default function WeatherPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-3">
-          <span className="text-4xl">🌤️</span>
-          {tSidebar('weather')}
-        </h1>
-        <p className="text-gray-600">{t('subtitle')}</p>
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Header */}
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2 flex items-center gap-2 sm:gap-3">
+            <span className="text-3xl sm:text-4xl">🌤️</span>
+            <span className="break-words">{tSidebar('weather')}</span>
+          </h1>
+          <p className="text-sm sm:text-base text-gray-600">{t('subtitle')}</p>
+        </div>
 
-      {/* Current Weather Data */}
-      <div className="mb-8">
-        {loading && <LoadingSpinner />}
-        {error && <ErrorMessage message={error} />}
-        {weatherData && !loading && <WeatherCurrentCard weatherData={weatherData} />}
-        {!loading && !error && !weatherData && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-center">
-            <p className="text-yellow-700 text-lg">Không có dữ liệu thời tiết</p>
-          </div>
-        )}
-      </div>
+        {/* Current Weather Data */}
+        <div className="mb-6 sm:mb-8">
+          {loading && <LoadingSpinner />}
+          {error && <ErrorMessage message={error} />}
+          {weatherData && !loading && <WeatherCurrentCard weatherData={weatherData} />}
+          {!loading && !error && !weatherData && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 sm:p-6 text-center">
+              <p className="text-yellow-700 text-base sm:text-lg">Không có dữ liệu thời tiết</p>
+            </div>
+          )}
+        </div>
 
-      {/* 7-Day Forecast */}
-      <div className="mb-8">
-        <WeatherForecastComponent forecasts={weeklyForecast} />
-      </div>
+        {/* 7-Day Forecast */}
+        <div className="mb-6 sm:mb-8">
+          <WeatherForecastComponent forecasts={weeklyForecast} />
+        </div>
 
-      {/* Hourly Forecast */}
-      <div className="mb-8">
-        <WeatherHourlyComponent forecasts={hourlyForecast} />
-      </div>
+        {/* Hourly Forecast */}
+        <div className="mb-6 sm:mb-8">
+          <WeatherHourlyComponent forecasts={hourlyForecast} />
+        </div>
 
-      {/* Weather Statistics API */}
-      <div className="mb-8">
-        {statsLoading && <LoadingSpinner />}
-        {statsError && <ErrorMessage message={statsError} />}
-        {statisticsData && !statsLoading && (
-          <WeatherStatisticsAPI 
-            statisticsData={statisticsData}
-            startDate={dateRange.start}
-            endDate={dateRange.end}
-            onDateChange={(start, end) => setDateRange({ start, end })}
+        {/* Weather Statistics API */}
+        <div className="mb-6 sm:mb-8">
+          {statsLoading && <LoadingSpinner />}
+          {statsError && <ErrorMessage message={statsError} />}
+          {statisticsData && !statsLoading && (
+            <WeatherStatisticsAPI 
+              statisticsData={statisticsData}
+              startDate={dateRange.start}
+              endDate={dateRange.end}
+              onDateChange={(start, end) => setDateRange({ start, end })}
+            />
+          )}
+        </div>
+
+        {/* Weather Map */}
+        <div className="mb-6 sm:mb-8 bg-white rounded-lg shadow-md p-4 sm:p-6">
+          <WeatherMapSection showStations={showStations} onToggle={setShowStations} />
+          <WeatherMapDynamic
+            stations={weatherStations}
+            showStations={showStations}
+            onStationLayerToggle={setShowStations}
           />
-        )}
-      </div>
+        </div>
 
-      {/* Weather Map */}
-      <div className="mb-8 bg-white rounded-lg shadow-md p-6">
-        <WeatherMapSection showStations={showStations} onToggle={setShowStations} />
-        <WeatherMapDynamic
-          stations={weatherStations}
-          showStations={showStations}
-          onStationLayerToggle={setShowStations}
-        />
-      </div>
+        {/* Weather Tips */}
+        <div className="mb-6 sm:mb-8">
+          <WeatherTips />
+        </div>
 
-      {/* Weather Tips */}
-      <div className="mb-8">
-        <WeatherTips />
+        {/* Additional Info */}
+        <WeatherInfo />
       </div>
-
-      {/* Additional Info */}
-      <WeatherInfo />
     </div>
   );
 }

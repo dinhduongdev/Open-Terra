@@ -15,13 +15,13 @@ interface TrafficOverviewProps {
 
 export default function TrafficOverview({ data, hotspotCount }: TrafficOverviewProps) {
   return (
-    <div className="mt-6 bg-white rounded-lg shadow-md p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-700">Traffic Overview</h3>
-        <span className="text-sm text-gray-500">Cập nhật: {data.lastUpdate}</span>
+    <div className="mt-4 md:mt-6 bg-white rounded-lg shadow-md p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 md:mb-6 gap-2">
+        <h3 className="text-base md:text-lg font-semibold text-gray-700">Traffic Overview</h3>
+        <span className="text-xs md:text-sm text-gray-500">Cập nhật: {data.lastUpdate}</span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
           <p className="text-sm text-blue-600 font-medium">Tổng phương tiện</p>
           <p className="text-2xl font-bold text-blue-800 mt-2">

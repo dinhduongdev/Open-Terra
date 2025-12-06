@@ -15,8 +15,8 @@ interface TrafficIncidentsProps {
 
 export default function TrafficIncidents({ incidents }: TrafficIncidentsProps) {
   return (
-    <div className="mt-6 bg-white rounded-lg shadow-md p-6">
-      <h3 className="text-lg font-semibold text-gray-700 mb-4">
+    <div className="mt-4 md:mt-6 bg-white rounded-lg shadow-md p-4 md:p-6">
+      <h3 className="text-base md:text-lg font-semibold text-gray-700 mb-3 md:mb-4">
         Sự cố giao thông
       </h3>
 
@@ -24,13 +24,13 @@ export default function TrafficIncidents({ incidents }: TrafficIncidentsProps) {
         {incidents.map((incident) => (
           <div
             key={incident.id}
-            className="p-4 bg-gray-50 rounded-lg border-l-4 border-red-400"
+            className="p-3 md:p-4 bg-gray-50 rounded-lg border-l-4 border-red-400"
           >
-            <div className="flex items-start justify-between">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-2">
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${getSeverityColor(
+                    className={`px-2 md:px-3 py-1 rounded-full text-xs font-medium ${getSeverityColor(
                       incident.severity
                     )}`}
                   >
@@ -38,13 +38,13 @@ export default function TrafficIncidents({ incidents }: TrafficIncidentsProps) {
                   </span>
                   <span className="text-xs text-gray-500">{incident.time}</span>
                 </div>
-                <h4 className="font-semibold text-gray-800 mb-1">
+                <h4 className="font-semibold text-gray-800 mb-1 text-sm md:text-base">
                   {incident.location}
                 </h4>
-                <p className="text-sm text-gray-600">{incident.description}</p>
+                <p className="text-xs md:text-sm text-gray-600">{incident.description}</p>
               </div>
 
-              <button className="ml-4 text-blue-600 hover:text-blue-800 text-sm font-medium">
+              <button className="md:ml-4 text-blue-600 hover:text-blue-800 text-xs md:text-sm font-medium text-left md:text-right">
                 Chi tiết →
               </button>
             </div>

@@ -29,14 +29,14 @@ export default function RoutingPanel({
   popularLocations,
 }: RoutingPanelProps) {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+    <div className="bg-white rounded-lg shadow-md p-4 md:p-6 mb-4 md:mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-gray-700">
+        <h2 className="text-lg md:text-xl font-semibold text-gray-700">
           🧭 Định tuyến đường đi
         </h2>
         <button
           onClick={() => onRoutingToggle(!enableRouting)}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+          className={`px-3 md:px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
             enableRouting
               ? 'bg-blue-500 text-white hover:bg-blue-600'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'

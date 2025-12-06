@@ -71,24 +71,24 @@ export default function PollutantsOverview({ pollutants }: PollutantsOverviewPro
   };
 
   return (
-    <div className="mt-8 bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+    <div className="mt-6 md:mt-8 bg-white rounded-lg shadow-md p-4 md:p-6">
+      <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-4 md:mb-6 flex items-center gap-2">
         <span>🧪</span>
         Các chất ô nhiễm chính
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {pollutants.map((pollutant, index) => {
           const level = getPollutantLevel(pollutant.name, pollutant.value);
           const percentage = calculatePercentage(pollutant.name, pollutant.value);
           
           return (
-            <div key={index} className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow">
-              <div className="flex items-start justify-between mb-4">
+            <div key={index} className="border border-gray-200 rounded-lg p-4 md:p-5 hover:shadow-md transition-shadow">
+              <div className="flex items-start justify-between mb-3 md:mb-4">
                 <div>
-                  <h3 className="text-lg font-bold text-gray-800">{pollutant.name}</h3>
-                  <p className="text-2xl font-bold text-blue-600 mt-1">
-                    {pollutant.value} <span className="text-sm text-gray-500">{pollutant.unit}</span>
+                  <h3 className="text-base md:text-lg font-bold text-gray-800">{pollutant.name}</h3>
+                  <p className="text-xl md:text-2xl font-bold text-blue-600 mt-1">
+                    {pollutant.value} <span className="text-xs md:text-sm text-gray-500">{pollutant.unit}</span>
                   </p>
                 </div>
                 <div
@@ -134,9 +134,9 @@ export default function PollutantsOverview({ pollutants }: PollutantsOverviewPro
       </div>
 
       {/* Pollutants Info */}
-      <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
-        <h3 className="font-semibold text-blue-900 mb-2">ℹ️ Giải thích các chất ô nhiễm</h3>
-        <div className="text-sm text-blue-800 space-y-1">
+      <div className="mt-4 md:mt-6 p-3 md:p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+        <h3 className="font-semibold text-blue-900 mb-2 text-sm md:text-base">ℹ️ Giải thích các chất ô nhiễm</h3>
+        <div className="text-xs md:text-sm text-blue-800 space-y-1">
           <p><strong>PM2.5:</strong> Bụi mịn có đường kính ≤ 2.5 micromet, nguy hiểm vì có thể xâm nhập sâu vào phổi.</p>
           <p><strong>PM10:</strong> Bụi có đường kính ≤ 10 micromet, gây kích ứng đường hô hấp.</p>
           <p><strong>O₃ (Ozone):</strong> Khí ozone ở tầng mặt đất, gây kích ứng phổi và đường hô hấp.</p>
