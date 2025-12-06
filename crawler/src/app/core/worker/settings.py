@@ -22,6 +22,7 @@ class WorkerSettings:
     on_startup = startup
     on_shutdown = shutdown
     handle_signals = False
+    queue_name = "crawler-queue"
 
     # Cron jobs
     # - Weather: every 5 minutes

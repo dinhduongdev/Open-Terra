@@ -38,12 +38,12 @@ fi
 
 # Build and push multi-arch image
 docker buildx build \
+  --no-cache \
   --platform linux/amd64,linux/arm64 \
   -f "${SCRIPT_DIR}/Dockerfile" \
   -t "${IMAGE_TAG}" \
   "${SCRIPT_DIR}" \
-  
-# --push
+  --push
 
 echo ""
 echo "Build and push successful (multi-arch)!"
@@ -51,4 +51,4 @@ echo ""
 echo "Image pushed to registry: ${IMAGE_TAG}"
 echo ""
 echo "To run locally:"
-echo "  docker run -d -p 3030:3000 --name dummy-iot-devices ${IMAGE_TAG}"
+echo "  docker run -d -p 3000:3000 --name dummy-iot-devices ${IMAGE_TAG}"

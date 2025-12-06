@@ -31,16 +31,16 @@ services:
     volumes:
       # SSL certificates (for production)
       - ./ssl:/etc/nginx/ssl:ro
-      # Let's Encrypt certificates
-      - ./letsencrypt:/etc/letsencrypt:ro
+      # Let's Encrypt certificates (writable for initial setup)
+      - ./letsencrypt:/etc/letsencrypt
       # Certbot webroot for ACME challenges
-      - ./certbot/www:/var/www/certbot:ro
+      - ./certbot/www:/var/www/certbot
     healthcheck:
-      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/" ]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
       interval: 30s
       timeout: 3s
       retries: 3
-      start_period: 10s
+      start_period: 30s
     logging:
       driver: "json-file"
       options:

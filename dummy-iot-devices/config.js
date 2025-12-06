@@ -101,73 +101,82 @@ module.exports = {
 			},
 		],
 
-		// Water level monitoring devices at drain locations
+		// Flood monitoring devices at drain locations
 		waterDevices: [
 			{
-				deviceId: process.env.WATER_DEVICE_ID_1 || "water001",
+				deviceId: process.env.WATER_DEVICE_ID_1 || "flood001",
 				entityName:
-					process.env.WATER_ENTITY_NAME_1 || "urn:ngsi-ld:WaterObserved:001",
-				entityType: "WaterObserved",
+					process.env.WATER_ENTITY_NAME_1 || "urn:ngsi-ld:FloodMonitoring:001",
+				entityType: "FloodMonitoring",
 				interval: parseInt(process.env.WATER_INTERVAL) || 30000,
 				location: {
 					lat: 10.842639, // Nguyen Van Khoi, Go Vap, HCMC (flood-prone)
 					lon: 106.6543,
 				},
-				drainageCapacity: 0.35, // meters
+				referenceLevel: 2.5, // Distance from river bed to sensor (meters)
+				alertLevel: 1.8, // Alert threshold level (meters from river bed)
+				dangerLevel: 1.5, // Danger threshold level (meters from river bed)
 				attributes: {
-					waterLevel: "w", // Water level (meters)
-					flow: "f", // Water flow (m³/s)
-					height: "h", // Water height (meters)
+					measuredDistance: "md", // Distance from sensor to water surface (meters)
+					currentLevel: "cl", // Current water level from river bed (meters)
+					referenceLevel: "rl", // Reference level (sensor position)
+					alertLevel: "al", // Alert threshold
+					dangerLevel: "dl", // Danger threshold
+					floodLevelStatus: "fls", // Flood status (Normal/Alert/Danger)
 					dateObserved: "d", // Observation timestamp
-					floodStatus: "fs", // Flood status (normal/warning/alert/danger)
 					location: "loc", // GPS coordinates
-					tidalSurge: "ts", // Tidal surge active (boolean)
-					lunarDay: "ld", // Lunar calendar day
+					stationID: "sid", // Station identifier
 				},
 			},
 			{
-				deviceId: process.env.WATER_DEVICE_ID_2 || "water002",
+				deviceId: process.env.WATER_DEVICE_ID_2 || "flood002",
 				entityName:
-					process.env.WATER_ENTITY_NAME_2 || "urn:ngsi-ld:WaterObserved:002",
-				entityType: "WaterObserved",
+					process.env.WATER_ENTITY_NAME_2 || "urn:ngsi-ld:FloodMonitoring:002",
+				entityType: "FloodMonitoring",
 				interval: parseInt(process.env.WATER_INTERVAL) || 30000,
 				location: {
 					lat: 10.751735, // Tran Xuan Soan, District 7, HCMC (near canal)
 					lon: 106.70371,
 				},
-				drainageCapacity: 0.4, // meters
-				attributes: {
-					waterLevel: "w",
-					flow: "f",
-					height: "h",
-					dateObserved: "d",
-					floodStatus: "fs",
-					location: "loc",
-					tidalSurge: "ts",
-					lunarDay: "ld",
-				},
+			referenceLevel: 3.0, // Distance from river bed to sensor (meters)
+			alertLevel: 2.2, // Alert threshold level (meters from river bed)
+			dangerLevel: 1.8, // Danger threshold level (meters from river bed)
+			attributes: {
+				measuredDistance: "md",
+				currentLevel: "cl",
+				referenceLevel: "rl",
+				alertLevel: "al",
+				dangerLevel: "dl",
+				floodLevelStatus: "fls",
+				dateObserved: "d",
+				location: "loc",
+				stationID: "sid",
+			},
 			},
 			{
-				deviceId: process.env.WATER_DEVICE_ID_3 || "water003",
+				deviceId: process.env.WATER_DEVICE_ID_3 || "flood003",
 				entityName:
-					process.env.WATER_ENTITY_NAME_3 || "urn:ngsi-ld:WaterObserved:003",
-				entityType: "WaterObserved",
+					process.env.WATER_ENTITY_NAME_3 || "urn:ngsi-ld:FloodMonitoring:003",
+				entityType: "FloodMonitoring",
 				interval: parseInt(process.env.WATER_INTERVAL) || 30000,
 				location: {
 					lat: 10.85345, // Pham Van Chieu, Go Vap, HCMC
 					lon: 106.663544,
 				},
-				drainageCapacity: 0.3, // meters (smaller capacity)
-				attributes: {
-					waterLevel: "w",
-					flow: "f",
-					height: "h",
-					dateObserved: "d",
-					floodStatus: "fs",
-					location: "loc",
-					tidalSurge: "ts",
-					lunarDay: "ld",
-				},
+			referenceLevel: 2.0, // Distance from river bed to sensor (meters)
+			alertLevel: 1.5, // Alert threshold level (meters from river bed)
+			dangerLevel: 1.2, // Danger threshold level (meters from river bed)
+			attributes: {
+				measuredDistance: "md",
+				currentLevel: "cl",
+				referenceLevel: "rl",
+				alertLevel: "al",
+				dangerLevel: "dl",
+				floodLevelStatus: "fls",
+				dateObserved: "d",
+				location: "loc",
+				stationID: "sid",
+			},
 			},
 		],
 	},

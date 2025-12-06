@@ -1,177 +1,206 @@
 #!/bin/bash
 
 # ==============================================================================
-# Open Terra - SSL Certificate Generation with Let's Encrypt
+# Open Terra - SSL Certificate Setup
 # ==============================================================================
-# This script generates SSL certificates for all Open Terra domains using Certbot
+# This script prepares SSL certificates for all Open Terra domains
+# User can choose between:
+#   1. Self-signed certificates (for development/testing)
+#   2. Let's Encrypt certificates (for production)
 # 
 # Usage:
 #   chmod +x init-letsencrypt.sh
 #   ./init-letsencrypt.sh
 #
-# Prerequisites:
-#   - Docker and Docker Compose installed
-#   - Domains must point to your server's IP address
-#   - Port 80 must be accessible from the internet
+# After running this script, start nginx with: docker compose up -d
 # ==============================================================================
 
 set -e
 
 # Domain list
 domains=(
-  "backend.open-terra.io.vn"
-  "dummy-iot.open-terra.io.vn"
-  "opendata.open-terra.io.vn"
+  "sta-backend.open-terra.io.vn"
+  "sta-dummy-iot.open-terra.io.vn"
+  "sta-opendata.open-terra.io.vn"
+  "sta-temporal.open-terra.io.vn"
 )
 
 # Email for Let's Encrypt notifications
 email="hoanganhduy75@gmail.com" 
 
-# Staging mode (set to 1 for testing, 0 for production)
-staging=0
-
 # Paths
-data_path="./letsencrypt"
-certbot_path="./certbot"
-nginx_conf="./nginx.conf"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WEBROOT_PATH="$SCRIPT_DIR/certbot/www"
+CERT_PATH="$SCRIPT_DIR/letsencrypt"
 
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 echo -e "${GREEN}================================${NC}"
-echo -e "${GREEN}Open Terra SSL Setup${NC}"
+echo -e "${GREEN}Open Terra - SSL Certificate Setup${NC}"
 echo -e "${GREEN}================================${NC}"
 echo ""
-
-# Check if email is configured
-if [ "$email" = "your-email@example.com" ]; then
-  echo -e "${RED}Error: Please update the 'email' variable in this script${NC}"
-  exit 1
-fi
 
 # Create necessary directories
 echo -e "${YELLOW}Creating directories...${NC}"
-mkdir -p "$data_path/live"
-mkdir -p "$data_path/archive"
-mkdir -p "$certbot_path/www"
-mkdir -p "$certbot_path/conf"
+mkdir -p "$WEBROOT_PATH/.well-known/acme-challenge"
+mkdir -p "$CERT_PATH/live"
+mkdir -p "$CERT_PATH/archive"
+echo -e "${GREEN}✓ Directories created${NC}"
+echo ""
 
-# Download recommended TLS parameters if they don't exist
-if [ ! -e "$data_path/options-ssl-nginx.conf" ] || [ ! -e "$data_path/ssl-dhparams.pem" ]; then
-  echo -e "${YELLOW}Downloading recommended TLS parameters...${NC}"
-  curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf > "$data_path/options-ssl-nginx.conf"
-  curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > "$data_path/ssl-dhparams.pem"
-  echo -e "${GREEN}✓ Downloaded TLS parameters${NC}"
-fi
+# Ask user which type of certificate to use
+echo -e "${BLUE}Which type of SSL certificate do you want to use?${NC}"
+echo "1) Self-signed certificates (for development/testing)"
+echo "2) Let's Encrypt certificates (for production - requires domains pointing to this server)"
+echo ""
+read -p "Enter your choice (1 or 2): " cert_choice
+echo ""
 
-# Backup original nginx.conf and use initial config
-echo -e "${YELLOW}Preparing initial nginx configuration...${NC}"
-if [ -e "$nginx_conf" ] && [ ! -e "$nginx_conf.backup" ]; then
-  cp "$nginx_conf" "$nginx_conf.backup"
-  echo -e "${GREEN}✓ Backed up nginx.conf${NC}"
-fi
-cp nginx.conf.initial nginx.conf.temp
-echo -e "${GREEN}✓ Using temporary HTTP-only configuration${NC}"
-
-# Create dummy certificates for all domains
-echo -e "${YELLOW}Creating dummy certificates...${NC}"
-for domain in "${domains[@]}"; do
-  domain_path="$data_path/live/$domain"
-  mkdir -p "$domain_path"
+if [ "$cert_choice" = "1" ]; then
+  # Generate self-signed certificates
+  echo -e "${YELLOW}Generating self-signed certificates...${NC}"
+  echo ""
   
-  if [ ! -e "$domain_path/fullchain.pem" ]; then
-    echo -e "${YELLOW}Creating dummy certificate for $domain${NC}"
-    openssl req -x509 -nodes -newkey rsa:2048 -days 1 \
-      -keyout "$domain_path/privkey.pem" \
-      -out "$domain_path/fullchain.pem" \
+  for domain in "${domains[@]}"; do
+    echo -e "${YELLOW}Creating certificate for $domain...${NC}"
+    
+    CERT_DIR="$CERT_PATH/live/$domain"
+    mkdir -p "$CERT_DIR"
+    
+    # Generate self-signed certificate (valid for 365 days)
+    openssl req -x509 -nodes -newkey rsa:2048 -days 365 \
+      -keyout "$CERT_DIR/privkey.pem" \
+      -out "$CERT_DIR/fullchain.pem" \
       -subj "/CN=$domain" 2>/dev/null
-    echo -e "${GREEN}✓ Created dummy certificate for $domain${NC}"
+    
+    echo -e "${GREEN}✓ Self-signed certificate created for $domain${NC}"
+  done
+  
+  echo ""
+  echo -e "${GREEN}================================${NC}"
+  echo -e "${GREEN}Self-Signed Certificates Created!${NC}"
+  echo -e "${GREEN}================================${NC}"
+  echo ""
+  echo -e "${YELLOW}Note: These are self-signed certificates${NC}"
+  echo "Browsers will show security warnings"
+  echo "This is normal for development/testing"
+  
+elif [ "$cert_choice" = "2" ]; then
+  # Generate Let's Encrypt certificates
+  echo -e "${YELLOW}Setting up Let's Encrypt certificates...${NC}"
+  echo ""
+  
+  # Check if certbot is installed
+  if ! command -v certbot &> /dev/null; then
+    echo -e "${RED}Error: certbot is not installed${NC}"
+    echo -e "${YELLOW}Install with:${NC}"
+    echo "  Ubuntu/Debian: sudo apt update && sudo apt install certbot"
+    echo "  macOS: brew install certbot"
+    exit 1
   fi
-done
-
-# Build nginx with temporary config
-echo -e "${YELLOW}Building nginx image...${NC}"
-docker compose build nginx
-echo -e "${GREEN}✓ Nginx image built${NC}"
-
-# Start nginx with dummy certificates (certbot will also start)
-echo -e "${YELLOW}Starting nginx and certbot with temporary config...${NC}"
-# Use temporary config
-mv nginx.conf nginx.conf.ssl
-mv nginx.conf.temp nginx.conf
-docker compose up -d
-echo -e "${GREEN}✓ Nginx and certbot started${NC}"
-
-# Wait for nginx to start
-echo -e "${YELLOW}Waiting for nginx to be ready...${NC}"
-sleep 5
-
-# Test nginx
-echo -e "${YELLOW}Testing nginx configuration...${NC}"
-docker compose exec nginx nginx -t
-echo -e "${GREEN}✓ Nginx configuration valid${NC}"
-
-# Remove dummy certificates and get real ones
-echo -e "${YELLOW}Requesting Let's Encrypt certificates...${NC}"
-for domain in "${domains[@]}"; do
-  echo -e "${YELLOW}Processing $domain...${NC}"
   
-  # Remove dummy certificate
-  domain_path="$data_path/live/$domain"
-  rm -rf "$domain_path"
+  # Check if email is configured
+  if [ "$email" = "your-email@example.com" ]; then
+    echo -e "${RED}Error: Please update the 'email' variable in this script${NC}"
+    exit 1
+  fi
   
-  # Staging or production
+  # Ask about staging
+  echo -e "${BLUE}Do you want to use Let's Encrypt staging server (for testing)?${NC}"
+  echo "Staging server has higher rate limits and won't issue real certificates"
+  read -p "Use staging server? (y/n): " use_staging
+  echo ""
+  
   staging_arg=""
-  if [ $staging != "0" ]; then
+  if [ "$use_staging" = "y" ] || [ "$use_staging" = "Y" ]; then
     staging_arg="--staging"
+    echo -e "${YELLOW}Using staging server (test mode)${NC}"
   fi
   
-  # Request certificate
-  docker compose exec certbot certbot certonly \
-    --webroot \
-    --webroot-path=/var/www/certbot \
-    --email "$email" \
-    --agree-tos \
-    --no-eff-email \
-    $staging_arg \
-    -d "$domain"
+  # Request Let's Encrypt certificates using certbot container
+  echo -e "${YELLOW}Requesting Let's Encrypt certificates...${NC}"
+  echo ""
   
-  if [ $? -eq 0 ]; then
-    echo -e "${GREEN}✓ Certificate obtained for $domain${NC}"
-  else
-    echo -e "${RED}✗ Failed to obtain certificate for $domain${NC}"
-  fi
-done
+  # Stop any running certbot/nginx containers
+  docker compose down 2>/dev/null || true
+  
+  for domain in "${domains[@]}"; do
+    echo -e "${YELLOW}Processing $domain...${NC}"
+    
+    # Run certbot in standalone mode using docker
+    docker run --rm \
+      -v "$CERT_PATH:/etc/letsencrypt" \
+      -v "$WEBROOT_PATH:/var/www/certbot" \
+      -p 80:80 \
+      -p 443:443 \
+      certbot/certbot certonly \
+      --standalone \
+      --email "$email" \
+      --agree-tos \
+      --no-eff-email \
+      --force-renewal \
+      $staging_arg \
+      -d "$domain"
+    
+    if [ $? -eq 0 ]; then
+      echo -e "${GREEN}✓ Certificate obtained for $domain${NC}"
+    else
+      echo -e "${RED}✗ Failed to obtain certificate for $domain${NC}"
+      echo -e "${YELLOW}  Continuing with next domain...${NC}"
+    fi
+    echo ""
+  done
+  
+  # Set proper permissions
+  echo -e "${YELLOW}Setting permissions...${NC}"
+  chmod -R 755 "$CERT_PATH"
+  echo -e "${GREEN}✓ Permissions set${NC}"
+  
+  echo ""
+  echo -e "${GREEN}================================${NC}"
+  echo -e "${GREEN}Let's Encrypt Certificates Created!${NC}"
+  echo -e "${GREEN}================================${NC}"
+  echo ""
+  echo -e "${YELLOW}Summary:${NC}"
+  echo "- Certificates saved to: $CERT_PATH/live/"
+  echo "- Certificates will auto-renew via certbot container"
+  echo "- Or manually renew with: ./renew-certificates.sh"
+  
+else
+  echo -e "${RED}Invalid choice. Please run the script again and choose 1 or 2${NC}"
+  exit 1
+fi
 
-# Restore SSL nginx config
-echo -e "${YELLOW}Restoring SSL nginx configuration...${NC}"
-mv nginx.conf nginx.conf.initial.used
-mv nginx.conf.ssl nginx.conf
-echo -e "${GREEN}✓ SSL configuration restored${NC}"
+# Download TLS parameters if they don't exist
+echo ""
+echo -e "${YELLOW}Downloading recommended TLS parameters...${NC}"
+if [ ! -f "$CERT_PATH/options-ssl-nginx.conf" ]; then
+  curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf > "$CERT_PATH/options-ssl-nginx.conf" || \
+  wget -q -O "$CERT_PATH/options-ssl-nginx.conf" https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
+fi
 
-# Rebuild and restart nginx with SSL config
-echo -e "${YELLOW}Rebuilding nginx with SSL configuration...${NC}"
-docker compose build nginx
-docker compose up -d nginx
-echo -e "${GREEN}✓ Nginx rebuilt and restarted${NC}"
-
-# Wait for nginx to restart
-sleep 3
-
-# Reload nginx to use real certificates
-echo -e "${YELLOW}Reloading nginx...${NC}"
-docker compose exec nginx nginx -s reload
-echo -e "${GREEN}✓ Nginx reloaded${NC}"
+if [ ! -f "$CERT_PATH/ssl-dhparams.pem" ]; then
+  curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > "$CERT_PATH/ssl-dhparams.pem" || \
+  wget -q -O "$CERT_PATH/ssl-dhparams.pem" https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem
+fi
+echo -e "${GREEN}✓ TLS parameters ready${NC}"
 
 echo ""
 echo -e "${GREEN}================================${NC}"
-echo -e "${GREEN}SSL Setup Complete!${NC}"
+echo -e "${GREEN}Setup Complete!${NC}"
 echo -e "${GREEN}================================${NC}"
 echo ""
 echo -e "${YELLOW}Next steps:${NC}"
-echo "1. Test your HTTPS endpoints"
-echo "2. Set up auto-renewal with: ./renew-certificates.sh"
+echo "1. Start nginx: docker compose up -d"
+if [ "$cert_choice" = "1" ]; then
+  echo "2. Test your HTTPS endpoints (browsers will show security warnings)"
+else
+  echo "2. Test your HTTPS endpoints"
+  echo "3. Verify certificates: ls -la $CERT_PATH/live/"
+fi
 echo ""

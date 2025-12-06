@@ -60,7 +60,10 @@ async def close_redis_cache_pool() -> None:
 
 # -------------- queue --------------
 async def create_redis_queue_pool() -> None:
-    queue.pool = await create_pool(RedisSettings(host=settings.REDIS_QUEUE_HOST, port=settings.REDIS_QUEUE_PORT))
+    queue.pool = await create_pool(
+        RedisSettings(host=settings.REDIS_QUEUE_HOST, port=settings.REDIS_QUEUE_PORT),
+        default_queue_name="crawler-queue",
+    )
 
 
 async def close_redis_queue_pool() -> None:
