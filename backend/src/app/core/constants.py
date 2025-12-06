@@ -30,5 +30,13 @@ AIR_QUALITY_ENTITY_IDS = {
 
 # ===== Helper Functions =====
 def get_air_quality_entity_id(station_id: str) -> str:
-    """Get the full entity ID for an air quality station."""
+    """Get the full entity ID for an air quality station (for current data)."""
     return AIR_QUALITY_ENTITY_ID_TEMPLATE.format(station_id=station_id)
+
+def get_air_quality_temporal_id(station_id: str) -> str:
+    """Get the temporal entity ID for an air quality station (with :latest suffix as stored in Timescale)."""
+    return f"urn:ngsi-ld:AirQualityObserved:airquality:{station_id}:latest"
+
+def get_weather_temporal_id() -> str:
+    """Get the temporal entity ID for weather station (with :latest suffix as stored in Timescale)."""
+    return f"urn:ngsi-ld:WeatherObserved:weather:{WEATHER_STATION_ID}:latest"

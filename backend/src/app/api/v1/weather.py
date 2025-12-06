@@ -13,7 +13,7 @@ from app.schemas.api_response import APIResponse
 from app.schemas.smart_data.weather_observed import WeatherObserved, WeatherObservedResponse, WeatherListResponse
 from app.services.context_broker_client import ContextBrokerClient
 from app.core.config import settings
-from app.core.constants import WEATHER_ENTITY_ID, WEATHER_ID_PATTERN
+from app.core.constants import WEATHER_ENTITY_ID, WEATHER_ID_PATTERN, get_weather_temporal_id
 
 router = APIRouter(prefix="/v1/weather", tags=["weather"])
 
@@ -21,7 +21,11 @@ router = APIRouter(prefix="/v1/weather", tags=["weather"])
 
 
 async def get_context_broker() -> ContextBrokerClient:
-    client = ContextBrokerClient(broker_url=settings.ORION_LD_BASE_URL, context_url=settings.ORION_LD_CONTEXT)
+    client = ContextBrokerClient(
+        broker_url=settings.ORION_LD_BASE_URL,
+        mintaka_url=settings.MINTAKA_BASE_URL,
+        context_url=settings.ORION_LD_CONTEXT
+    )
     try:
         yield client
     finally:
@@ -181,7 +185,7 @@ async def query_weather(
         entity_id = WEATHER_ENTITY_ID
         
         # Query temporal data (Mintaka doesn't support 'q' parameter)
-        temporal_data = await context_broker_client.get_temporal_entities(
+        temporal_data = await context_broker_client.get_temporal_entity(
             entity_id=entity_id,
             timerel="between",
             time_at=start_time,
@@ -347,16 +351,16 @@ async def get_weather_history(
                 result=None,
             )
 
-        # Weather has only one station - use constant entity ID
-        entity_id = WEATHER_ENTITY_ID
+        # Weather has only one station - use temporal ID (without :latest)
+        entity_id = get_weather_temporal_id()
 
-        temporal_data = await context_broker_client.get_temporal_entities(
+        temporal_data = await context_broker_client.get_temporal_entity(
             entity_id=entity_id,
             timerel="between" if (start_time and end_time) else "before",
             time_at=start_time if start_time else datetime.utcnow(),
             end_time_at=end_time,
             last_n=last_n,
-            entity_format="concise",
+            entity_format="concise"
         )
 
         # Wrap single entity result in list for consistency
@@ -446,15 +450,15 @@ async def get_weather_statistics(
             )
 
         # Parse attributes
-        attr_list = [attr.strip() for attr in attributes.split(",")]
+        attr_list = [a.strip() for a in attributes.split(",")]
 
-        # Weather has only one station - use constant entity ID
-        entity_id = WEATHER_ENTITY_ID
+        # Weather has only one station - use temporal ID (without :latest)
+        entity_id = get_weather_temporal_id()
         
         # Get temporal data in concise format (easier to process)
         # Note: Don't pass attrs parameter initially to get all data,
         # then filter by attributes we need
-        temporal_data = await context_broker_client.get_temporal_entities(
+        temporal_data = await context_broker_client.get_temporal_entity(
             entity_id=entity_id,
             timerel="between",
             time_at=start_time,
