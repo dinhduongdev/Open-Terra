@@ -19,10 +19,10 @@ set -e
 
 # Domain list
 domains=(
-  "backend.open-terra.io.vn"
-  "dummy-iot.open-terra.io.vn"
-  "opendata.open-terra.io.vn"
-  "temporal.open-terra.io.vn"
+  "sta-backend.open-terra.io.vn"
+  "sta-dummy-iot.open-terra.io.vn"
+  "sta-opendata.open-terra.io.vn"
+  "sta-temporal.open-terra.io.vn"
 )
 
 # Email for Let's Encrypt notifications
@@ -122,14 +122,32 @@ elif [ "$cert_choice" = "2" ]; then
     echo -e "${YELLOW}Using staging server (test mode)${NC}"
   fi
   
-  # Check if nginx is running for webroot validation
-  echo -e "${YELLOW}Checking if nginx is running...${NC}"
+  # Use initial nginx config for certificate validation
+  echo -e "${YELLOW}Setting up nginx with HTTP-only config for certificate validation...${NC}"
+  
+  # Backup current nginx.conf if it exists and copy initial config
+  if [ -f "$SCRIPT_DIR/nginx.conf" ]; then
+    cp "$SCRIPT_DIR/nginx.conf" "$SCRIPT_DIR/nginx.conf.backup"
+    echo -e "${GREEN}✓ Backed up current nginx.conf${NC}"
+  fi
+  
+  cp "$SCRIPT_DIR/nginx.conf.initial" "$SCRIPT_DIR/nginx.conf"
+  echo -e "${GREEN}✓ Using initial HTTP-only configuration${NC}"
+  
+  # Stop nginx if running to reload config
+  docker compose down nginx 2>/dev/null || true
+  
+  # Start nginx with initial config
+  echo -e "${YELLOW}Starting nginx with HTTP-only configuration...${NC}"
+  docker compose up -d nginx
+  sleep 10
+  
+  # Verify nginx is running
   if docker compose ps | grep -q "open-terra-nginx"; then
-    echo -e "${GREEN}✓ Nginx is running${NC}"
+    echo -e "${GREEN}✓ Nginx is running and ready for certificate validation${NC}"
   else
-    echo -e "${YELLOW}Nginx is not running. Starting nginx temporarily...${NC}"
-    docker compose up -d nginx
-    sleep 5
+    echo -e "${RED}✗ Failed to start nginx${NC}"
+    exit 1
   fi
   echo ""
 
@@ -169,6 +187,23 @@ elif [ "$cert_choice" = "2" ]; then
   sudo chown -R $(whoami):$(whoami) "$CERT_PATH"
   echo -e "${GREEN}✓ Permissions set${NC}"
   
+  # Restore full nginx configuration
+  echo ""
+  echo -e "${YELLOW}Restoring full nginx configuration...${NC}"
+  if [ -f "$SCRIPT_DIR/nginx.conf.backup" ]; then
+    cp "$SCRIPT_DIR/nginx.conf.backup" "$SCRIPT_DIR/nginx.conf"
+    rm "$SCRIPT_DIR/nginx.conf.backup"
+    echo -e "${GREEN}✓ Restored previous nginx.conf${NC}"
+  else
+    echo -e "${YELLOW}Note: Please ensure nginx.conf has the full HTTPS configuration${NC}"
+  fi
+  
+  # Reload nginx with new certificates
+  echo -e "${YELLOW}Reloading nginx with SSL certificates...${NC}"
+  docker compose restart nginx
+  sleep 5
+  echo -e "${GREEN}✓ Nginx reloaded with SSL configuration${NC}"
+  
   echo ""
   echo -e "${GREEN}================================${NC}"
   echo -e "${GREEN}Let's Encrypt Certificates Created!${NC}"
@@ -204,9 +239,12 @@ echo -e "${GREEN}Setup Complete!${NC}"
 echo -e "${GREEN}================================${NC}"
 echo ""
 echo -e "${YELLOW}Next steps:${NC}"
-echo "1. Start nginx: docker compose up -d"
-echo "2. Test your HTTPS endpoints"
-if [ "$cert_choice" = "2" ]; then
+if [ "$cert_choice" = "1" ]; then
+  echo "1. Start/restart nginx: docker compose up -d"
+  echo "2. Test your HTTPS endpoints (browsers will show security warnings)"
+else
+  echo "1. Nginx is already running with HTTPS configuration"
+  echo "2. Test your HTTPS endpoints"
   echo "3. Verify certificates: sudo certbot certificates --config-dir=$CERT_PATH"
 fi
 echo ""

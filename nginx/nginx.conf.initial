@@ -6,11 +6,11 @@
 # ==============================================================================
 
 # ==============================================================================
-# Backend API Server - backend.open-terra.io.vn
+# Backend API Server - sta-backend.open-terra.io.vn
 # ==============================================================================
 server {
     listen 80;
-    server_name backend.open-terra.io.vn;
+    server_name sta-backend.open-terra.io.vn;
     
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
@@ -23,11 +23,11 @@ server {
 }
 
 # ==============================================================================
-# Dummy IoT UI Server - dummy-iot.open-terra.io.vn
+# Dummy IoT UI Server - sta-dummy-iot.open-terra.io.vn
 # ==============================================================================
 server {
     listen 80;
-    server_name dummy-iot.open-terra.io.vn;
+    server_name sta-dummy-iot.open-terra.io.vn;
     
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
@@ -40,11 +40,28 @@ server {
 }
 
 # ==============================================================================
-# Open Data Server (Orion Context Broker) - opendata.open-terra.io.vn
+# Open Data Server (Orion Context Broker) - sta-opendata.open-terra.io.vn
 # ==============================================================================
 server {
     listen 80;
-    server_name opendata.open-terra.io.vn;
+    server_name sta-opendata.open-terra.io.vn;
+    
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+    
+    location / {
+        return 200 "OK - Waiting for SSL setup";
+        add_header Content-Type text/plain;
+    }
+}
+
+# ==============================================================================
+# Temporal Data Server (Mintaka) - sta-temporal.open-terra.io.vn
+# ==============================================================================
+server {
+    listen 80;
+    server_name sta-temporal.open-terra.io.vn;
     
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
