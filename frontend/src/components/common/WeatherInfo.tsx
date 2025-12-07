@@ -1,3 +1,11 @@
+/*
+ * Open-Terra - IoT and Smart City Data Platform
+ * @author Vibe Coders / HCMCOU
+ * @copyright (C) 2025 Vibe Coders / HCMCOU. All rights reserved
+ * @license MIT License
+ * @see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
+ */
+
 export default function WeatherInfo() {
   return (
     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md p-4 sm:p-6 border-l-4 border-blue-500">
