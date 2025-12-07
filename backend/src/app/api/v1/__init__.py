@@ -3,6 +3,7 @@
 from fastapi import APIRouter
 
 from app.api.v1 import (
+    ai_advisor,
     air_quality,
     flood_monitoring,
     flood_reports,
@@ -19,6 +20,7 @@ from app.api.v1 import (
 )
 
 router = APIRouter()
+router.include_router(ai_advisor.router)
 router.include_router(air_quality.router)
 router.include_router(flood_monitoring.router)
 router.include_router(flood_reports.router)
