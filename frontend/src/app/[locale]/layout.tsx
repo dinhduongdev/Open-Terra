@@ -14,6 +14,7 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { locales } from '@/i18n';
 import ProgressBar from '@/components/common/ProgressBar';
+import { Toaster } from 'react-hot-toast';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,6 +60,43 @@ export default async function LocaleLayout({
       >
         <NextIntlClientProvider messages={messages}>
           <ProgressBar />
+          <Toaster 
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: '#fff',
+                color: '#363636',
+                padding: '16px',
+                borderRadius: '8px',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                fontSize: '14px',
+                fontWeight: '500',
+              },
+              success: {
+                duration: 3000,
+                style: {
+                  background: '#10b981',
+                  color: '#fff',
+                },
+                iconTheme: {
+                  primary: '#fff',
+                  secondary: '#10b981',
+                },
+              },
+              error: {
+                duration: 4000,
+                style: {
+                  background: '#ef4444',
+                  color: '#fff',
+                },
+                iconTheme: {
+                  primary: '#fff',
+                  secondary: '#ef4444',
+                },
+              },
+            }}
+          />
           {children}
         </NextIntlClientProvider>
       </body>

@@ -7,20 +7,19 @@
  */
 
 import React from 'react';
-import TrafficReportsTable from '@/components/admin/TrafficReportsTable';
-import { useTranslations } from 'next-intl';
+import WeatherTable from '@/components/admin/WeatherTable';
 
-export default function AdminTrafficPage() {
+export default function AdminWeatherPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Quản lý Báo cáo Giao thông</h1>
-          <p className="text-gray-600 mt-2">Xem và quản lý các báo cáo giao thông từ người dân</p>
+          <h1 className="text-3xl font-bold text-gray-900">Quản lý Thời tiết</h1>
+          <p className="text-gray-600 mt-2">Theo dõi và quản lý dữ liệu thời tiết từ trạm quan trắc</p>
         </div>
       </div>
       
-      <TrafficReportsTable />
+      <WeatherTable />
     </div>
   );
 }

@@ -59,6 +59,7 @@ export async function getTrafficReports(skip: number = 0, limit: number = 20, st
     // Transform API response to TrafficReport format
     return data.items.map(item => ({
       id: item.uuid,
+      numeric_id: item.id,
       reporter_username: item.reporter_username,
       latitude: item.latitude,
       longitude: item.longitude,
@@ -72,6 +73,49 @@ export async function getTrafficReports(skip: number = 0, limit: number = 20, st
     }));
   } catch (error) {
     console.error('Error fetching traffic reports:', error);
+    throw error;
+  }
+}
+
+/**
+ * Verify a traffic report
+ */
+export async function verifyTrafficReport(reportId: number): Promise<TrafficReport> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/v1/traffic-reports/${reportId}/verify`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        report_id: reportId,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.detail || `API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    // Transform response to TrafficReport format
+    return {
+      id: data.uuid || data.id,
+      numeric_id: data.id,
+      reporter_username: data.reporter_username,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      street_name: data.street_name,
+      severity: data.severity,
+      description: data.description,
+      photo_urls: data.photo_urls,
+      timestamp: data.created_at,
+      status: data.status,
+      created_at: data.created_at,
+    };
+  } catch (error) {
+    console.error('Error verifying traffic report:', error);
     throw error;
   }
 }

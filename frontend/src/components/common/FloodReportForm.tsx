@@ -12,6 +12,7 @@ import { useState } from 'react';
 
 export interface FloodReport {
   id: string;
+  numeric_id?: number;
   reporter_username: string;
   latitude: number;
   longitude: number;

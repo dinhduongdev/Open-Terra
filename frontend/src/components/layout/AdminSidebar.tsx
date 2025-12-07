@@ -12,49 +12,43 @@ import { usePathname } from 'next/navigation';
 import ProgressLink from '../common/ProgressLink';
 import DashboardIcon from '../icon/DashboardIcon';
 import TrafficIcon from '../icon/TrafficIcon';
-import EnvironmentIcon from '../icon/EnvironmentIcon';
 import AlertIcon from '../icon/AlertIcon';
-import AnalyticsIcon from '../icon/AnalyticsIcon';
-import InfrastructureIcon from '../icon/InfrastructureIcon';
-import PublicServiceIcon from '../icon/PublicServiceIcon';
+import FloodIcon from '../icon/FloodIcon';
+import AirQualityIcon from '../icon/AirQualityIcon';
+import WeatherIcon from '../icon/WeatherIcon';
 
 
 const menuItems = [
-  {
-    title: 'Dashboard',
-    icon: DashboardIcon,
-    href: '/admin/dashboard',
-  },
+  // {
+  //   title: 'Dashboard',
+  //   icon: DashboardIcon,
+  //   href: '/admin/dashboard',
+  // },
   {
     title: 'Giao thông',
     icon: TrafficIcon,
     href: '/admin/traffic',
   },
   {
-    title: 'Môi trường',
-    icon: EnvironmentIcon,
-    href: '/admin/environment',
+    title: 'Ngập nước',
+    icon: FloodIcon,
+    href: '/admin/flood',
   },
   {
-    title: 'Cảnh báo',
-    icon: AlertIcon,
-    href: '/admin/alerts',
+    title: 'Không khí',
+    icon: AirQualityIcon,
+    href: '/admin/air-quality',
   },
   {
-    title: 'Phân tích',
-    icon: AnalyticsIcon,
-    href: '/admin/analytics',
+    title: 'Thời tiết',
+    icon: WeatherIcon,
+    href: '/admin/weather',
   },
-  {
-    title: 'Cơ sở hạ tầng',
-    icon: InfrastructureIcon,
-    href: '/admin/infrastructure',
-  },
-  {
-    title: 'Dịch vụ công',
-    icon: PublicServiceIcon,
-    href: '/admin/services',
-  },
+  // {
+  //   title: 'Cảnh báo',
+  //   icon: AlertIcon,
+  //   href: '/admin/alerts',
+  // },
 ];
 
 const AdminSidebar: React.FC = () => {
