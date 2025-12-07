@@ -8,7 +8,7 @@
 
 import createMiddleware from 'next-intl/middleware';
 import { locales } from './i18n';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 const intlMiddleware = createMiddleware({
   // A list of all locales that are supported
@@ -26,6 +26,18 @@ const intlMiddleware = createMiddleware({
 
 export default function proxy(request: NextRequest) {
   console.log('Proxy handling:', request.nextUrl.pathname);
+  
+  if (request.nextUrl.pathname.includes('/admin')) {
+    const accessToken = request.cookies.get('access_token')?.value;
+
+    if (!accessToken) {
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('from', request.nextUrl.pathname);
+      console.log('No access token, redirecting to login');
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+  
   const response = intlMiddleware(request);
   console.log('Response status:', response.status);
   return response;

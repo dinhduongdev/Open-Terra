@@ -9,14 +9,44 @@
 "use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { loginAdmin } from '@/services/authService';
+import toast from 'react-hot-toast';
 
 const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
+    
+    if (!username || !password) {
+      toast.error('Vui lòng nhập đầy đủ thông tin');
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      const response = await loginAdmin({ username, password });
+      
+      document.cookie = `access_token=${response.access_token}; path=/; max-age=${30 * 24 * 60 * 60}`; // 30 days
+      document.cookie = `token_type=${response.token_type}; path=/; max-age=${30 * 24 * 60 * 60}`;
+      
+      localStorage.setItem('access_token', response.access_token);
+      localStorage.setItem('token_type', response.token_type);
+      
+      toast.success('Đăng nhập thành công!');
+      router.push('/admin/traffic');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Đăng nhập thất bại');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -36,7 +66,10 @@ const LoginForm: React.FC = () => {
           </label>
           <input
             type="text"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all duration-300 bg-white text-gray-900 placeholder:text-gray-900 hover:border-emerald-400 hover:shadow-sm"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            disabled={loading}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all duration-300 bg-white text-gray-900 placeholder:text-gray-900 hover:border-emerald-400 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             placeholder="Nhập tên tài khoản"
           />
         </div>
@@ -49,7 +82,10 @@ const LoginForm: React.FC = () => {
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
-              className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all duration-300 bg-white text-gray-900 placeholder:text-gray-900 hover:border-emerald-400 hover:shadow-sm"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
+              className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all duration-300 bg-white text-gray-900 placeholder:text-gray-900 hover:border-emerald-400 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
               placeholder="Nhập mật khẩu"
             />
             <button
@@ -91,15 +127,10 @@ const LoginForm: React.FC = () => {
         <div className="flex gap-4 pt-2">
           <button
             type="submit"
-            className="flex-1 bg-gradient-to-r from-emerald-400 to-emerald-600 text-white py-3 px-6 rounded-lg font-medium hover:from-emerald-500 hover:to-emerald-700 transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105 active:scale-95"
+            disabled={loading}
+            className="flex-1 bg-gradient-to-r from-gray-600 to-gray-800 text-white py-3 px-6 rounded-lg font-medium hover:from-gray-700 hover:to-gray-900 transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
-            TỚI TRANG TIỆN ÍCH
-          </button>
-          <button
-            type="button"
-            className="flex-1 bg-gradient-to-r from-gray-600 to-gray-800 text-white py-3 px-6 rounded-lg font-medium hover:from-gray-700 hover:to-gray-900 transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105 active:scale-95"
-          >
-            TỚI TRANG QUẢN TRỊ
+            {loading ? 'ĐANG ĐĂNG NHẬP...' : 'TỚI TRANG QUẢN TRỊ'}
           </button>
         </div>
       </form>

@@ -8,19 +8,30 @@
 
 "use client";
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import CitySelector from './CitySelector';
 import LanguageSwitcher from './LanguageSwitcher';
 import UserMenu from './UserMenu';
 import NotificationIcon from '../icon/NotificationIcon';
 import SearchIcon from '../icon/SearchIcon';
+import toast from 'react-hot-toast';
 
 const AdminHeader: React.FC = () => {
+  const router = useRouter();
+
   const handleCityChange = () => {
     console.log('Change city clicked');
   };
 
   const handleLogout = () => {
-    console.log('Logout clicked');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('token_type');
+  
+    document.cookie = 'access_token=; path=/; max-age=0';
+    document.cookie = 'token_type=; path=/; max-age=0';
+    
+    toast.success('Đăng xuất thành công!');
+    router.push('/login');
   };
 
   const handleProfileClick = () => {

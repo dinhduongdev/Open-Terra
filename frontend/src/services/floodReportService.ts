@@ -59,6 +59,7 @@ export async function getFloodReports(skip: number = 0, limit: number = 20, stat
     // Transform API response to FloodReport format
     return data.items.map(item => ({
       id: item.uuid,
+      numeric_id: item.id,
       reporter_username: item.reporter_username,
       latitude: item.latitude,
       longitude: item.longitude,
@@ -123,6 +124,28 @@ export async function submitFloodReport(report: Omit<FloodReport, 'id' | 'timest
     };
   } catch (error) {
     console.error('Error submitting flood report:', error);
+    throw error;
+  }
+}
+
+/**
+ * Verify a flood report
+ */
+export async function verifyFloodReport(reportId: number): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/v1/flood-reports/${reportId}/verify`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.detail || `API error: ${response.status} ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error('Error verifying flood report:', error);
     throw error;
   }
 }

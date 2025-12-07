@@ -13,6 +13,7 @@ import { useTranslations } from 'next-intl';
 
 export interface TrafficReport {
   id: string;
+  numeric_id?: number;
   reporter_username: string;
   latitude: number;
   longitude: number;
