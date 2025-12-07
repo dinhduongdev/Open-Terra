@@ -132,11 +132,6 @@ export default function FloodReportsList({ reports }: FloodReportsListProps) {
                   >
                     {getStatusText(report.status)}
                   </span>
-                  {report.waterDepth && report.waterDepth > 0 && (
-                    <span className="text-xs px-2 py-1 rounded-full font-medium bg-blue-100 text-blue-800">
-                      💧 {report.waterDepth} cm
-                    </span>
-                  )}
                 </div>
               </div>
             </div>

@@ -104,6 +104,9 @@ export default function TrafficMap({
 
     console.log('Rendering markers for', trafficReports.length, 'reports');
 
+    // Store reference to avoid null issues
+    const map = mapRef.current;
+
     // Function to get marker color based on severity
     const getSeverityColor = (severity: string) => {
       switch (severity) {
@@ -136,8 +139,8 @@ export default function TrafficMap({
         const color = getSeverityColor(report.severity);
         const size = getSeveritySize(report.severity);
         
-        // Create custom icon with pulsing animation for Critical
-        const pulseAnimation = report.severity === 'Critical' 
+        // Create custom icon with pulsing animation for High severity
+        const pulseAnimation = report.severity === 'High' 
           ? 'animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;'
           : '';
         
@@ -183,7 +186,7 @@ export default function TrafficMap({
         // Create marker
         const marker = L.marker([report.latitude, report.longitude], {
           icon: customIcon,
-        }).addTo(mapRef.current);
+        }).addTo(map);
 
         // Create popup content
         const popupContent = `
@@ -220,38 +223,40 @@ export default function TrafficMap({
 
       // Add legend for traffic reports if there are any
       if (trafficReports.length > 0) {
-        const legend = L.control({ position: 'bottomright' });
+        const Legend = L.Control.extend({
+          options: { position: 'bottomright' },
+          onAdd: function () {
+            const div = L.DomUtil.create('div', 'traffic-legend');
+            div.innerHTML = `
+              <div style="
+                background: white;
+                padding: 12px;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                font-size: 12px;
+                line-height: 1.6;
+              ">
+                <div style="font-weight: bold; margin-bottom: 8px; color: #374151;">Mức độ kẹt xe:</div>
+                <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                  <div style="width: 16px; height: 16px; background-color: #16a34a; border-radius: 50%; margin-right: 8px; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></div>
+                  <span>Nhẹ</span>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                  <div style="width: 16px; height: 16px; background-color: #ca8a04; border-radius: 50%; margin-right: 8px; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></div>
+                  <span>Trung bình</span>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                  <div style="width: 16px; height: 16px; background-color: #ea580c; border-radius: 50%; margin-right: 8px; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></div>
+                  <span>Nặng</span>
+                </div>
+              </div>
+            `;
+            return div;
+          },
+        });
         
-        legend.onAdd = function () {
-          const div = L.DomUtil.create('div', 'traffic-legend');
-          div.innerHTML = `
-            <div style="
-              background: white;
-              padding: 12px;
-              border-radius: 8px;
-              box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-              font-size: 12px;
-              line-height: 1.6;
-            ">
-              <div style="font-weight: bold; margin-bottom: 8px; color: #374151;">Mức độ kẹt xe:</div>
-              <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                <div style="width: 16px; height: 16px; background-color: #16a34a; border-radius: 50%; margin-right: 8px; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></div>
-                <span>Nhẹ</span>
-              </div>
-              <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                <div style="width: 16px; height: 16px; background-color: #ca8a04; border-radius: 50%; margin-right: 8px; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></div>
-                <span>Trung bình</span>
-              </div>
-              <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                <div style="width: 16px; height: 16px; background-color: #ea580c; border-radius: 50%; margin-right: 8px; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></div>
-                <span>Nặng</span>
-              </div>
-            </div>
-          `;
-          return div;
-        };
-        
-        legend.addTo(mapRef.current);
+        const legend = new Legend();
+        legend.addTo(map);
         trafficReportMarkersRef.current.push({ remove: () => legend.remove() });
       }
     });
