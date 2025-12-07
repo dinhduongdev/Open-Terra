@@ -89,14 +89,14 @@ export default function WeatherPage() {
         </div>
 
         {/* 7-Day Forecast */}
-        <div className="mb-6 sm:mb-8">
+        {/* <div className="mb-6 sm:mb-8">
           <WeatherForecastComponent forecasts={weeklyForecast} />
-        </div>
+        </div> */}
 
         {/* Hourly Forecast */}
-        <div className="mb-6 sm:mb-8">
+        {/* <div className="mb-6 sm:mb-8">
           <WeatherHourlyComponent forecasts={hourlyForecast} />
-        </div>
+        </div> */}
 
         {/* Weather Statistics API */}
         <div className="mb-6 sm:mb-8">
@@ -113,14 +113,14 @@ export default function WeatherPage() {
         </div>
 
         {/* Weather Map */}
-        <div className="mb-6 sm:mb-8 bg-white rounded-lg shadow-md p-4 sm:p-6">
+        {/* <div className="mb-6 sm:mb-8 bg-white rounded-lg shadow-md p-4 sm:p-6">
           <WeatherMapSection showStations={showStations} onToggle={setShowStations} />
           <WeatherMapDynamic
             stations={weatherStations}
             showStations={showStations}
             onStationLayerToggle={setShowStations}
           />
-        </div>
+        </div> */}
 
         {/* Weather Tips */}
         <div className="mb-6 sm:mb-8">
