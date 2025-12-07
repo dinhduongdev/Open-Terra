@@ -176,6 +176,13 @@ class EnvironmentSettings(BaseSettings):
     ENVIRONMENT: EnvironmentOption = config("ENVIRONMENT", default=EnvironmentOption.LOCAL)
 
 
+class GeminiSettings(BaseSettings):
+    """Google Gemini AI settings."""
+
+    GEMINI_API_KEY: str = config("GEMINI_API_KEY", default="")
+    GEMINI_MODEL: str = config("GEMINI_MODEL", default="gemini-2.5-flash")
+
+
 class OrionLDSettings(BaseSettings):
     """FIWARE Orion-LD Context Broker settings."""
 
@@ -209,6 +216,7 @@ class Settings(
     DefaultRateLimitSettings,
     CRUDAdminSettings,
     EnvironmentSettings,
+    GeminiSettings,
     OrionLDSettings,
 ):
     """Combined application settings."""
