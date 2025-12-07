@@ -172,6 +172,9 @@ export default function FloodMap({
     // Wait for map to be ready
     if (!mapReady || !mapRef.current) return;
 
+    // Store reference to avoid null issues
+    const map = mapRef.current;
+
     // Add new markers
     floodReports.forEach((report) => {
       if (!report.latitude || !report.longitude) return;
@@ -229,7 +232,7 @@ export default function FloodMap({
       // Create marker
       const marker = L.marker([report.latitude, report.longitude], {
         icon: customIcon,
-      }).addTo(mapRef.current);
+      }).addTo(map);
 
       // Create popup content
       const popupContent = `

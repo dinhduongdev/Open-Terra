@@ -63,7 +63,7 @@ export async function getTrafficReports(skip: number = 0, limit: number = 20, st
       latitude: item.latitude,
       longitude: item.longitude,
       street_name: item.street_name,
-      severity: item.severity,
+      severity: item.severity === 'Critical' ? 'High' : item.severity as 'Low' | 'Medium' | 'High',
       description: item.description,
       photo_urls: item.photo_urls,
       timestamp: item.created_at,
