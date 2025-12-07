@@ -16,7 +16,7 @@ const Logo: React.FC = () => {
       <div className=" rounded-lg p-2 flex items-center justify-center w-16 h-16">
         <LogoIcon />
       </div>
-      <h1 className="text-2xl font-bold">SMART CITY</h1>
+      <h1 className="text-2xl font-bold">OPEN TERRA</h1>
     </div>
   );
 };

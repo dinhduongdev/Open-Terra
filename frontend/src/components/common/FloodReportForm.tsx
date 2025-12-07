@@ -12,16 +12,16 @@ import { useState } from 'react';
 
 export interface FloodReport {
   id: string;
-  location: string;
-  coordinates: [number, number];
+  reporter_username: string;
+  latitude: number;
+  longitude: number;
+  street_name: string;
+  severity: 'Low' | 'Medium' | 'High' | 'Critical';
   description: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  waterDepth: number;
-  reporterName: string;
-  reporterPhone: string;
-  photos?: string[];
+  photo_urls?: string[];
   timestamp: string;
-  status: 'pending' | 'verified' | 'resolved';
+  status: string;
+  created_at?: string;
 }
 
 interface FloodReportFormProps {
@@ -31,14 +31,13 @@ interface FloodReportFormProps {
 
 export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormProps) {
   const [formData, setFormData] = useState({
-    location: '',
-    coordinates: [21.0285, 105.8542] as [number, number],
+    reporter_username: '',
+    latitude: 10.7769,
+    longitude: 106.7009,
+    street_name: '',
+    severity: 'Medium' as 'Low' | 'Medium' | 'High',
     description: '',
-    severity: 'medium' as 'low' | 'medium' | 'high' | 'critical',
-    waterDepth: 0,
-    reporterName: '',
-    reporterPhone: '',
-    photos: [] as string[],
+    photo_urls: [] as string[],
   });
 
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
@@ -56,7 +55,8 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
         (position) => {
           setFormData({
             ...formData,
-            coordinates: [position.coords.latitude, position.coords.longitude],
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
           });
           setUseCurrentLocation(true);
         },
@@ -73,22 +73,14 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.location.trim()) {
-      newErrors.location = 'Vui lòng nhập địa chỉ';
+    if (!formData.reporter_username.trim()) {
+      newErrors.reporter_username = 'Vui lòng nhập tên người dùng';
+    }
+    if (!formData.street_name.trim()) {
+      newErrors.street_name = 'Vui lòng nhập tên đường';
     }
     if (!formData.description.trim()) {
       newErrors.description = 'Vui lòng mô tả tình trạng ngập';
-    }
-    if (formData.waterDepth <= 0) {
-      newErrors.waterDepth = 'Vui lòng nhập độ sâu nước';
-    }
-    if (!formData.reporterName.trim()) {
-      newErrors.reporterName = 'Vui lòng nhập họ tên';
-    }
-    if (!formData.reporterPhone.trim()) {
-      newErrors.reporterPhone = 'Vui lòng nhập số điện thoại';
-    } else if (!/^[0-9]{10}$/.test(formData.reporterPhone.replace(/\s/g, ''))) {
-      newErrors.reporterPhone = 'Số điện thoại không hợp lệ';
     }
 
     setErrors(newErrors);
@@ -102,14 +94,13 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
       onSubmit(formData);
       // Reset form
       setFormData({
-        location: '',
-        coordinates: [21.0285, 105.8542],
+        reporter_username: '',
+        latitude: 10.7769,
+        longitude: 106.7009,
+        street_name: '',
+        severity: 'Medium',
         description: '',
-        severity: 'medium',
-        waterDepth: 0,
-        reporterName: '',
-        reporterPhone: '',
-        photos: [],
+        photo_urls: [],
       });
       setUseCurrentLocation(false);
     }
@@ -117,13 +108,13 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low':
+      case 'Low':
         return 'border-green-500 bg-green-50';
-      case 'medium':
+      case 'Medium':
         return 'border-yellow-500 bg-yellow-50';
-      case 'high':
+      case 'High':
         return 'border-orange-500 bg-orange-50';
-      case 'critical':
+      case 'Critical':
         return 'border-red-500 bg-red-50';
       default:
         return 'border-gray-500 bg-gray-50';
@@ -154,22 +145,41 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* Location */}
+          {/* Reporter Username */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Địa chỉ ngập <span className="text-red-500">*</span>
+              Tên người dùng <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              value={formData.location}
-              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              value={formData.reporter_username}
+              onChange={(e) => setFormData({ ...formData, reporter_username: e.target.value })}
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 ${
-                errors.location ? 'border-red-500' : 'border-gray-300'
+                errors.reporter_username ? 'border-red-500' : 'border-gray-300'
               }`}
-              placeholder="VD: 123 Đường ABC, Phường XYZ, Quận DEF"
+              placeholder="john_doe"
             />
-            {errors.location && (
-              <p className="text-red-500 text-sm mt-1">{errors.location}</p>
+            {errors.reporter_username && (
+              <p className="text-red-500 text-sm mt-1">{errors.reporter_username}</p>
+            )}
+          </div>
+
+          {/* Street Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Tên đường <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={formData.street_name}
+              onChange={(e) => setFormData({ ...formData, street_name: e.target.value })}
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 ${
+                errors.street_name ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="VD: Nguyen Hue Street"
+            />
+            {errors.street_name && (
+              <p className="text-red-500 text-sm mt-1">{errors.street_name}</p>
             )}
           </div>
 
@@ -182,11 +192,11 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
               <input
                 type="number"
                 step="any"
-                value={formData.coordinates[0]}
+                value={formData.latitude}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    coordinates: [parseFloat(e.target.value), formData.coordinates[1]],
+                    latitude: parseFloat(e.target.value),
                   })
                 }
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
@@ -195,11 +205,11 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
               <input
                 type="number"
                 step="any"
-                value={formData.coordinates[1]}
+                value={formData.longitude}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    coordinates: [formData.coordinates[0], parseFloat(e.target.value)],
+                    longitude: parseFloat(e.target.value),
                   })
                 }
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
@@ -214,7 +224,7 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
               </button>
             </div>
             {useCurrentLocation && (
-              <p className="text-green-600 text-sm mt-1">✓ Đã lấy vị trí hiện tại</p>
+              <p className="text-green-600 text-sm mt-1">✓ Đã lấy vị trí hiện tại (Lat: {formData.latitude.toFixed(4)}, Lng: {formData.longitude.toFixed(4)})</p>
             )}
           </div>
 
@@ -225,10 +235,9 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
             </label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
               {[
-                { value: 'low', label: 'Nhẹ', icon: '🟢' },
-                { value: 'medium', label: 'Trung bình', icon: '🟡' },
-                { value: 'high', label: 'Cao', icon: '🟠' },
-                { value: 'critical', label: 'Nguy hiểm', icon: '🔴' },
+                { value: 'Low', label: 'Nhẹ', icon: '🟢' },
+                { value: 'Medium', label: 'Trung bình', icon: '🟡' },
+                { value: 'High', label: 'Cao', icon: '🟠' },
               ].map((severity) => (
                 <button
                   key={severity.value}
@@ -236,7 +245,7 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
                   onClick={() =>
                     setFormData({
                       ...formData,
-                      severity: severity.value as any,
+                      severity: severity.value as 'Low' | 'Medium' | 'High',
                     })
                   }
                   className={`px-4 py-3 border-2 rounded-lg font-medium transition-all ${
@@ -252,29 +261,6 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
             </div>
           </div>
 
-          {/* Water Depth */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Độ sâu nước (cm) <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="number"
-              min="1"
-              value={formData.waterDepth || ''}
-              onChange={(e) =>
-                setFormData({ ...formData, waterDepth: parseInt(e.target.value) || 0 })
-              }
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 ${
-                errors.waterDepth ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="VD: 30"
-            />
-            {errors.waterDepth && (
-              <p className="text-red-500 text-sm mt-1">{errors.waterDepth}</p>
-            )}
-          </div>
-
-          {/* Description */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Mô tả tình trạng <span className="text-red-500">*</span>
@@ -293,54 +279,6 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
             )}
           </div>
 
-          {/* Reporter Info */}
-          <div className="border-t pt-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">
-              Thông tin người báo cáo
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Họ và tên <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.reporterName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, reporterName: e.target.value })
-                  }
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 ${
-                    errors.reporterName ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="Nguyễn Văn A"
-                />
-                {errors.reporterName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.reporterName}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Số điện thoại <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="tel"
-                  value={formData.reporterPhone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, reporterPhone: e.target.value })
-                  }
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 ${
-                    errors.reporterPhone ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="0123456789"
-                />
-                {errors.reporterPhone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.reporterPhone}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Privacy Notice */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <p className="text-sm text-blue-800">
               <strong>Lưu ý:</strong> Thông tin của bạn sẽ được bảo mật và chỉ sử dụng để
@@ -349,7 +287,6 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
             </p>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex gap-3 pt-4">
             <button
               type="button"

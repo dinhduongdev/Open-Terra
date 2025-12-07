@@ -189,42 +189,42 @@ export default function AirQualityPage() {
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded" style={{ backgroundColor: '#00e400' }}></div>
               <div>
-                <div className="font-semibold">0-50</div>
+                <div className="font-semibold text-black">0-50</div>
                 <div className="text-gray-600">Tốt</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded" style={{ backgroundColor: '#ffff00' }}></div>
               <div>
-                <div className="font-semibold">51-100</div>
+                <div className="font-semibold text-black">51-100</div>
                 <div className="text-gray-600">Trung bình</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded" style={{ backgroundColor: '#ff7e00' }}></div>
               <div>
-                <div className="font-semibold">101-150</div>
+                <div className="font-semibold text-black">101-150</div>
                 <div className="text-gray-600">Kém (Nhạy cảm)</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded" style={{ backgroundColor: '#ff0000' }}></div>
               <div>
-                <div className="font-semibold">151-200</div>
+                <div className="font-semibold text-black">151-200</div>
                 <div className="text-gray-600">Kém</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded" style={{ backgroundColor: '#8f3f97' }}></div>
               <div>
-                <div className="font-semibold">201-300</div>
+                <div className="font-semibold text-black">201-300</div>
                 <div className="text-gray-600">Rất kém</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded" style={{ backgroundColor: '#7e0023' }}></div>
               <div>
-                <div className="font-semibold">300+</div>
+                <div className="font-semibold text-black">300+</div>
                 <div className="text-gray-600">Nguy hại</div>
               </div>
             </div>

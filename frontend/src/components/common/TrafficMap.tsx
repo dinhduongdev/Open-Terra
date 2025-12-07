@@ -56,12 +56,18 @@ export default function TrafficMap({
     showTrafficLayer,
   });
 
-  // Wait for map to be ready
+  // Wait for map to be ready - check periodically
   useEffect(() => {
-    if (mapRef.current) {
-      setMapReady(true);
-    }
-  }, [mapRef]);
+    const checkMapReady = setInterval(() => {
+      if (mapRef.current && !mapReady) {
+        console.log('Map is ready!');
+        setMapReady(true);
+        clearInterval(checkMapReady);
+      }
+    }, 100);
+
+    return () => clearInterval(checkMapReady);
+  }, [mapReady]);
 
   useTrafficLayer({
     mapRef,
@@ -82,14 +88,14 @@ export default function TrafficMap({
 
   // Render traffic report markers
   useEffect(() => {
+    // Clear existing markers first
+    trafficReportMarkersRef.current.forEach(marker => marker.remove());
+    trafficReportMarkersRef.current = [];
+
     if (!mapReady || !mapRef.current) {
       console.log('Map not ready yet, mapReady:', mapReady, 'mapRef.current:', !!mapRef.current);
       return;
     }
-
-    // Clear existing markers
-    trafficReportMarkersRef.current.forEach(marker => marker.remove());
-    trafficReportMarkersRef.current = [];
 
     if (!trafficReports.length) {
       console.log('No traffic reports to display');
@@ -240,10 +246,6 @@ export default function TrafficMap({
                 <div style="width: 16px; height: 16px; background-color: #ea580c; border-radius: 50%; margin-right: 8px; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></div>
                 <span>Nặng</span>
               </div>
-              <div style="display: flex; align-items: center;">
-                <div style="width: 16px; height: 16px; background-color: #dc2626; border-radius: 50%; margin-right: 8px; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></div>
-                <span>Nghiêm trọng</span>
-              </div>
             </div>
           `;
           return div;
@@ -259,7 +261,7 @@ export default function TrafficMap({
       trafficReportMarkersRef.current.forEach(marker => marker.remove());
       trafficReportMarkersRef.current = [];
     };
-  }, [trafficReports, mapReady, mapRef]);
+  }, [trafficReports, mapReady]);
 
   return <div id="map" className={className} />;
 }

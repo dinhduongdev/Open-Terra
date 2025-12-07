@@ -9,6 +9,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 export interface TrafficReport {
   id: string;
@@ -16,7 +17,7 @@ export interface TrafficReport {
   latitude: number;
   longitude: number;
   street_name: string;
-  severity: 'Low' | 'Medium' | 'High' | 'Critical';
+  severity: 'Low' | 'Medium' | 'High';
   description: string;
   photo_urls?: string[];
   timestamp: string;
@@ -30,12 +31,14 @@ interface TrafficReportFormProps {
 }
 
 export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFormProps) {
+  const t = useTranslations('traffic.reportForm');
+  
   const [formData, setFormData] = useState({
     reporter_username: '',
     latitude: 10.8231,
     longitude: 106.6297,
     street_name: '',
-    severity: 'Medium' as 'Low' | 'Medium' | 'High' | 'Critical',
+    severity: 'Medium' as 'Low' | 'Medium' | 'High',
     description: '',
     photo_urls: [] as string[],
   });
@@ -61,12 +64,12 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
           setUseCurrentLocation(true);
         },
         (error) => {
-          alert('Không thể lấy vị trí hiện tại. Vui lòng nhập thủ công.');
+          alert(t('locationError'));
           console.error(error);
         }
       );
     } else {
-      alert('Trình duyệt không hỗ trợ định vị.');
+      alert(t('locationNotSupported'));
     }
   };
 
@@ -74,13 +77,13 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
     const newErrors: Record<string, string> = {};
 
     if (!formData.reporter_username.trim()) {
-      newErrors.reporter_username = 'Vui lòng nhập tên người dùng';
+      newErrors.reporter_username = t('usernameRequired');
     }
     if (!formData.street_name.trim()) {
-      newErrors.street_name = 'Vui lòng nhập tên đường';
+      newErrors.street_name = t('streetNameRequired');
     }
     if (!formData.description.trim()) {
-      newErrors.description = 'Vui lòng mô tả tình trạng giao thông';
+      newErrors.description = t('descriptionRequired');
     }
 
     setErrors(newErrors);
@@ -102,26 +105,13 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
         return 'bg-yellow-100 border-yellow-300';
       case 'High':
         return 'bg-orange-100 border-orange-300';
-      case 'Critical':
-        return 'bg-red-100 border-red-300';
       default:
         return 'bg-gray-100 border-gray-300';
     }
   };
 
   const getSeverityLabel = (severity: string) => {
-    switch (severity) {
-      case 'Low':
-        return 'Thấp';
-      case 'Medium':
-        return 'Trung bình';
-      case 'High':
-        return 'Cao';
-      case 'Critical':
-        return 'Nghiêm trọng';
-      default:
-        return severity;
-    }
+    return t(`severityLevels.${severity}` as any) || severity;
   };
 
   return (
@@ -138,7 +128,7 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
         {/* Header - Sticky */}
         <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-            <span>🚦</span> Báo cáo tình trạng giao thông
+            <span>{t('titleIcon')}</span> {t('title')}
           </h2>
           <button
             onClick={onClose}
@@ -153,16 +143,16 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
           {/* Username */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Tên người dùng <span className="text-red-500">*</span>
+              {t('username')} <span className="text-red-500">{t('required')}</span>
             </label>
             <input
               type="text"
               value={formData.reporter_username}
               onChange={(e) => setFormData({ ...formData, reporter_username: e.target.value })}
-              className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 placeholder:text-gray-900 ${
+              className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 placeholder:text-gray ${
                 errors.reporter_username ? 'border-red-300' : 'border-gray-200'
               }`}
-              placeholder="john_doe"
+              placeholder={t('usernamePlaceholder')}
             />
             {errors.reporter_username && (
               <p className="text-red-500 text-sm mt-1">{errors.reporter_username}</p>
@@ -172,17 +162,17 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
           {/* Street Name */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Tên đường <span className="text-red-500">*</span>
+              {t('streetName')} <span className="text-red-500">{t('required')}</span>
             </label>
             <div className="flex gap-2">
               <input
                 type="text"
                 value={formData.street_name}
                 onChange={(e) => setFormData({ ...formData, street_name: e.target.value })}
-                className={`flex-1 px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 placeholder:text-gray-900 ${
+                className={`flex-1 px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder:text-gray ${
                   errors.street_name ? 'border-red-300' : 'border-gray-200'
                 }`}
-                placeholder="VD: Nguyen Hue Street"
+                placeholder={t('streetNamePlaceholder')}
               />
               <button
                 type="button"
@@ -190,13 +180,13 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors whitespace-nowrap flex items-center gap-2"
               >
                 <span className="text-xl">📍</span>
-                <span className="hidden sm:inline">Vị trí hiện tại</span>
+                <span className="hidden sm:inline">{t('currentLocationButton')}</span>
               </button>
             </div>
             {errors.street_name && <p className="text-red-500 text-sm mt-1">{errors.street_name}</p>}
             {useCurrentLocation && (
               <p className="text-green-600 text-sm mt-1 flex items-center gap-1">
-                <span>✓</span> Đã sử dụng vị trí hiện tại (Lat: {formData.latitude.toFixed(4)}, Lng: {formData.longitude.toFixed(4)})
+                <span>✓</span> {t('currentLocationSuccess', { lat: formData.latitude.toFixed(4), lng: formData.longitude.toFixed(4) })}
               </p>
             )}
           </div>
@@ -204,10 +194,10 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
           {/* Severity */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Mức độ <span className="text-red-500">*</span>
+              {t('severity')} <span className="text-red-500">{t('required')}</span>
             </label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-              {(['Low', 'Medium', 'High', 'Critical'] as const).map((severity) => (
+              {(['Low', 'Medium', 'High'] as const).map((severity) => (
                 <button
                   key={severity}
                   type="button"
@@ -227,16 +217,16 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
           {/* Description */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Mô tả chi tiết <span className="text-red-500">*</span>
+              {t('description')} <span className="text-red-500">{t('required')}</span>
             </label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 placeholder:text-gray-900 ${
+              className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder:text-gray ${
                 errors.description ? 'border-red-300' : 'border-gray-200'
               }`}
               rows={4}
-              placeholder="Mô tả tình trạng giao thông: kẹt xe từ đâu đến đâu, nguyên nhân nếu biết..."
+              placeholder={t('descriptionPlaceholder')}
             />
             {errors.description && (
               <p className="text-red-500 text-sm mt-1">{errors.description}</p>
@@ -246,13 +236,13 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
           {/* Info Note */}
           <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
             <div className="flex items-start gap-2">
-              <span className="text-xl">ℹ️</span>
+              <span className="text-xl">{t('infoNote.icon')}</span>
               <div className="text-sm text-blue-800">
-                <p className="font-semibold mb-1">Lưu ý:</p>
+                <p className="font-semibold mb-1">{t('infoNote.title')}</p>
                 <ul className="space-y-1 text-xs">
-                  <li>• Thông tin của bạn sẽ được bảo mật</li>
-                  <li>• Báo cáo sẽ được xác minh trước khi hiển thị công khai</li>
-                  <li>• Cung cấp thông tin chính xác để hỗ trợ cộng đồng tốt hơn</li>
+                  <li>{t('infoNote.privacy')}</li>
+                  <li>{t('infoNote.verification')}</li>
+                  <li>{t('infoNote.accuracy')}</li>
                 </ul>
               </div>
             </div>
@@ -265,13 +255,13 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
               onClick={onClose}
               className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold transition-colors"
             >
-              Hủy
+              {t('cancel')}
             </button>
             <button
               type="submit"
               className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg hover:from-red-600 hover:to-orange-600 font-semibold transition-all shadow-lg hover:shadow-xl"
             >
-              Gửi báo cáo
+              {t('submit')}
             </button>
           </div>
         </form>
