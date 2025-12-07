@@ -71,7 +71,6 @@ export default function WeatherStationsComponent({ stations }: WeatherStationsPr
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div className="bg-white rounded p-2">
                 <div className="flex items-center gap-1 text-gray-600 mb-1">
-                  <span>🌡️</span>
                   <span className="text-xs">Nhiệt độ</span>
                 </div>
                 <p className="font-semibold text-gray-800">{station.temperature}°C</p>
@@ -79,7 +78,6 @@ export default function WeatherStationsComponent({ stations }: WeatherStationsPr
 
               <div className="bg-white rounded p-2">
                 <div className="flex items-center gap-1 text-gray-600 mb-1">
-                  <span>💧</span>
                   <span className="text-xs">Độ ẩm</span>
                 </div>
                 <p className="font-semibold text-gray-800">{station.humidity}%</p>
@@ -87,7 +85,7 @@ export default function WeatherStationsComponent({ stations }: WeatherStationsPr
 
               <div className="bg-white rounded p-2">
                 <div className="flex items-center gap-1 text-gray-600 mb-1">
-                  <span>🌪️</span>
+                  <span></span>
                   <span className="text-xs">Gió</span>
                 </div>
                 <p className="font-semibold text-gray-800">{station.windSpeed} km/h</p>
@@ -95,7 +93,7 @@ export default function WeatherStationsComponent({ stations }: WeatherStationsPr
 
               <div className="bg-white rounded p-2">
                 <div className="flex items-center gap-1 text-gray-600 mb-1">
-                  <span>🌧️</span>
+                  <span></span>
                   <span className="text-xs">Lượng mưa</span>
                 </div>
                 <p className="font-semibold text-gray-800">{station.rainfall} mm</p>
@@ -103,7 +101,6 @@ export default function WeatherStationsComponent({ stations }: WeatherStationsPr
 
               <div className="bg-white rounded p-2 col-span-2">
                 <div className="flex items-center gap-1 text-gray-600 mb-1">
-                  <span>🌡️</span>
                   <span className="text-xs">Áp suất</span>
                 </div>
                 <p className="font-semibold text-gray-800">{station.pressure} hPa</p>

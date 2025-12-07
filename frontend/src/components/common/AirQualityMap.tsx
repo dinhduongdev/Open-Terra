@@ -162,8 +162,8 @@ export default function AirQualityMap({
               </div>
               ${station.weather.temperature || station.weather.humidity ? `
               <div style="padding-top: 8px; border-top: 1px solid #e5e7eb;">
-                ${station.weather.temperature ? `<div>🌡️ Nhiệt độ: <strong>${station.weather.temperature.toFixed(1)}°C</strong></div>` : ''}
-                ${station.weather.humidity ? `<div>💧 Độ ẩm: <strong>${station.weather.humidity.toFixed(0)}%</strong></div>` : ''}
+                ${station.weather.temperature ? `<div>Nhiệt độ: <strong>${station.weather.temperature.toFixed(1)}°C</strong></div>` : ''}
+                ${station.weather.humidity ? `<div>Độ ẩm: <strong>${station.weather.humidity.toFixed(0)}%</strong></div>` : ''}
               </div>
               ` : ''}
               <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb; font-size: 11px; color: #6b7280;">

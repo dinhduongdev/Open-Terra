@@ -101,7 +101,7 @@ export default function FloodReportsList({ reports }: FloodReportsListProps) {
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-        <span>📋</span> Báo cáo từ người dân ({reports.length})
+         Báo cáo từ người dân ({reports.length})
       </h2>
       <div className="space-y-4">
         {reports.map((report) => (
@@ -112,7 +112,7 @@ export default function FloodReportsList({ reports }: FloodReportsListProps) {
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xl">{getSeverityIcon(report.severity)}</span>
+                  {/* <span className="text-xl">{getSeverityIcon(report.severity)}</span> */}
                   <h3 className="font-semibold text-lg text-gray-800">
                     {report.street_name}
                   </h3>

@@ -73,7 +73,6 @@ export default function PollutantsOverview({ pollutants }: PollutantsOverviewPro
   return (
     <div className="mt-6 md:mt-8 bg-white rounded-lg shadow-md p-4 md:p-6">
       <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-4 md:mb-6 flex items-center gap-2">
-        <span>🧪</span>
         Các chất ô nhiễm chính
       </h2>
 
@@ -135,7 +134,7 @@ export default function PollutantsOverview({ pollutants }: PollutantsOverviewPro
 
       {/* Pollutants Info */}
       <div className="mt-4 md:mt-6 p-3 md:p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
-        <h3 className="font-semibold text-blue-900 mb-2 text-sm md:text-base">ℹ️ Giải thích các chất ô nhiễm</h3>
+        <h3 className="font-semibold text-blue-900 mb-2 text-sm md:text-base">Giải thích các chất ô nhiễm</h3>
         <div className="text-xs md:text-sm text-blue-800 space-y-1">
           <p><strong>PM2.5:</strong> Bụi mịn có đường kính ≤ 2.5 micromet, nguy hiểm vì có thể xâm nhập sâu vào phổi.</p>
           <p><strong>PM10:</strong> Bụi có đường kính ≤ 10 micromet, gây kích ứng đường hô hấp.</p>

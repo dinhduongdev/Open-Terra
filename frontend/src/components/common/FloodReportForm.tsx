@@ -135,7 +135,7 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
       >
         <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-            <span>📝</span> Báo cáo ngập lụt
+             Báo cáo ngập lụt
           </h2>
           <button
             onClick={onClose}
@@ -221,7 +221,7 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
                 onClick={handleGetCurrentLocation}
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors whitespace-nowrap"
               >
-                📍 Vị trí hiện tại
+                Vị trí hiện tại
               </button>
             </div>
             {useCurrentLocation && (
@@ -234,11 +234,11 @@ export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormPr
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Mức độ nghiêm trọng <span className="text-red-500">*</span>
             </label>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-gray-900">
               {[
-                { value: 'Low', label: 'Nhẹ', icon: '🟢' },
-                { value: 'Medium', label: 'Trung bình', icon: '🟡' },
-                { value: 'High', label: 'Cao', icon: '🟠' },
+                { value: 'Low', label: 'Nhẹ', icon: '' },
+                { value: 'Medium', label: 'Trung bình', icon: '' },
+                { value: 'High', label: 'Cao', icon: '' },
               ].map((severity) => (
                 <button
                   key={severity.value}

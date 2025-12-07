@@ -35,7 +35,6 @@ export default function WeatherHourlyComponent({ forecasts }: WeatherHourlyProps
             </p>
             <div className="space-y-0.5 sm:space-y-1 text-xs text-gray-600">
               <div className="flex items-center justify-center gap-0.5">
-                <span>💧</span>
                 <span>{forecast.humidity}%</span>
               </div>
               <div className="flex items-center justify-center gap-0.5">

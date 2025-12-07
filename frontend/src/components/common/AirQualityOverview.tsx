@@ -43,7 +43,6 @@ export default function AirQualityOverviewComponent({ data }: AirQualityOverview
               {level}
             </p>
           </div>
-          <div className="text-4xl md:text-5xl">🌫️</div>
         </div>
       </div>
 
@@ -55,7 +54,6 @@ export default function AirQualityOverviewComponent({ data }: AirQualityOverview
             <p className="text-3xl md:text-4xl font-bold text-blue-600">{data.totalStations}</p>
             <p className="text-xs md:text-sm text-gray-500 mt-2">Đang hoạt động</p>
           </div>
-          <div className="text-4xl md:text-5xl">📍</div>
         </div>
       </div>
 
@@ -67,7 +65,6 @@ export default function AirQualityOverviewComponent({ data }: AirQualityOverview
             <p className="text-3xl md:text-4xl font-bold text-green-600">{data.goodStations}</p>
             <p className="text-xs md:text-sm text-gray-500 mt-2">AQI ≤ 50</p>
           </div>
-          <div className="text-4xl md:text-5xl">✅</div>
         </div>
       </div>
 
@@ -83,7 +80,6 @@ export default function AirQualityOverviewComponent({ data }: AirQualityOverview
               TB: {data.moderateStations} | Kém: {data.unhealthyStations}
             </p>
           </div>
-          <div className="text-4xl md:text-5xl">⚠️</div>
         </div>
       </div>
     </div>

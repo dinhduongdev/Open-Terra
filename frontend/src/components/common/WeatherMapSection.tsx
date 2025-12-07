@@ -50,7 +50,6 @@ export default function WeatherMapSection({
       {/* Instructions */}
       <div className="mb-4 p-3 sm:p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
         <div className="flex items-start gap-2 sm:gap-3">
-          <span className="text-xl sm:text-2xl">ℹ️</span>
           <div>
             <h3 className="font-semibold text-blue-900 mb-1 text-sm sm:text-base">Hướng dẫn sử dụng</h3>
             <ul className="text-xs sm:text-sm text-blue-800 space-y-1">

@@ -116,7 +116,6 @@ export default function AirQualityPage() {
       {/* Header */}
       <div className="mb-4 md:mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2 flex items-center gap-2 md:gap-3">
-          <span className="text-3xl md:text-4xl">🌫️</span>
           {t('airQuality')}
         </h1>
         <p className="text-sm md:text-base text-gray-600">
@@ -148,7 +147,6 @@ export default function AirQualityPage() {
         <div className="mt-6 md:mt-8 bg-white rounded-lg shadow-md p-4 md:p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
             <h2 className="text-lg md:text-xl font-semibold text-gray-700 flex items-center gap-2">
-              <span>🗺️</span>
               Bản đồ chất lượng không khí - OpenStreetMap
             </h2>
             <div className="flex items-center gap-2">
@@ -169,7 +167,6 @@ export default function AirQualityPage() {
         {/* Instructions */}
         <div className="mb-4 p-3 md:p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
           <div className="flex items-start gap-2 md:gap-3">
-            <span className="text-xl md:text-2xl">ℹ️</span>
             <div>
               <h3 className="font-semibold text-blue-900 mb-1 text-sm md:text-base">Hướng dẫn sử dụng</h3>
               <ul className="text-xs md:text-sm text-blue-800 space-y-1">
@@ -194,7 +191,7 @@ export default function AirQualityPage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded" style={{ backgroundColor: '#ffff00' }}></div>
+              <div className="w-6 h-6 rounded" style={{ backgroundColor: '#f5a623' }}></div>
               <div>
                 <div className="font-semibold text-black">51-100</div>
                 <div className="text-gray-600">Trung bình</div>
@@ -257,7 +254,6 @@ export default function AirQualityPage() {
       {/* Additional Info */}
       <div className="mt-6 md:mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md p-4 md:p-6 border-l-4 border-blue-500">
         <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 flex items-center gap-2">
-          <span>📚</span>
           Thông tin thêm về chỉ số AQI
         </h2>
         <div className="space-y-2 md:space-y-3 text-xs md:text-sm text-gray-700">

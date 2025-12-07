@@ -70,7 +70,6 @@ export default function WeatherPage() {
         {/* Header */}
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2 flex items-center gap-2 sm:gap-3">
-            <span className="text-3xl sm:text-4xl">🌤️</span>
             <span className="break-words">{tSidebar('weather')}</span>
           </h1>
           <p className="text-sm sm:text-base text-gray-600">{t('subtitle')}</p>

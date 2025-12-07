@@ -75,11 +75,27 @@ export default function WeatherStatisticsAPI({
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newStart = e.target.value + 'T00:00:00Z';
+    const newStartDate = new Date(newStart);
+    const currentEndDate = new Date(endDate);
+    
+    if (newStartDate > currentEndDate) {
+      alert('Ngày bắt đầu không được lớn hơn ngày kết thúc');
+      return;
+    }
+    
     onDateChange(newStart, endDate);
   };
 
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newEnd = e.target.value + 'T00:00:00Z';
+    const currentStartDate = new Date(startDate);
+    const newEndDate = new Date(newEnd);
+    
+    if (newEndDate < currentStartDate) {
+      alert('Ngày kết thúc không được nhỏ hơn ngày bắt đầu');
+      return;
+    }
+    
     onDateChange(startDate, newEnd);
   };
 
@@ -88,7 +104,6 @@ export default function WeatherStatisticsAPI({
       {/* Header */}
       <div className="mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 flex items-center gap-2">
-          <span className="text-2xl sm:text-3xl">📊</span>
           Thống kê thời tiết
         </h2>
         
@@ -122,7 +137,6 @@ export default function WeatherStatisticsAPI({
 
         {/* Period Info */}
         <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-600">
-          <span>📅</span>
           <span className="break-words">
             Từ <strong>{formatDate(period.start)}</strong> đến{' '}
             <strong>{formatDate(period.end)}</strong>
@@ -136,7 +150,7 @@ export default function WeatherStatisticsAPI({
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         <StatCard
-          icon="🌡️"
+          icon=""
           title="Nhiệt độ"
           min={statistics.temperature.min}
           max={statistics.temperature.max}
@@ -144,7 +158,7 @@ export default function WeatherStatisticsAPI({
           unit="°C"
         />
         <StatCard
-          icon="💧"
+          icon=""
           title="Độ ẩm"
           min={statistics.relativeHumidity.min * 100}
           max={statistics.relativeHumidity.max * 100}
@@ -152,7 +166,7 @@ export default function WeatherStatisticsAPI({
           unit="%"
         />
         <StatCard
-          icon="🌬️"
+          icon=""
           title="Tốc độ gió"
           min={statistics.windSpeed.min}
           max={statistics.windSpeed.max}
@@ -160,7 +174,7 @@ export default function WeatherStatisticsAPI({
           unit="km/h"
         />
         <StatCard
-          icon="🔽"
+          icon=""
           title="Áp suất khí quyển"
           min={statistics.atmosphericPressure.min}
           max={statistics.atmosphericPressure.max}
@@ -172,7 +186,7 @@ export default function WeatherStatisticsAPI({
       {/* Data Count Info */}
       <div className="mt-3 sm:mt-4 p-2 sm:p-3 bg-white/70 rounded-lg">
         <p className="text-xs sm:text-sm text-gray-600 text-center">
-          📈 Dữ liệu được tính từ{' '}
+          Dữ liệu được tính từ{' '}
           <strong className="text-blue-600">{statistics.temperature.count}</strong> điểm đo
         </p>
       </div>

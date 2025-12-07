@@ -20,7 +20,6 @@ export default function WeatherStatisticsComponent({
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-        <span>📊</span>
         Thống kê thời tiết
       </h2>
 
@@ -28,7 +27,6 @@ export default function WeatherStatisticsComponent({
         {/* Temperature Chart */}
         <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-lg p-4">
           <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
-            <span>🌡️</span>
             Nhiệt độ trong ngày
           </h3>
           <div className="space-y-2">
@@ -53,7 +51,6 @@ export default function WeatherStatisticsComponent({
         {/* Humidity Chart */}
         <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg p-4">
           <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
-            <span>💧</span>
             Độ ẩm trong ngày
           </h3>
           <div className="space-y-2">
@@ -77,7 +74,7 @@ export default function WeatherStatisticsComponent({
         {/* Rainfall Chart */}
         <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-4 lg:col-span-2">
           <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
-            <span>🌧️</span>
+            <span></span>
             Lượng mưa trong tuần (mm)
           </h3>
           <div className="flex items-end justify-between gap-2 h-48">

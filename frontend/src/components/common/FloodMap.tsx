@@ -222,7 +222,7 @@ export default function FloodMap({
             cursor: pointer;
             transition: transform 0.2s;
           " onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
-            💧
+            
           </div>
         `,
         iconSize: [size.width, size.height],

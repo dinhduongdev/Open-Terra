@@ -67,7 +67,7 @@ export default function FloodStatistics({ statsByTime, stations }: FloodStatisti
       {/* Water level chart */}
       <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
         <h2 className="text-base md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 flex items-center gap-2">
-          <span>📊</span> Biểu đồ mực nước & lượng mưa
+           Biểu đồ mực nước & lượng mưa
         </h2>
         <ResponsiveContainer width="100%" height={300}>
           <ComposedChart data={statsByTime}>

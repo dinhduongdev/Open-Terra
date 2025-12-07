@@ -89,7 +89,6 @@ export default function StationSelector({ stations }: StationSelectorProps) {
   return (
     <div className="mt-8 bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-        <span>🔍</span>
         Xem chi tiết trạm quan trắc
       </h2>
 
@@ -274,7 +273,6 @@ export default function StationSelector({ stations }: StationSelectorProps) {
             formattedStation.weather.humidity !== undefined) && (
             <div>
               <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <span>🌤️</span>
                 Thông tin thời tiết
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -287,7 +285,6 @@ export default function StationSelector({ stations }: StationSelectorProps) {
                           {formattedStation.weather.temperature.toFixed(1)}°C
                         </div>
                       </div>
-                      <span className="text-5xl">🌡️</span>
                     </div>
                   </div>
                 )}
@@ -300,7 +297,6 @@ export default function StationSelector({ stations }: StationSelectorProps) {
                           {formattedStation.weather.humidity.toFixed(0)}%
                         </div>
                       </div>
-                      <span className="text-5xl">💧</span>
                     </div>
                   </div>
                 )}
@@ -313,7 +309,6 @@ export default function StationSelector({ stations }: StationSelectorProps) {
       {/* Empty State */}
       {!loading && !error && !formattedStation && selectedStationId === '' && (
         <div className="text-center py-12 text-gray-500">
-          <span className="text-6xl mb-4 block">📍</span>
           <p className="text-lg">Vui lòng chọn một trạm quan trắc để xem chi tiết</p>
         </div>
       )}

@@ -46,7 +46,6 @@ export default function WeatherCurrentComponent({ data }: WeatherCurrentProps) {
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-2xl">💧</span>
               <span className="text-xs opacity-75">Độ ẩm</span>
             </div>
             <p className="text-2xl font-semibold">{data.humidity}%</p>
@@ -74,7 +73,6 @@ export default function WeatherCurrentComponent({ data }: WeatherCurrentProps) {
 
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-2xl">🌡️</span>
               <span className="text-xs opacity-75">Áp suất</span>
             </div>
             <p className="text-2xl font-semibold">{data.pressure}</p>

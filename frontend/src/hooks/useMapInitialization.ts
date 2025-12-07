@@ -99,7 +99,7 @@ export const useMapInitialization = ({
         const button = L.DomUtil.create('button', 'traffic-toggle-btn');
         button.innerHTML = `
           <div style="background: white; padding: 10px 15px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); cursor: pointer; font-size: 14px; font-weight: 500; border: none;">
-            <span id="traffic-toggle-icon">🚦</span> <span id="traffic-toggle-text">${
+            <span id="traffic-toggle-icon"></span> <span id="traffic-toggle-text">${
               showTrafficLayer ? 'Ẩn' : 'Hiện'
             } lớp giao thông</span>
           </div>

@@ -15,7 +15,7 @@ interface RouteInfoProps {
 export default function RouteInfo({ route }: RouteInfoProps) {
   return (
     <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-      <h3 className="font-semibold text-blue-900 mb-3">📊 Thông tin tuyến đường</h3>
+      <h3 className="font-semibold text-blue-900 mb-3">Thông tin tuyến đường</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white p-3 rounded-lg">
           <div className="text-sm text-gray-600">Khoảng cách</div>
