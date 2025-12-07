@@ -44,15 +44,14 @@ class ContextBrokerClient:
         headers = {
             "Content-Type": content_type,
             "Accept": accept,
-            # "NGSILD-Tenant": "openiot",
-            # "NGSILD-Path": "/"
         }
         
         # FIX: DON'T add Link header for GET requests
         # Link header only needed for POST/PATCH with body
         
-        if self.tenant:
-            headers["NGSILD-Tenant"] = self.tenant
+        # NOTE: Tenant support disabled - using default database
+        # if self.tenant:
+        #     headers["NGSILD-Tenant"] = self.tenant
             
         return headers
 
@@ -255,7 +254,7 @@ class ContextBrokerClient:
         Args:
             entity_id: Entity URN
             timerel: Time relationship (before/after/between)
-            time_at: Start time
+            time_at: Start time (defaults to now if not provided)
             end_time_at: End time (for timerel=between)
             last_n: Get last N observations
             attrs: List of attributes
@@ -269,6 +268,10 @@ class ContextBrokerClient:
             params = {
                 "timerel": timerel
             }
+            
+            # If time_at is not provided but timerel requires it, default to now
+            if time_at is None and timerel in ["before", "after", "between"]:
+                time_at = datetime.utcnow()
             
             if time_at:
                 # Convert to UTC and format as ISO8601 with Z suffix

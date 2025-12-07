@@ -643,17 +643,28 @@ async def get_air_quality_statistics(
 
         # Get entity ID for the specific station
         entity_id = get_air_quality_entity_id(station_id)
+        
+        logger.info(f"Statistics query - Entity ID: {entity_id}")
+        logger.info(f"Statistics query - Time range: {start_time} to {end_time}")
+        logger.info(f"Statistics query - Attributes: {attr_list}")
 
         # Get temporal data for the period
         # Get temporal data in concise format (easier to process)
+        # NOTE: Don't use attrs parameter with Mintaka - attribute names are expanded URLs in database
+        # We'll filter attributes after normalization in Python
         temporal_data = await context_broker_client.get_temporal_entity(
             entity_id=entity_id,
             timerel="between",
             time_at=start_time,
             end_time_at=end_time,
-            attrs=attr_list,
+            attrs=None,  # Get all attributes, filter later
             entity_format="concise"
         )
+        
+        logger.info(f"Temporal data retrieved: {temporal_data is not None}")
+        if temporal_data:
+            logger.info(f"Temporal data keys: {list(temporal_data.keys())}")
+            logger.info(f"Temporal data sample: {str(temporal_data)[:500]}")
 
         if not temporal_data:
             return APIResponse(
