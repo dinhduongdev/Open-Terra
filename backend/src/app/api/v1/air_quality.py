@@ -6,26 +6,16 @@ Open-Terra - IoT and Smart City Data Platform
 @see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
 """
 
-from fastapi import APIRouter, Depends, Path, Query
-from typing import Optional
+import logging
 from datetime import datetime, timedelta
-from app.schemas.api_response import APIResponse
-from app.schemas.smart_data.air_quality_observed import (
-    AirQualityObserved,
-    AirQualityObservedResponse,
-    AirQualityListResponse,
-    LocationInfo,
-    ParticulateMatterData,
-    GaseousPollutantsData,
-    HeavyMetalsData,
-    VolatileCompoundsData,
-    AirQualityIndexData,
-    EnvironmentalConditions,
-)
-from app.services.context_broker_client import ContextBrokerClient
+from typing import Optional
+
+from fastapi import APIRouter, Depends, Path, Query
+
 from app.core.config import settings
 from app.core.constants import AIR_QUALITY_STATION_IDS, get_air_quality_entity_id, get_air_quality_temporal_id
-import logging
+from app.schemas.api_response import APIResponse
+from app.services.context_broker_client import ContextBrokerClient
 
 router = APIRouter(prefix="/air-quality", tags=["air-quality"])
 logger = logging.getLogger(__name__)
