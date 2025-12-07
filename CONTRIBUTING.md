@@ -87,7 +87,7 @@ git remote add upstream https://github.com/dinhduongdev/Open-Terra.git
 
 ### 2. Setup Development Environment
 
-Refer to [Getting Started](../2.%20Getting%20Started/2-Getting-Started.md) to set up the development environment for each component.
+Refer to [Getting Started]([../2.%20Getting%20Started/2-Getting-Started.md](https://github.com/dinhduongdev/Open-Terra/wiki/2.-Getting-Started)) to set up the development environment for each component.
 
 **Components:**
 - `frontend/` - Next.js 16 + React 19 + TypeScript
