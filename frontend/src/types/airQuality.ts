@@ -6,12 +6,12 @@
  * @see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
  */
 
-export type AirQualityLevel = 'good' | 'moderate' | 'unhealthy_sensitive' | 'unhealthy' | 'very_unhealthy' | 'hazardous';
+export type AirQualityLevel = 'good' | 'moderate' | 'unhealthyForSensitiveGroups' | 'unhealthy' | 'veryUnhealthy' | 'hazardous';
 
 export interface AirQualityValue {
   value: number;
-  observedAt: string;
-  unitCode: string;
+  observedAt?: string;
+  unitCode?: string;
 }
 
 export interface AirQualityAddress {
@@ -24,11 +24,114 @@ export interface AirQualityLocation {
   type: 'Point';
 }
 
+// NGSI-LD formatted response from API
+export interface NGSILDAirQualityStation {
+  '@context': string;
+  id: string;
+  type: string;
+  location: {
+    type: string;
+    value: {
+      coordinates: [number, number];
+      type: string;
+    };
+  };
+  'https://smartdatamodels.org/dateObserved': {
+    type: string;
+    value: {
+      '@type': string;
+      '@value': string;
+    };
+  };
+  'https://smartdatamodels.org/address': {
+    type: string;
+    value: AirQualityAddress;
+  };
+  'https://smartdatamodels.org/dataModel.Weather/airQualityIndex': {
+    type: string;
+    value: number;
+    observedAt: string;
+  };
+  'https://smartdatamodels.org/dataModel.Environment/airQualityLevel': {
+    type: string;
+    value: AirQualityLevel;
+  };
+  'https://smartdatamodels.org/areaServed': {
+    type: string;
+    value: string;
+  };
+  'https://smartdatamodels.org/name': {
+    type: string;
+    value: string;
+  };
+  'https://smartdatamodels.org/dataModel.Environment/pm1'?: {
+    type: string;
+    value: number;
+    observedAt: string;
+    unitCode: string;
+  };
+  'https://smartdatamodels.org/dataModel.Environment/pm10'?: {
+    type: string;
+    value: number;
+    observedAt: string;
+    unitCode: string;
+  };
+  'https://smartdatamodels.org/dataModel.Environment/pm25'?: {
+    type: string;
+    value: number;
+    observedAt: string;
+    unitCode: string;
+  };
+  'https://smartdatamodels.org/dataModel.Weather/relativeHumidity'?: {
+    type: string;
+    value: number;
+    observedAt: string;
+    unitCode: string;
+  };
+  'https://smartdatamodels.org/source': {
+    type: string;
+    value: string;
+  };
+  'https://smartdatamodels.org/dataModel.Weather/temperature'?: {
+    type: string;
+    value: number;
+    observedAt: string;
+    unitCode: string;
+  };
+  'https://smartdatamodels.org/dataModel.Environment/co'?: {
+    type: string;
+    value: number;
+    observedAt: string;
+    unitCode: string;
+  };
+  'https://smartdatamodels.org/dataModel.Environment/no2'?: {
+    type: string;
+    value: number;
+    observedAt: string;
+    unitCode: string;
+  };
+  'https://smartdatamodels.org/dataModel.Environment/o3'?: {
+    type: string;
+    value: number;
+    observedAt: string;
+    unitCode: string;
+  };
+  'https://smartdatamodels.org/dataModel.Environment/so2'?: {
+    type: string;
+    value: number;
+    observedAt: string;
+    unitCode: string;
+  };
+}
+
+// Simplified structure for internal use
 export interface AirQualityStation {
   id: string;
   type: string;
-  '@context': string;
-  location: AirQualityLocation;
+  location: {
+    type: string;
+    coordinates: [number, number];
+  };
   dateObserved: {
     '@type': string;
     '@value': string;
@@ -57,7 +160,7 @@ export interface AirQualityAPIResponse {
   error: null | string;
   result: {
     total: number;
-    items: AirQualityStation[];
+    items: NGSILDAirQualityStation[];
   };
 }
 
@@ -65,9 +168,9 @@ export interface AirQualityAPIResponse {
 export function getAQILevel(aqi: number): AirQualityLevel {
   if (aqi <= 50) return 'good';
   if (aqi <= 100) return 'moderate';
-  if (aqi <= 150) return 'unhealthy_sensitive';
+  if (aqi <= 150) return 'unhealthyForSensitiveGroups';
   if (aqi <= 200) return 'unhealthy';
-  if (aqi <= 300) return 'very_unhealthy';
+  if (aqi <= 300) return 'veryUnhealthy';
   return 'hazardous';
 }
 
