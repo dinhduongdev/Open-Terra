@@ -9,9 +9,17 @@
 import { AirQualityAPIResponse, AirQualityStation, NGSILDAirQualityStation } from '@/types/airQuality';
 
 // Use the full base URL without /api since we'll include it in the endpoint
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL 
-  ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api$/, '') // Remove trailing /api if present
-  : 'http://localhost:8000';
+// For server-side rendering, use localhost directly. For client-side, use NEXT_PUBLIC_API_URL
+const getApiBaseUrl = () => {
+  // Check if we're on the server
+  if (typeof window === 'undefined') {
+    return 'http://localhost:8000';
+  }
+  // Client-side
+  return process.env.NEXT_PUBLIC_API_URL
+    ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api$/, '')
+    : 'http://localhost:8000';
+};
 
 /**
  * Transform NGSI-LD formatted data to simplified structure
@@ -87,7 +95,8 @@ function transformNGSILDToStation(ngsiData: NGSILDAirQualityStation): AirQuality
  */
 export async function getLatestAirQuality(): Promise<AirQualityStation[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/v1/air-quality/latest`, {
+    const apiBaseUrl = getApiBaseUrl();
+    const response = await fetch(`${apiBaseUrl}/api/v1/air-quality/latest`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -118,7 +127,8 @@ export async function getLatestAirQuality(): Promise<AirQualityStation[]> {
  */
 export async function getStationAirQuality(stationId: string): Promise<AirQualityStation> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/v1/air-quality/station/${stationId}`, {
+    const apiBaseUrl = getApiBaseUrl();
+    const response = await fetch(`${apiBaseUrl}/api/v1/air-quality/station/${stationId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

@@ -9,6 +9,7 @@
   },
   "sidebar": {
     "introduction": "Giới thiệu",
+    "overview": "Tổng quan",
     "traffic": "Giao thông",
     "floodMap": "Bản đồ ngập nước",
     "trafficJam": "Kẹt xe",
@@ -244,5 +245,61 @@
     "title": "Thời tiết",
     "subtitle": "Theo dõi thông tin thời tiết và dự báo theo thời gian thực",
     "loading": "Đang tải dữ liệu thời tiết..."
+  },
+  "overview": {
+    "title": "Tổng quan",
+    "subtitle": "Thông tin tổng hợp về chất lượng môi trường và giao thông",
+    "introduction": {
+      "title": "Giới thiệu",
+      "description": "Trang tổng quan cung cấp thông tin tổng hợp về chất lượng không khí, thời tiết, giao thông và tình trạng ngập lụt tại các khu vực giám sát. Dữ liệu được cập nhật liên tục từ các trạm quan trắc và cảm biến IoT trên toàn thành phố."
+    },
+    "aiAdvisor": {
+      "title": "Tư vấn từ AI",
+      "loading": "Đang tải tư vấn từ AI...",
+      "error": "Không thể tải tư vấn từ AI. Vui lòng thử lại sau.",
+      "updatedAt": "Cập nhật lúc",
+      "dataSources": "Nguồn dữ liệu"
+    },
+    "statistics": {
+      "title": "Thống kê tổng quan",
+      "averageAqi": "AQI Trung bình",
+      "aqStations": "Trạm AQ",
+      "totalStations": "Tổng số trạm",
+      "temperature": "Nhiệt độ",
+      "floodPoints": "Điểm ngập lụt",
+      "monitoring": "Đang theo dõi",
+      "trafficSensors": "Cảm biến giao thông",
+      "active": "Đang hoạt động"
+    },
+    "airQuality": {
+      "title": "Chất lượng không khí"
+    },
+    "weather": {
+      "title": "Thời tiết",
+      "temperature": "Nhiệt độ",
+      "humidity": "Độ ẩm",
+      "pressure": "Áp suất",
+      "wind": "Gió",
+      "area": "Khu vực"
+    },
+    "traffic": {
+      "title": "Giao thông",
+      "congested": "Tắc",
+      "clear": "Thông thoáng",
+      "averageSpeed": "Tốc độ TB",
+      "density": "Mật độ",
+      "sensor": "Cảm biến giao thông"
+    },
+    "flood": {
+      "title": "Giám sát ngập lụt",
+      "currentLevel": "Mực nước hiện tại",
+      "waterLevel": "Mực nước",
+      "dangerLevel": "Ngưỡng nguy hiểm",
+      "alertLevel": "Ngưỡng cảnh báo",
+      "monitoringPoint": "Điểm giám sát"
+    },
+    "error": {
+      "noData": "Không thể tải dữ liệu. Vui lòng thử lại sau."
+    }
   }
 }
