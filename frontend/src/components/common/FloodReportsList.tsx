@@ -15,43 +15,43 @@ interface FloodReportsListProps {
 export default function FloodReportsList({ reports }: FloodReportsListProps) {
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low':
-        return 'bg-green-100 text-green-800 border-green-300';
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      case 'high':
-        return 'bg-orange-100 text-orange-800 border-orange-300';
-      case 'critical':
-        return 'bg-red-100 text-red-800 border-red-300';
+      case 'Low':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'Medium':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'High':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'Critical':
+        return 'bg-red-100 text-red-800 border-red-200';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-300';
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
   const getSeverityText = (severity: string) => {
     switch (severity) {
-      case 'low':
+      case 'Low':
         return 'Nhẹ';
-      case 'medium':
+      case 'Medium':
         return 'Trung bình';
-      case 'high':
+      case 'High':
         return 'Cao';
-      case 'critical':
+      case 'Critical':
         return 'Nguy hiểm';
       default:
-        return 'Không xác định';
+        return severity;
     }
   };
 
   const getSeverityIcon = (severity: string) => {
     switch (severity) {
-      case 'low':
+      case 'Low':
         return '🟢';
-      case 'medium':
+      case 'Medium':
         return '🟡';
-      case 'high':
+      case 'High':
         return '🟠';
-      case 'critical':
+      case 'Critical':
         return '🔴';
       default:
         return '⚪';
@@ -59,28 +59,30 @@ export default function FloodReportsList({ reports }: FloodReportsListProps) {
   };
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'bg-blue-100 text-blue-800';
+    const normalizedStatus = status.toLowerCase();
+    switch (normalizedStatus) {
+      case 'reported':
+        return 'bg-yellow-100 text-yellow-800';
       case 'verified':
-        return 'bg-green-100 text-green-800';
+        return 'bg-blue-100 text-blue-800';
       case 'resolved':
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-green-100 text-green-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
   };
 
   const getStatusText = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'Đang xử lý';
+    const normalizedStatus = status.toLowerCase();
+    switch (normalizedStatus) {
+      case 'reported':
+        return 'Đã báo cáo';
       case 'verified':
         return 'Đã xác minh';
       case 'resolved':
         return 'Đã giải quyết';
       default:
-        return 'Không xác định';
+        return status;
     }
   };
 
@@ -112,7 +114,7 @@ export default function FloodReportsList({ reports }: FloodReportsListProps) {
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-xl">{getSeverityIcon(report.severity)}</span>
                   <h3 className="font-semibold text-lg text-gray-800">
-                    {report.location}
+                    {report.street_name}
                   </h3>
                 </div>
                 <div className="flex flex-wrap gap-2 mb-2">
@@ -130,9 +132,11 @@ export default function FloodReportsList({ reports }: FloodReportsListProps) {
                   >
                     {getStatusText(report.status)}
                   </span>
-                  <span className="text-xs px-2 py-1 rounded-full font-medium bg-blue-100 text-blue-800">
-                    💧 {report.waterDepth} cm
-                  </span>
+                  {report.waterDepth && report.waterDepth > 0 && (
+                    <span className="text-xs px-2 py-1 rounded-full font-medium bg-blue-100 text-blue-800">
+                      💧 {report.waterDepth} cm
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -145,20 +149,13 @@ export default function FloodReportsList({ reports }: FloodReportsListProps) {
               <div className="flex items-center gap-2 text-gray-600">
                 <span>👤</span>
                 <span>
-                  <strong>Người báo:</strong> {report.reporterName}
-                </span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-600">
-                <span>📞</span>
-                <span>
-                  <strong>SĐT:</strong> {report.reporterPhone}
+                  <strong>Người báo:</strong> {report.reporter_username}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-gray-600">
                 <span>📍</span>
                 <span>
-                  <strong>Tọa độ:</strong> {report.coordinates[0].toFixed(4)},{' '}
-                  {report.coordinates[1].toFixed(4)}
+                  <strong>Tọa độ:</strong> {report.latitude.toFixed(4)}, {report.longitude.toFixed(4)}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-gray-600">
@@ -169,22 +166,6 @@ export default function FloodReportsList({ reports }: FloodReportsListProps) {
                 </span>
               </div>
             </div>
-
-            {report.status === 'pending' && (
-              <div className="mt-3 pt-3 border-t">
-                <div className="flex gap-2">
-                  <button className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 text-sm font-medium transition-colors">
-                    ✓ Xác minh
-                  </button>
-                  <button className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium transition-colors">
-                    📞 Liên hệ
-                  </button>
-                  <button className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 text-sm font-medium transition-colors">
-                    ❌ Từ chối
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         ))}
       </div>

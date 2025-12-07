@@ -21,6 +21,74 @@
     "analytics": "Analytics",
     "alerts": "Alerts & Notifications"
   },
+  "traffic": {
+    "title": "Traffic",
+    "subtitle": "Monitor traffic conditions and find optimal routes",
+    "loading": "Loading map...",
+    "reportButton": "Report Traffic Jam",
+    "mapTitle": "Traffic Report Map - OpenStreetMap",
+    "filterTitle": "Filter by status:",
+    "filterAll": "All",
+    "filterReported": "Reported",
+    "filterVerified": "Verified",
+    "noReports": "No traffic jam reports yet",
+    "errorLoading": "Unable to load traffic reports",
+    "retryButton": "Retry",
+    "reportForm": {
+      "title": "Report Traffic Status",
+      "titleIcon": "🚦",
+      "username": "Username",
+      "usernamePlaceholder": "Your name",
+      "usernameRequired": "Please enter username",
+      "streetName": "Street Name",
+      "streetNamePlaceholder": "Ex: Nguyen Hue Street",
+      "streetNameRequired": "Please enter street name",
+      "currentLocationButton": "Current Location",
+      "currentLocationSuccess": "✓ Used current location (Lat: {lat}, Lng: {lng})",
+      "locationError": "Unable to get current location. Please enter manually.",
+      "locationNotSupported": "Browser does not support geolocation.",
+      "severity": "Severity Level",
+      "severityLevels": {
+        "Low": "Low",
+        "Medium": "Medium",
+        "High": "High"
+      },
+      "description": "Detailed Description",
+      "descriptionPlaceholder": "Describe traffic conditions: where traffic jam is, cause if known...",
+      "descriptionRequired": "Please describe traffic conditions",
+      "infoNote": {
+        "icon": "ℹ️",
+        "title": "Note:",
+        "privacy": "• Your information will be kept confidential",
+        "verification": "• Reports will be verified before public display",
+        "accuracy": "• Provide accurate information to better support the community"
+      },
+      "cancel": "Cancel",
+      "submit": "Submit Report",
+      "required": "*"
+    },
+    "reportsList": {
+      "title": "Community Reports",
+      "count": "reports",
+      "noReportsIcon": "📭",
+      "noReportsMessage": "No reports yet",
+      "viewOnMap": "View on map →",
+      "justNow": "Just now",
+      "minutesAgo": "minutes ago",
+      "hoursAgo": "hours ago",
+      "severity": {
+        "Low": "Low",
+        "Medium": "Medium",
+        "High": "High",
+        "Critical": "Critical"
+      },
+      "status": {
+        "reported": "Reported",
+        "verified": "Verified",
+        "resolved": "Resolved"
+      }
+    }
+  },
   "dashboard": {
     "welcome": "Welcome to Smart City Platform",
     "description": "Smart platform for your city"

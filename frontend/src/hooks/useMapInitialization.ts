@@ -89,7 +89,7 @@ export const useMapInitialization = ({
 
     legendRef.current = new Legend();
     if (showTrafficLayer) {
-      legendRef.current.addTo(map);
+      // legendRef.current.addTo(map);
     }
 
     // Add traffic layer toggle button

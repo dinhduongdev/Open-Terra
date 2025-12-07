@@ -21,6 +21,74 @@
     "analytics": "Phân tích dữ liệu",
     "alerts": "Cảnh báo & Thông báo"
   },
+  "traffic": {
+    "title": "Giao thông",
+    "subtitle": "Theo dõi tình trạng giao thông và tìm đường tối ưu",
+    "loading": "Đang tải bản đồ...",
+    "reportButton": "Báo cáo kẹt xe",
+    "mapTitle": "Bản đồ báo cáo giao thông - OpenStreetMap",
+    "filterTitle": "Lọc theo trạng thái:",
+    "filterAll": "Tất cả",
+    "filterReported": "Đã báo cáo",
+    "filterVerified": "Đã xác minh",
+    "noReports": "Chưa có báo cáo kẹt xe nào",
+    "errorLoading": "Không thể tải báo cáo giao thông",
+    "retryButton": "Thử lại",
+    "reportForm": {
+      "title": "Báo cáo tình trạng giao thông",
+      "titleIcon": "🚦",
+      "username": "Tên người dùng",
+      "usernamePlaceholder": "Tên của bạn",
+      "usernameRequired": "Vui lòng nhập tên người dùng",
+      "streetName": "Tên đường",
+      "streetNamePlaceholder": "VD: Nguyen Hue Street",
+      "streetNameRequired": "Vui lòng nhập tên đường",
+      "currentLocationButton": "Vị trí hiện tại",
+      "currentLocationSuccess": "✓ Đã sử dụng vị trí hiện tại (Lat: {lat}, Lng: {lng})",
+      "locationError": "Không thể lấy vị trí hiện tại. Vui lòng nhập thủ công.",
+      "locationNotSupported": "Trình duyệt không hỗ trợ định vị.",
+      "severity": "Mức độ",
+      "severityLevels": {
+        "Low": "Thấp",
+        "Medium": "Trung bình",
+        "High": "Cao"
+      },
+      "description": "Mô tả chi tiết",
+      "descriptionPlaceholder": "Mô tả tình trạng giao thông: kẹt xe từ đâu đến đâu, nguyên nhân nếu biết...",
+      "descriptionRequired": "Vui lòng mô tả tình trạng giao thông",
+      "infoNote": {
+        "icon": "ℹ️",
+        "title": "Lưu ý:",
+        "privacy": "• Thông tin của bạn sẽ được bảo mật",
+        "verification": "• Báo cáo sẽ được xác minh trước khi hiển thị công khai",
+        "accuracy": "• Cung cấp thông tin chính xác để hỗ trợ cộng đồng tốt hơn"
+      },
+      "cancel": "Hủy",
+      "submit": "Gửi báo cáo",
+      "required": "*"
+    },
+    "reportsList": {
+      "title": "Báo cáo từ cộng đồng",
+      "count": "báo cáo",
+      "noReportsIcon": "📭",
+      "noReportsMessage": "Chưa có báo cáo nào",
+      "viewOnMap": "Xem trên bản đồ →",
+      "justNow": "Vừa xong",
+      "minutesAgo": "phút trước",
+      "hoursAgo": "giờ trước",
+      "severity": {
+        "Low": "Nhẹ",
+        "Medium": "Trung bình",
+        "High": "Nặng",
+        "Critical": "Nghiêm trọng"
+      },
+      "status": {
+        "reported": "Đã báo cáo",
+        "verified": "Đã xác minh",
+        "resolved": "Đã giải quyết"
+      }
+    }
+  },
   "dashboard": {
     "welcome": "Chào mừng đến với Nền tảng Thành phố Thông minh",
     "description": "Nền tảng thông minh cho thành phố của bạn"

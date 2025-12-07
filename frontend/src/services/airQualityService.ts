@@ -6,12 +6,81 @@
  * @see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
  */
 
-import { AirQualityAPIResponse, AirQualityStation } from '@/types/airQuality';
+import { AirQualityAPIResponse, AirQualityStation, NGSILDAirQualityStation } from '@/types/airQuality';
 
 // Use the full base URL without /api since we'll include it in the endpoint
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL 
   ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api$/, '') // Remove trailing /api if present
   : 'http://localhost:8000';
+
+/**
+ * Transform NGSI-LD formatted data to simplified structure
+ */
+function transformNGSILDToStation(ngsiData: NGSILDAirQualityStation): AirQualityStation {
+  return {
+    id: ngsiData.id,
+    type: ngsiData.type,
+    location: {
+      type: ngsiData.location.value.type,
+      coordinates: ngsiData.location.value.coordinates,
+    },
+    dateObserved: ngsiData['https://smartdatamodels.org/dateObserved'].value,
+    address: ngsiData['https://smartdatamodels.org/address'].value,
+    airQualityIndex: {
+      value: ngsiData['https://smartdatamodels.org/dataModel.Weather/airQualityIndex'].value,
+      observedAt: ngsiData['https://smartdatamodels.org/dataModel.Weather/airQualityIndex'].observedAt,
+    },
+    airQualityLevel: ngsiData['https://smartdatamodels.org/dataModel.Environment/airQualityLevel'].value,
+    areaServed: ngsiData['https://smartdatamodels.org/areaServed'].value,
+    name: ngsiData['https://smartdatamodels.org/name'].value,
+    pm1: ngsiData['https://smartdatamodels.org/dataModel.Environment/pm1'] ? {
+      value: ngsiData['https://smartdatamodels.org/dataModel.Environment/pm1'].value,
+      observedAt: ngsiData['https://smartdatamodels.org/dataModel.Environment/pm1'].observedAt,
+      unitCode: ngsiData['https://smartdatamodels.org/dataModel.Environment/pm1'].unitCode,
+    } : undefined,
+    pm10: ngsiData['https://smartdatamodels.org/dataModel.Environment/pm10'] ? {
+      value: ngsiData['https://smartdatamodels.org/dataModel.Environment/pm10'].value,
+      observedAt: ngsiData['https://smartdatamodels.org/dataModel.Environment/pm10'].observedAt,
+      unitCode: ngsiData['https://smartdatamodels.org/dataModel.Environment/pm10'].unitCode,
+    } : undefined,
+    pm25: ngsiData['https://smartdatamodels.org/dataModel.Environment/pm25'] ? {
+      value: ngsiData['https://smartdatamodels.org/dataModel.Environment/pm25'].value,
+      observedAt: ngsiData['https://smartdatamodels.org/dataModel.Environment/pm25'].observedAt,
+      unitCode: ngsiData['https://smartdatamodels.org/dataModel.Environment/pm25'].unitCode,
+    } : undefined,
+    co: ngsiData['https://smartdatamodels.org/dataModel.Environment/co'] ? {
+      value: ngsiData['https://smartdatamodels.org/dataModel.Environment/co'].value,
+      observedAt: ngsiData['https://smartdatamodels.org/dataModel.Environment/co'].observedAt,
+      unitCode: ngsiData['https://smartdatamodels.org/dataModel.Environment/co'].unitCode,
+    } : undefined,
+    no2: ngsiData['https://smartdatamodels.org/dataModel.Environment/no2'] ? {
+      value: ngsiData['https://smartdatamodels.org/dataModel.Environment/no2'].value,
+      observedAt: ngsiData['https://smartdatamodels.org/dataModel.Environment/no2'].observedAt,
+      unitCode: ngsiData['https://smartdatamodels.org/dataModel.Environment/no2'].unitCode,
+    } : undefined,
+    o3: ngsiData['https://smartdatamodels.org/dataModel.Environment/o3'] ? {
+      value: ngsiData['https://smartdatamodels.org/dataModel.Environment/o3'].value,
+      observedAt: ngsiData['https://smartdatamodels.org/dataModel.Environment/o3'].observedAt,
+      unitCode: ngsiData['https://smartdatamodels.org/dataModel.Environment/o3'].unitCode,
+    } : undefined,
+    so2: ngsiData['https://smartdatamodels.org/dataModel.Environment/so2'] ? {
+      value: ngsiData['https://smartdatamodels.org/dataModel.Environment/so2'].value,
+      observedAt: ngsiData['https://smartdatamodels.org/dataModel.Environment/so2'].observedAt,
+      unitCode: ngsiData['https://smartdatamodels.org/dataModel.Environment/so2'].unitCode,
+    } : undefined,
+    relativeHumidity: ngsiData['https://smartdatamodels.org/dataModel.Weather/relativeHumidity'] ? {
+      value: ngsiData['https://smartdatamodels.org/dataModel.Weather/relativeHumidity'].value,
+      observedAt: ngsiData['https://smartdatamodels.org/dataModel.Weather/relativeHumidity'].observedAt,
+      unitCode: ngsiData['https://smartdatamodels.org/dataModel.Weather/relativeHumidity'].unitCode,
+    } : undefined,
+    temperature: ngsiData['https://smartdatamodels.org/dataModel.Weather/temperature'] ? {
+      value: ngsiData['https://smartdatamodels.org/dataModel.Weather/temperature'].value,
+      observedAt: ngsiData['https://smartdatamodels.org/dataModel.Weather/temperature'].observedAt,
+      unitCode: ngsiData['https://smartdatamodels.org/dataModel.Weather/temperature'].unitCode,
+    } : undefined,
+    source: ngsiData['https://smartdatamodels.org/source'].value,
+  };
+}
 
 /**
  * Fetch latest air quality data from all stations
@@ -36,7 +105,8 @@ export async function getLatestAirQuality(): Promise<AirQualityStation[]> {
       throw new Error(data.error || 'Failed to fetch air quality data');
     }
 
-    return data.result.items;
+    // Transform NGSI-LD data to simplified structure
+    return data.result.items.map(transformNGSILDToStation);
   } catch (error) {
     console.error('Error fetching air quality data:', error);
     throw error;
@@ -71,7 +141,8 @@ export async function getStationAirQuality(stationId: string): Promise<AirQualit
     }
 
     // The station endpoint returns result as a single object, not an array
-    return data.result as AirQualityStation;
+    // Transform NGSI-LD data to simplified structure
+    return transformNGSILDToStation(data.result);
   } catch (error) {
     console.error('Error fetching station air quality data:', error);
     throw error;
@@ -93,7 +164,7 @@ export function calculateAirQualityOverview(stations: AirQualityStation[]) {
   }
 
   const totalAqi = stations.reduce((sum, station) => sum + station.airQualityIndex.value, 0);
-  const averageAqi = Math.round(totalAqi / stations.length);
+  const averageAqi = totalAqi / stations.length;
 
   const goodStations = stations.filter((s) => s.airQualityIndex.value <= 50).length;
   const moderateStations = stations.filter(

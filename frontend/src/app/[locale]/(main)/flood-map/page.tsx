@@ -10,19 +10,11 @@
 
 import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
-import {
-  floodZones,
-  floodStations,
-  floodWarnings,
-  floodOverview,
-  floodStatsByTime,
-} from '@/constants/floodMockData';
-import FloodOverview from '@/components/common/FloodOverview';
-import FloodWarnings from '@/components/common/FloodWarnings';
-import FloodStatistics from '@/components/common/FloodStatistics';
+import { useState, useEffect } from 'react';
 import FloodReportForm, { FloodReport } from '@/components/common/FloodReportForm';
 import FloodReportsList from '@/components/common/FloodReportsList';
+import { getFloodReports, submitFloodReport } from '@/services/floodReportService';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 // Dynamically import Map component with no SSR to avoid window/document issues
 const FloodMapDynamic = dynamic(() => import('@/components/common/FloodMap'), {
@@ -36,20 +28,45 @@ const FloodMapDynamic = dynamic(() => import('@/components/common/FloodMap'), {
 
 export default function FloodMapPage() {
   const t = useTranslations('sidebar');
-  const [showFloodLayer, setShowFloodLayer] = useState(true);
   const [showReportForm, setShowReportForm] = useState(false);
   const [citizenReports, setCitizenReports] = useState<FloodReport[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<'All' | 'Reported' | 'Verified'>('All');
 
-  const handleSubmitReport = (report: Omit<FloodReport, 'id' | 'timestamp' | 'status'>) => {
-    const newReport: FloodReport = {
-      ...report,
-      id: `report-${Date.now()}`,
-      timestamp: new Date().toISOString(),
-      status: 'pending',
-    };
-    setCitizenReports([newReport, ...citizenReports]);
-    setShowReportForm(false);
-    alert('Báo cáo đã được gửi thành công! Cơ quan chức năng sẽ xử lý trong thời gian sớm nhất.');
+  // Fetch flood reports on mount and when filter changes
+  useEffect(() => {
+    fetchFloodReports();
+  }, [statusFilter]);
+
+  const fetchFloodReports = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const status = statusFilter === 'All' ? undefined : statusFilter;
+      const reports = await getFloodReports(0, 50, status);
+      console.log('Fetched flood reports:', reports);
+      setCitizenReports(reports);
+    } catch (err) {
+      setError('Không thể tải báo cáo ngập lụt');
+      console.error('Error fetching flood reports:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmitReport = async (report: Omit<FloodReport, 'id' | 'timestamp' | 'status'>) => {
+    try {
+      const newReport = await submitFloodReport(report);
+      setCitizenReports([newReport, ...citizenReports]);
+      setShowReportForm(false);
+      alert('Báo cáo đã được gửi thành công! Cơ quan chức năng sẽ xử lý trong thời gian sớm nhất.');
+      // Refresh reports list
+      fetchFloodReports();
+    } catch (err) {
+      alert('Không thể gửi báo cáo. Vui lòng thử lại!');
+      console.error(err);
+    }
   };
 
   return (
@@ -59,7 +76,6 @@ export default function FloodMapPage() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-3">
-                <span className="text-4xl">🌊</span>
                 {t('floodMap')}
               </h1>
               <p className="text-gray-600">
@@ -70,71 +86,87 @@ export default function FloodMapPage() {
               onClick={() => setShowReportForm(true)}
               className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2 whitespace-nowrap"
             >
-              <span className="text-xl">📝</span>
               Báo cáo ngập lụt
             </button>
           </div>
         </div>
 
-      {/* Overview Stats */}
-      <FloodOverview data={floodOverview} />
-
       {/* Main Map */}
       <div className="mt-6 md:mt-8 bg-white rounded-lg shadow-md p-4 md:p-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
-          <h2 className="text-lg md:text-xl font-semibold text-gray-700 flex items-center gap-2">
-            <span>🗺️</span>
-            Bản đồ ngập lụt - OpenStreetMap
-          </h2>
-          <div className="flex items-center gap-2">
-            <span className="text-xs md:text-sm text-gray-600">Lớp vùng ngập:</span>
-            <button
-              onClick={() => setShowFloodLayer(!showFloodLayer)}
-              className={`px-3 md:px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
-                showFloodLayer
-                  ? 'bg-blue-500 text-white hover:bg-blue-600'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
-            >
-              {showFloodLayer ? '✓ Đang bật' : 'Tắt'}
-            </button>
-          </div>
-        </div>
-        <div className="mb-4 p-3 md:p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
-          <div className="flex items-start gap-2 md:gap-3">
-            <span className="text-xl md:text-2xl">ℹ️</span>
-            <div>
-              <h3 className="font-semibold text-blue-900 mb-1 text-sm md:text-base">Hướng dẫn sử dụng</h3>
-              <ul className="text-xs md:text-sm text-blue-800 space-y-1">
-                <li>• Click vào các vùng màu để xem chi tiết mức độ ngập</li>
-                <li>• Click vào biểu tượng 📍 để xem thông tin trạm đo</li>
-                <li>• Click vào biểu tượng ⚠️ để xem cảnh báo chi tiết</li>
-                <li>• Sử dụng nút bật/tắt để ẩn/hiện lớp vùng ngập</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <FloodMapDynamic
-          floodZones={floodZones}
-          floodStations={floodStations}
-          floodWarnings={floodWarnings}
-          showFloodLayer={showFloodLayer}
-          onFloodLayerToggle={setShowFloodLayer}
-        />
+        <h2 className="text-lg md:text-xl font-semibold text-gray-700 flex items-center gap-2 mb-4">
+          <span>🗺️</span>
+          Bản đồ báo cáo ngập lụt - OpenStreetMap
+        </h2>
+        <FloodMapDynamic floodReports={citizenReports} />
       </div>
 
       {/* Citizen Reports */}
-      {citizenReports.length > 0 && (
-        <div className="mt-8">
-          <FloodReportsList reports={citizenReports} />
+      <div className="mt-8">
+        {/* Filter Tabs */}
+        <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-gray-700 mr-2">Lọc theo trạng thái:</span>
+            <button
+              onClick={() => setStatusFilter('All')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+                statusFilter === 'All'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Tất cả
+            </button>
+            <button
+              onClick={() => setStatusFilter('Reported')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+                statusFilter === 'Reported'
+                  ? 'bg-yellow-500 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Đã báo cáo
+            </button>
+            <button
+              onClick={() => setStatusFilter('Verified')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+                statusFilter === 'Verified'
+                  ? 'bg-green-500 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Đã xác minh
+            </button>
+          </div>
         </div>
-      )}
+
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <LoadingSpinner />
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+            <p className="text-red-600">{error}</p>
+            <button
+              onClick={fetchFloodReports}
+              className="mt-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+            >
+              Thử lại
+            </button>
+          </div>
+        ) : citizenReports.length > 0 ? (
+          <FloodReportsList reports={citizenReports} />
+        ) : (
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+            <p className="text-gray-600">Chưa có báo cáo ngập lụt nào</p>
+          </div>
+        )}
+      </div>
 
       {/* Warnings */}
-      <FloodWarnings warnings={floodWarnings} />
+      {/* <FloodWarnings warnings={floodWarnings} /> */}
 
       {/* Statistics */}
-      <FloodStatistics statsByTime={floodStatsByTime} stations={floodStations} />
+      {/* <FloodStatistics statsByTime={floodStatsByTime} stations={floodStations} /> */}
 
       {/* Safety Tips */}
       <div className="mt-8 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg shadow-md p-6 border-l-4 border-red-500">

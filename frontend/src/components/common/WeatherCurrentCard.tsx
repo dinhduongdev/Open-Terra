@@ -4,14 +4,6 @@ interface WeatherCurrentCardProps {
   weatherData: WeatherData;
 }
 
-const formatWeatherType = (weatherType: string | number): string => {
-  return String(weatherType)
-    .replace(/\\u00e2/g, 'â')
-    .replace(/\\u1ee5/g, 'ụ')
-    .replace(/\\u00ea/g, 'ê')
-    .replace(/\\u1ed3/g, 'ồ');
-};
-
 const WeatherDetailCard = ({ 
   icon, 
   label, 
@@ -70,7 +62,7 @@ export default function WeatherCurrentCard({ weatherData }: WeatherCurrentCardPr
           </div>
           <div className="mt-2 space-y-0.5">
             <p className="text-base sm:text-lg font-medium">
-              {formatWeatherType(result.weatherType.value)}
+              {result.weatherType.value}
             </p>
             <p className="text-xs sm:text-sm opacity-90">
               Cảm giác như {feelsLike}°C
