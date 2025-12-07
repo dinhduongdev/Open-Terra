@@ -38,12 +38,14 @@ class ContextBrokerClient:
     def _get_headers(
     self, 
     content_type: str = "application/json",
-    accept: str = "application/json"
+    accept: str = "application/ld+json"
 ) -> Dict[str, str]:
         """Build common headers for requests."""
         headers = {
             "Content-Type": content_type,
             "Accept": accept,
+            # "NGSILD-Tenant": "openiot",
+            # "NGSILD-Path": "/"
         }
         
         # FIX: DON'T add Link header for GET requests

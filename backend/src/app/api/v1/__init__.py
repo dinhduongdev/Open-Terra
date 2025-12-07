@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from app.api.v1 import air_quality, health, login, logout, rate_limits, tasks, tiers, users, weather
 from app.api.v1 import flood_reports, traffic_reports
 
-router = APIRouter(prefix="/v1")
+router = APIRouter()
 router.include_router(air_quality.router)
 router.include_router(flood_reports.router)
 router.include_router(health.router)
