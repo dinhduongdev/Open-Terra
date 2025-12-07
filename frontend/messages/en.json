@@ -9,6 +9,7 @@
   },
   "sidebar": {
     "introduction": "Introduction",
+    "overview": "Overview",
     "traffic": "Traffic",
     "floodMap": "Flood Map",
     "trafficJam": "Traffic Jam",
@@ -244,5 +245,61 @@
     "title": "Weather",
     "subtitle": "Monitor real-time weather information and forecasts",
     "loading": "Loading weather data..."
+  },
+  "overview": {
+    "title": "Overview",
+    "subtitle": "Comprehensive information on environmental quality and traffic",
+    "introduction": {
+      "title": "Introduction",
+      "description": "The overview page provides comprehensive information on air quality, weather, traffic, and flooding conditions in monitored areas. Data is continuously updated from monitoring stations and IoT sensors across the city."
+    },
+    "aiAdvisor": {
+      "title": "AI Advisor",
+      "loading": "Loading AI advice...",
+      "error": "Unable to load AI advice. Please try again later.",
+      "updatedAt": "Updated at",
+      "dataSources": "Data Sources"
+    },
+    "statistics": {
+      "title": "Statistics Overview",
+      "averageAqi": "Average AQI",
+      "aqStations": "AQ Stations",
+      "totalStations": "Total Stations",
+      "temperature": "Temperature",
+      "floodPoints": "Flood Points",
+      "monitoring": "Monitoring",
+      "trafficSensors": "Traffic Sensors",
+      "active": "Active"
+    },
+    "airQuality": {
+      "title": "Air Quality"
+    },
+    "weather": {
+      "title": "Weather",
+      "temperature": "Temperature",
+      "humidity": "Humidity",
+      "pressure": "Pressure",
+      "wind": "Wind",
+      "area": "Area"
+    },
+    "traffic": {
+      "title": "Traffic",
+      "congested": "Congested",
+      "clear": "Clear",
+      "averageSpeed": "Avg Speed",
+      "density": "Density",
+      "sensor": "Traffic Sensor"
+    },
+    "flood": {
+      "title": "Flood Monitoring",
+      "currentLevel": "Current Level",
+      "waterLevel": "Water Level",
+      "dangerLevel": "Danger Level",
+      "alertLevel": "Alert Level",
+      "monitoringPoint": "Monitoring Point"
+    },
+    "error": {
+      "noData": "Unable to load data. Please try again later."
+    }
   }
 }

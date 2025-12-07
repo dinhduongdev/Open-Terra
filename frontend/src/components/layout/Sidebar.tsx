@@ -55,6 +55,12 @@ export default function Sidebar({ isMobileOpen = false, onClose }: SidebarProps)
       icon: <DashboardIcon />,
     },
     {
+      id: 'overview',
+      labelKey: 'overview',
+      href: '/overview',
+      icon: <AnalyticsIcon />,
+    },
+    {
       id: 'traffic',
       labelKey: 'traffic',
       href: '/traffic',
@@ -134,11 +140,10 @@ export default function Sidebar({ isMobileOpen = false, onClose }: SidebarProps)
                 <li key={item.id}>
                   <ProgressLink
                     href={item.href}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                      isActive
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive
                         ? 'bg-emerald-500 text-white'
                         : 'text-gray-700 hover:bg-emerald-50 hover:text-emerald-600'
-                    }`}
+                      }`}
                   >
                     {item.icon}
                     <span className="font-medium">{t(item.labelKey)}</span>
@@ -160,9 +165,8 @@ export default function Sidebar({ isMobileOpen = false, onClose }: SidebarProps)
 
       {/* Mobile Sidebar Drawer */}
       <aside
-        className={`lg:hidden fixed top-0 left-0 h-full w-64 bg-white shadow-2xl z-[9999] transform transition-transform duration-300 ease-in-out ${
-          isMobileOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`lg:hidden fixed top-0 left-0 h-full w-64 bg-white shadow-2xl z-[9999] transform transition-transform duration-300 ease-in-out ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-800">Menu</h2>
@@ -195,11 +199,10 @@ export default function Sidebar({ isMobileOpen = false, onClose }: SidebarProps)
                   <ProgressLink
                     href={item.href}
                     onClick={handleLinkClick}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                      isActive
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive
                         ? 'bg-emerald-500 text-white'
                         : 'text-gray-700 hover:bg-emerald-50 hover:text-emerald-600'
-                    }`}
+                      }`}
                   >
                     {item.icon}
                     <span className="font-medium">{t(item.labelKey)}</span>
