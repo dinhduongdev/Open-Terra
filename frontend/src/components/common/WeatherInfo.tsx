@@ -2,7 +2,6 @@ export default function WeatherInfo() {
   return (
     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md p-4 sm:p-6 border-l-4 border-blue-500">
       <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
-        <span>📚</span>
         Thông tin về dữ liệu thời tiết
       </h2>
       <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-700">

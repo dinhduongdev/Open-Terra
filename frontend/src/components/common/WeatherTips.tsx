@@ -47,13 +47,13 @@ export default function WeatherTips() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
       <WeatherTipCard
-        icon="☀️"
+        icon=""
         title="Khuyến nghị phòng tránh nắng"
         tips={sunProtectionTips}
         gradient="bg-gradient-to-br from-yellow-50 to-orange-50"
       />
       <WeatherTipCard
-        icon="🌧️"
+        icon=""
         title="Khuyến nghị khi có mưa"
         tips={rainProtectionTips}
         gradient="bg-gradient-to-br from-blue-50 to-cyan-50"

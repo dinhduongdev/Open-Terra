@@ -21,7 +21,6 @@ export default function AirQualityStatistics({ statsByTime }: AirQualityStatisti
   return (
     <div className="mt-8 bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-        <span>📈</span>
         Biểu đồ chất lượng không khí 24h
       </h2>
 

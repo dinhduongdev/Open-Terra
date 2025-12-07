@@ -36,7 +36,7 @@
     "retryButton": "Retry",
     "reportForm": {
       "title": "Report Traffic Status",
-      "titleIcon": "🚦",
+      "titleIcon": "",
       "username": "Username",
       "usernamePlaceholder": "Your name",
       "usernameRequired": "Please enter username",
@@ -57,7 +57,7 @@
       "descriptionPlaceholder": "Describe traffic conditions: where traffic jam is, cause if known...",
       "descriptionRequired": "Please describe traffic conditions",
       "infoNote": {
-        "icon": "ℹ️",
+        "icon": "ℹ",
         "title": "Note:",
         "privacy": "• Your information will be kept confidential",
         "verification": "• Reports will be verified before public display",

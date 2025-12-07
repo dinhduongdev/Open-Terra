@@ -30,7 +30,6 @@ export default function HealthRecommendations({ aqi }: HealthRecommendationsProp
     <div className="mt-6 md:mt-8">
       <div className={`bg-gradient-to-r ${getAlertColor()} rounded-lg shadow-md p-4 md:p-6 border-l-4`}>
         <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-4 md:mb-6 flex items-center gap-2">
-          <span>🏥</span>
           Khuyến nghị sức khỏe
         </h2>
 
@@ -38,7 +37,6 @@ export default function HealthRecommendations({ aqi }: HealthRecommendationsProp
           {/* General Population */}
           <div className="bg-white rounded-lg p-4 md:p-5 shadow-sm">
             <h3 className="font-semibold text-gray-800 mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">
-              <span className="text-xl md:text-2xl">👥</span>
               Người dân nói chung
             </h3>
             <p className="text-gray-700 text-xs md:text-sm leading-relaxed">{recommendations.general}</p>
@@ -47,7 +45,6 @@ export default function HealthRecommendations({ aqi }: HealthRecommendationsProp
           {/* Sensitive Groups */}
           <div className="bg-white rounded-lg p-4 md:p-5 shadow-sm">
             <h3 className="font-semibold text-gray-800 mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">
-              <span className="text-xl md:text-2xl">⚕️</span>
               Nhóm nhạy cảm
             </h3>
             <p className="text-gray-700 text-xs md:text-sm leading-relaxed">{recommendations.sensitive}</p>
@@ -59,7 +56,6 @@ export default function HealthRecommendations({ aqi }: HealthRecommendationsProp
           {/* Children */}
           <div className="bg-white rounded-lg p-4 md:p-5 shadow-sm">
             <h3 className="font-semibold text-gray-800 mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">
-              <span className="text-xl md:text-2xl">👶</span>
               Trẻ em
             </h3>
             <p className="text-gray-700 text-xs md:text-sm leading-relaxed">{recommendations.children}</p>
@@ -68,7 +64,6 @@ export default function HealthRecommendations({ aqi }: HealthRecommendationsProp
           {/* Elderly */}
           <div className="bg-white rounded-lg p-4 md:p-5 shadow-sm">
             <h3 className="font-semibold text-gray-800 mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">
-              <span className="text-xl md:text-2xl">👴</span>
               Người cao tuổi
             </h3>
             <p className="text-gray-700 text-xs md:text-sm leading-relaxed">{recommendations.elderly}</p>
@@ -79,7 +74,7 @@ export default function HealthRecommendations({ aqi }: HealthRecommendationsProp
         <div className="mt-4 md:mt-6 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           <div className="bg-white rounded-lg p-3 md:p-4">
             <h3 className="font-semibold text-green-700 mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">
-              <span>✅</span> Biện pháp phòng ngừa
+               Biện pháp phòng ngừa
             </h3>
             <ul className="text-xs md:text-sm text-gray-700 space-y-1.5 md:space-y-2">
               <li className="flex items-start gap-2">
@@ -107,7 +102,7 @@ export default function HealthRecommendations({ aqi }: HealthRecommendationsProp
 
           <div className="bg-white rounded-lg p-3 md:p-4">
             <h3 className="font-semibold text-red-700 mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">
-              <span>⚠️</span> Cần tránh
+               Cần tránh
             </h3>
             <ul className="text-xs md:text-sm text-gray-700 space-y-1.5 md:space-y-2">
               <li className="flex items-start gap-2">
@@ -138,16 +133,15 @@ export default function HealthRecommendations({ aqi }: HealthRecommendationsProp
         {aqi > 200 && (
           <div className="mt-4 p-3 md:p-4 bg-red-100 border-l-4 border-red-600 rounded">
             <h3 className="font-bold text-red-800 mb-2 flex items-center gap-2 text-sm md:text-base">
-              <span>🚨</span> Cảnh báo khẩn cấp
             </h3>
             <p className="text-xs md:text-sm text-red-800 mb-2">
               Chất lượng không khí ở mức nguy hại. Nếu có triệu chứng khó thở, đau ngực, hoặc bất
               thường, hãy liên hệ ngay:
             </p>
             <div className="flex flex-wrap gap-2 md:gap-4 text-xs md:text-sm font-semibold text-red-800">
-              <span>📞 Cấp cứu 115</span>
-              <span>📞 Y tế 114</span>
-              <span>📞 Môi trường 1800-6169</span>
+              <span>Cấp cứu 115</span>
+              <span>Y tế 114</span>
+              <span>Môi trường 1800-6169</span>
             </div>
           </div>
         )}

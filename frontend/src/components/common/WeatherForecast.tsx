@@ -16,7 +16,6 @@ export default function WeatherForecastComponent({ forecasts }: WeatherForecastP
   return (
     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
       <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
-        <span>📅</span>
         Dự báo 7 ngày
       </h2>
 
@@ -53,8 +52,8 @@ export default function WeatherForecastComponent({ forecasts }: WeatherForecastP
 
               <div className="space-y-0.5 sm:space-y-1 text-xs text-gray-500">
                 <div className="flex items-center justify-between gap-0.5">
-                  <span className="truncate">💧 {forecast.humidity}%</span>
-                  <span className="truncate">🌧️ {forecast.precipitation}%</span>
+                  <span className="truncate"> {forecast.humidity}%</span>
+                  <span className="truncate">{forecast.precipitation}%</span>
                 </div>
                 <div className="flex items-center justify-center truncate">
                   <span>🌪️ {forecast.windSpeed} km/h</span>

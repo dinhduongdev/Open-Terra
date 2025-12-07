@@ -50,7 +50,6 @@ export default function AirQualityStationsList({ stations }: AirQualityStationsL
     <div className="mt-8 bg-white rounded-lg shadow-md p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-          <span>📊</span>
           Danh sách trạm quan trắc
         </h2>
         <div className="text-sm text-gray-600">
@@ -83,15 +82,13 @@ export default function AirQualityStationsList({ stations }: AirQualityStationsL
                   </div>
                   <div className="space-y-1 text-sm text-gray-600">
                     <div className="flex items-center gap-2">
-                      <span>📍</span>
+
                       <span>{station.address.addressLocality}, {station.address.addressCountry}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span>📡</span>
                       <span>Nguồn: {station.source}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span>⏰</span>
                       <span>
                         {station.lastUpdate.toLocaleString('vi-VN', {
                           day: '2-digit',
@@ -127,7 +124,6 @@ export default function AirQualityStationsList({ stations }: AirQualityStationsL
               {/* Air Pollutants Section */}
               <div className="mb-4">
                 <h4 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                  <span>🧪</span>
                   Chất ô nhiễm không khí
                 </h4>
                 <div className="grid grid-cols-2 gap-3">
@@ -201,7 +197,6 @@ export default function AirQualityStationsList({ stations }: AirQualityStationsL
               {(station.weather.temperature !== undefined || station.weather.humidity !== undefined) && (
                 <div className="pt-4 border-t border-gray-200">
                   <h4 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                    <span>🌤️</span>
                     Thông tin thời tiết
                   </h4>
                   <div className="grid grid-cols-2 gap-3">
@@ -214,7 +209,6 @@ export default function AirQualityStationsList({ stations }: AirQualityStationsL
                               {station.weather.temperature.toFixed(1)}°C
                             </div>
                           </div>
-                          <span className="text-3xl">🌡️</span>
                         </div>
                       </div>
                     )}
@@ -227,7 +221,6 @@ export default function AirQualityStationsList({ stations }: AirQualityStationsL
                               {station.weather.humidity.toFixed(0)}%
                             </div>
                           </div>
-                          <span className="text-3xl">💧</span>
                         </div>
                       </div>
                     )}

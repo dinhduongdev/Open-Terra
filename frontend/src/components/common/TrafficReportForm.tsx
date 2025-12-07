@@ -180,7 +180,6 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
                 onClick={handleGetCurrentLocation}
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors whitespace-nowrap flex items-center gap-2"
               >
-                <span className="text-xl">📍</span>
                 <span className="hidden sm:inline">{t('currentLocationButton')}</span>
               </button>
             </div>

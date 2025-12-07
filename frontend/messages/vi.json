@@ -36,7 +36,7 @@
     "retryButton": "Thử lại",
     "reportForm": {
       "title": "Báo cáo tình trạng giao thông",
-      "titleIcon": "🚦",
+      "titleIcon": "",
       "username": "Tên người dùng",
       "usernamePlaceholder": "Tên của bạn",
       "usernameRequired": "Vui lòng nhập tên người dùng",
@@ -57,7 +57,7 @@
       "descriptionPlaceholder": "Mô tả tình trạng giao thông: kẹt xe từ đâu đến đâu, nguyên nhân nếu biết...",
       "descriptionRequired": "Vui lòng mô tả tình trạng giao thông",
       "infoNote": {
-        "icon": "ℹ️",
+        "icon": "ℹ",
         "title": "Lưu ý:",
         "privacy": "• Thông tin của bạn sẽ được bảo mật",
         "verification": "• Báo cáo sẽ được xác minh trước khi hiển thị công khai",

@@ -73,12 +73,12 @@ export default function WeatherCurrentCard({ weatherData }: WeatherCurrentCardPr
         {/* Weather Details Grid */}
         <div className="grid grid-cols-2 gap-2 sm:gap-2.5 pt-3 sm:pt-4 border-t border-white/20">
           <WeatherDetailCard 
-            icon="💧" 
+            icon="" 
             label="Độ ẩm" 
             value={`${humidity}%`} 
           />
           <WeatherDetailCard 
-            icon="🌬️" 
+            icon="" 
             label="Gió" 
             value={`${windSpeed} km/h`}
             subtitle="Đông Nam"
@@ -99,13 +99,13 @@ export default function WeatherCurrentCard({ weatherData }: WeatherCurrentCardPr
         {/* Additional Weather Info */}
         <div className="grid grid-cols-2 gap-2 sm:gap-2.5 mt-2 sm:mt-2.5">
           <WeatherDetailCard 
-            icon="☀️" 
+            icon="" 
             label="Chỉ số UV" 
             value={result.uVIndexMax.value}
             subtitle="Cao"
           />
           <WeatherDetailCard 
-            icon="🌡️" 
+            icon="" 
             label="Áp suất" 
             value={result.atmosphericPressure.value}
             subtitle="hPa"

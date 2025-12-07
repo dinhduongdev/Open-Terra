@@ -108,23 +108,23 @@ export default function WeatherMap({
             </p>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 14px;">
               <div>
-                <div style="color: #666;">🌡️ Nhiệt độ:</div>
+                <div style="color: #666;">Nhiệt độ:</div>
                 <div style="font-weight: bold;">${station.temperature}°C</div>
               </div>
               <div>
-                <div style="color: #666;">💧 Độ ẩm:</div>
+                <div style="color: #666;">Độ ẩm:</div>
                 <div style="font-weight: bold;">${station.humidity}%</div>
               </div>
               <div>
-                <div style="color: #666;">🌪️ Gió:</div>
+                <div style="color: #666;">Gió:</div>
                 <div style="font-weight: bold;">${station.windSpeed} km/h</div>
               </div>
               <div>
-                <div style="color: #666;">🌧️ Mưa:</div>
+                <div style="color: #666;">Mưa:</div>
                 <div style="font-weight: bold;">${station.rainfall} mm</div>
               </div>
               <div style="grid-column: 1 / -1;">
-                <div style="color: #666;">🌡️ Áp suất:</div>
+                <div style="color: #666;">Áp suất:</div>
                 <div style="font-weight: bold;">${station.pressure} hPa</div>
               </div>
             </div>
@@ -170,23 +170,23 @@ export default function WeatherMap({
               <p className="text-sm text-gray-600 mb-3">{selectedStation.location}</p>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
                 <div>
-                  <span className="text-gray-600">🌡️ Nhiệt độ:</span>
+                  <span className="text-gray-600">Nhiệt độ:</span>
                   <span className="font-semibold ml-1">{selectedStation.temperature}°C</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">💧 Độ ẩm:</span>
+                  <span className="text-gray-600">Độ ẩm:</span>
                   <span className="font-semibold ml-1">{selectedStation.humidity}%</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">🌪️ Gió:</span>
+                  <span className="text-gray-600">Gió:</span>
                   <span className="font-semibold ml-1">{selectedStation.windSpeed} km/h</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">🌧️ Lượng mưa:</span>
+                  <span className="text-gray-600">Lượng mưa:</span>
                   <span className="font-semibold ml-1">{selectedStation.rainfall} mm</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">🌡️ Áp suất:</span>
+                  <span className="text-gray-600">Áp suất:</span>
                   <span className="font-semibold ml-1">{selectedStation.pressure} hPa</span>
                 </div>
               </div>

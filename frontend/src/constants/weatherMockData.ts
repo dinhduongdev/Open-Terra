@@ -110,7 +110,7 @@ export const weeklyForecast: WeatherForecast[] = [
     precipitation: 60,
     windSpeed: 15,
     condition: 'Mưa rào',
-    icon: '🌧️',
+    icon: '',
   },
   {
     date: '2025-12-06',
@@ -165,7 +165,7 @@ export const weeklyForecast: WeatherForecast[] = [
     precipitation: 70,
     windSpeed: 16,
     condition: 'Mưa',
-    icon: '🌧️',
+    icon: '',
   },
 ];
 
