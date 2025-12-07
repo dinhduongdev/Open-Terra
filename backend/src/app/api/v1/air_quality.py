@@ -24,10 +24,10 @@ from app.schemas.smart_data.air_quality_observed import (
 )
 from app.services.context_broker_client import ContextBrokerClient
 from app.core.config import settings
-from app.core.constants import AIR_QUALITY_STATION_IDS, get_air_quality_entity_id
+from app.core.constants import AIR_QUALITY_STATION_IDS, get_air_quality_entity_id, get_air_quality_temporal_id
 import logging
 
-router = APIRouter(prefix="/v1/air-quality", tags=["air-quality"])
+router = APIRouter(prefix="/air-quality", tags=["air-quality"])
 logger = logging.getLogger(__name__)
 
 
@@ -199,6 +199,10 @@ async def query_air_quality(
     start_time: Optional[datetime] = Query(
         None, description="Start time (ISO 8601 format, e.g., 2025-12-01T00:00:00Z)"
     ),
+    end_time: Optional[datetime] = Query(
+        None,
+        description="End time (ISO 8601 format)"
+    ),
     
     # Limit results
     last_n: Optional[int] = Query(
@@ -324,29 +328,30 @@ async def query_air_quality(
         if air_quality_level:
             filter_conditions.append(("airQualityLevel", "==", air_quality_level))
         
-        # Build entity ID for station filtering
+        # Build query based on whether station_id is provided
         if station_id:
-            # Query specific station
-            entity_id = get_air_quality_entity_id(station_id)
-        else:
-            # Cannot query all stations without entity ID - return error
-            return APIResponse(
-                success=False,
-                code=400,
-                message="station_id is required for query endpoint",
-                error="MISSING_STATION_ID",
-                result=None,
+            # Query specific station using single entity endpoint (temporal ID without :latest)
+            entity_id = get_air_quality_temporal_id(station_id)
+            temporal_data = await context_broker_client.get_temporal_entity(
+                entity_id=entity_id,
+                timerel="between",
+                time_at=start_time,
+                end_time_at=end_time,
+                last_n=last_n,
+                entity_format="concise"
             )
-        
-        # Query temporal data (Mintaka doesn't support 'q' parameter)
-        temporal_data = await context_broker_client.get_temporal_entities(
-            entity_id=entity_id,
-            timerel="between",
-            time_at=start_time,
-            end_time_at=end_time,
-            last_n=last_n,
-            entity_format="concise"
-        )
+        else:
+            # Query all AirQualityObserved entities using multi-entity endpoint
+            entities = await context_broker_client.get_temporal_entities(
+                entity_type="AirQualityObserved",
+                timerel="between",
+                time_at=start_time,
+                end_time_at=end_time,
+                last_n=last_n,
+                entity_format="concise"
+            )
+            # For single station compatibility with filter logic below
+            temporal_data = entities[0] if entities else None
         
         # Client-side filtering: Filter by timestamp/observedAt
         # If conditions fail for a timestamp, remove that entire observation
@@ -442,7 +447,7 @@ async def query_air_quality(
 )
 async def get_air_quality_history(
     station_id: Optional[str] = Query(
-        None, description="Station ID to query (e.g., '3276359' or '6068138'). If not provided, queries all stations."
+        None, description="Station ID to query (e.g., '3276359' or '6068138').  Must be provided"
     ),
     start_time: Optional[datetime] = Query(
         None, description="Start time (ISO 8601 format, e.g., 2025-12-01T00:00:00Z)"
@@ -487,14 +492,14 @@ async def get_air_quality_history(
     """
     try:
         # Validate input - check if both methods are provided
-        if last_n is not None and (start_time is not None or end_time is not None):
-            return APIResponse(
-                success=False,
-                code=400,
-                message="Cannot use both 'last_n' and time range",
-                error="INVALID_PARAMS",
-                result=None,
-            )
+        # if last_n is not None and (start_time is not None or end_time is not None):
+        #     return APIResponse(
+        #         success=False,
+        #         code=400,
+        #         message="Cannot use both 'last_n' and time range",
+        #         error="INVALID_PARAMS",
+        #         result=None,
+        #     )
 
         # Check if neither method is provided
         if last_n is None and (start_time is None or end_time is None):
@@ -517,33 +522,45 @@ async def get_air_quality_history(
             )
 
         # Build entity ID for station filtering
+        # if station_id:
+        #     # Query specific station
+        #     entity_id = get_air_quality_entity_id(station_id)
+        # else:
+        #     # Cannot query all stations without entity ID - return error
+        #     return APIResponse(
+        #         success=False,
+        #         code=400,
+        #         message="station_id is required for history queries",
+        #         error="MISSING_STATION_ID",
+        #         result=None,
+        #     )
+        
+        temporal_data = None
         if station_id:
-            # Query specific station
             entity_id = get_air_quality_entity_id(station_id)
+            temporal_data = await context_broker_client.get_temporal_entity(
+                entity_id=entity_id,
+                timerel="between" if start_time and end_time else "before",
+                time_at=start_time,
+                end_time_at=end_time,
+                last_n=last_n,
+                entity_format=None
+            )
         else:
-            # Cannot query all stations without entity ID - return error
-            return APIResponse(
-                success=False,
-                code=400,
-                message="station_id is required for history queries",
-                error="MISSING_STATION_ID",
-                result=None,
+            temporal_data = await context_broker_client.get_temporal_entities(
+                entity_type="AirQualityObserved",
+                timerel="between",
+                time_at=start_time,
+                end_time_at=end_time,
+                last_n=last_n,
+                entity_format="concise"
             )
 
-        entities = await context_broker_client.get_temporal_entities(
-            entity_id=entity_id,
-            timerel="between" if (start_time and end_time) else "before",
-            time_at=start_time if start_time else datetime.utcnow(),
-            end_time_at=end_time,
-            last_n=last_n,
-            entity_format="concise",
-        )
-
         # Handle None result (entity not found or error)
-        if entities is None:
+        if temporal_data is None:
             items = []
         else:
-            items = [entities]  # Wrap single entity in list
+            items = [temporal_data]  # Wrap single entity in list
 
         return APIResponse(
             success=True,
@@ -629,7 +646,7 @@ async def get_air_quality_statistics(
 
         # Get temporal data for the period
         # Get temporal data in concise format (easier to process)
-        temporal_data = await context_broker_client.get_temporal_entities(
+        temporal_data = await context_broker_client.get_temporal_entity(
             entity_id=entity_id,
             timerel="between",
             time_at=start_time,

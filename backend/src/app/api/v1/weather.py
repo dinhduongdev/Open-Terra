@@ -15,7 +15,7 @@ from app.services.context_broker_client import ContextBrokerClient
 from app.core.config import settings
 from app.core.constants import WEATHER_ENTITY_ID, WEATHER_ID_PATTERN, get_weather_temporal_id
 
-router = APIRouter(prefix="/v1/weather", tags=["weather"])
+router = APIRouter(prefix="/weather", tags=["weather"])
 
 # ==== BUG_FIXING: THIS API IS CURRENTLY UNAVAILABLE DUE TO ISSUES WITH CONTEXT BROKER INTERACTIONS. ====
 
