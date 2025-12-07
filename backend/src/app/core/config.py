@@ -32,7 +32,9 @@ class AppSettings(BaseSettings):
     DEBUG: bool = config("DEBUG", cast=bool, default=True)
 
     # CORS
-    CORS_ORIGINS: list[str] = ["*"]  # Override in .env if needed
+    CORS_ORIGINS: list[str] = config(
+        "CORS_ORIGINS", cast=lambda v: v if isinstance(v, list) else eval(v) if v else ["*"], default=["*"]
+    )
 
 
 class CryptSettings(BaseSettings):
@@ -187,7 +189,7 @@ class OrionLDSettings(BaseSettings):
         "ORION_LD_CONTEXT",
         default=(
             "<http://context/open-terra-context.jsonld>; "
-            "rel='http://www.w3.org/ns/json-ld#context'; type='application/ld+json'"
+            'rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"'
         ),
     )
 
