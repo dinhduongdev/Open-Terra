@@ -13,9 +13,7 @@ import { useTranslations } from 'next-intl';
 import { useState, useEffect } from 'react';
 import TrafficReportForm, { TrafficReport } from '@/components/common/TrafficReportForm';
 import TrafficReportsList from '@/components/common/TrafficReportsList';
-import TrafficFlowList from '@/components/common/TrafficFlowList';
 import { getTrafficReports, submitTrafficReport } from '@/services/trafficReportService';
-import { getLatestTrafficFlow, TrafficFlowData } from '@/services/trafficFlowService';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 // Dynamically import Map component with no SSR to avoid window/document issues
@@ -32,7 +30,6 @@ export default function TrafficPage() {
   const t = useTranslations('traffic');
   const [showReportForm, setShowReportForm] = useState(false);
   const [trafficReports, setTrafficReports] = useState<TrafficReport[]>([]);
-  const [trafficFlowData, setTrafficFlowData] = useState<TrafficFlowData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<'All' | 'Reported' | 'Verified'>('All');
@@ -41,16 +38,6 @@ export default function TrafficPage() {
   useEffect(() => {
     fetchTrafficReports();
   }, [statusFilter]);
-
-  // Fetch traffic flow data on mount and periodically
-  useEffect(() => {
-    fetchTrafficFlowData();
-    
-    // Refresh traffic flow data every 30 seconds
-    const interval = setInterval(fetchTrafficFlowData, 30000);
-    
-    return () => clearInterval(interval);
-  }, []);
 
   const fetchTrafficReports = async () => {
     try {
@@ -65,17 +52,6 @@ export default function TrafficPage() {
       console.error('Error fetching traffic reports:', err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchTrafficFlowData = async () => {
-    try {
-      const flowData = await getLatestTrafficFlow();
-      console.log('Fetched traffic flow data:', flowData);
-      setTrafficFlowData(flowData);
-    } catch (err) {
-      console.error('Error fetching traffic flow data:', err);
-      // Don't set error state for flow data to avoid disrupting the page
     }
   };
 
@@ -118,15 +94,7 @@ export default function TrafficPage() {
         <h2 className="text-lg md:text-xl font-semibold text-gray-700 mb-4">
           {t('mapTitle')}
         </h2>
-        <TrafficMapDynamic 
-          trafficReports={trafficReports} 
-          trafficFlowData={trafficFlowData}
-        />
-      </div>
-
-      {/* Traffic Flow Sensors List */}
-      <div className="mt-8">
-        <TrafficFlowList sensors={trafficFlowData} />
+        <TrafficMapDynamic trafficReports={trafficReports} />
       </div>
 
       {/* Traffic Reports */}

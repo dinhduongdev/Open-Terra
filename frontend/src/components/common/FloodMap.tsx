@@ -12,7 +12,6 @@ import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { FloodReport } from './FloodReportForm';
-import { FloodMonitoringData } from '@/services/floodMonitoringService';
 
 // Fix for default marker icons in Next.js
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,17 +24,14 @@ L.Icon.Default.mergeOptions({
 
 interface FloodMapProps {
   floodReports?: FloodReport[];
-  floodMonitoringData?: FloodMonitoringData[];
 }
 
 export default function FloodMap({
   floodReports = [],
-  floodMonitoringData = [],
 }: FloodMapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const legendRef = useRef<L.Control | null>(null);
   const floodReportMarkersRef = useRef<any[]>([]);
-  const floodMonitoringMarkersRef = useRef<any[]>([]);
   const [mapReady, setMapReady] = useState(false);
 
   // Track when map is ready
@@ -89,9 +85,9 @@ export default function FloodMap({
       maxZoom: 19,
     }).addTo(map);
 
-    // Add combined legend with collapse functionality
+    // Add legend with collapse functionality
     const Legend = L.Control.extend({
-      options: { position: 'topright' },
+      options: { position: 'bottomright' },
       onAdd: function () {
         const div = L.DomUtil.create('div', 'flood-legend');
         let isCollapsed = false;
@@ -101,30 +97,30 @@ export default function FloodMap({
             div.innerHTML = `
               <div style="background: white; padding: 8px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); color: #000000; cursor: pointer;" id="legend-toggle">
                 <div style="display: flex; align-items: center; justify-content: space-between;">
-                  <span style="font-weight: bold; font-size: 11px; color: #000000;">Cảm biến ngập lụt</span>
+                  <span style="font-weight: bold; font-size: 11px; color: #000000;">Báo cáo ngập lụt</span>
                   <span style="font-size: 12px; margin-left: 8px;">▼</span>
                 </div>
               </div>
             `;
           } else {
             div.innerHTML = `
-              <div style="background: white; padding: 12px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); color: #000000;">
-                <div style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; margin-bottom: 8px;" id="legend-toggle">
-                  <span style="font-weight: bold; font-size: 12px; color: #374151;">Cảm biến ngập lụt</span>
+              <div style="background: white; padding: 8px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); color: #000000;">
+                <div style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; margin-bottom: 6px;" id="legend-toggle">
+                  <span style="font-weight: bold; font-size: 11px; color: #000000;">Báo cáo ngập lụt</span>
                   <span style="font-size: 12px; margin-left: 8px;">▲</span>
                 </div>
                 <div id="legend-content">
-                  <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                    <div style="width: 16px; height: 16px; background: #10b981; border: 2px solid white; margin-right: 8px; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></div>
-                    <span style="font-size: 12px; color: #000000;">Bình thường</span>
+                  <div style="display: flex; align-items: center; margin-bottom: 2px;">
+                    <div style="width: 14px; height: 14px; background: #16a34a; border: 1.5px solid white; margin-right: 5px; border-radius: 50%;"></div>
+                    <span style="font-size: 10px; color: #000000;">Thấp</span>
                   </div>
-                  <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                    <div style="width: 16px; height: 16px; background: #f59e0b; border: 2px solid white; margin-right: 8px; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></div>
-                    <span style="font-size: 12px; color: #000000;">Cảnh báo</span>
+                  <div style="display: flex; align-items: center; margin-bottom: 2px;">
+                    <div style="width: 14px; height: 14px; background: #ca8a04; border: 1.5px solid white; margin-right: 5px; border-radius: 50%;"></div>
+                    <span style="font-size: 10px; color: #000000;">Trung bình</span>
                   </div>
-                  <div style="display: flex; align-items: center;">
-                    <div style="width: 16px; height: 16px; background: #ef4444; border: 2px solid white; margin-right: 8px; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></div>
-                    <span style="font-size: 12px; color: #000000;">Nguy hiểm</span>
+                  <div style="display: flex; align-items: center; margin-bottom: 2px;">
+                    <div style="width: 14px; height: 14px; background: #ea580c; border: 1.5px solid white; margin-right: 5px; border-radius: 50%;"></div>
+                    <span style="font-size: 10px; color: #000000;">Cao</span>
                   </div>
                 </div>
               </div>
@@ -269,125 +265,6 @@ export default function FloodMap({
       floodReportMarkersRef.current.push(marker);
     });
   }, [floodReports, mapReady, mapRef]);
-
-  // Render flood monitoring sensor markers
-  useEffect(() => {
-    // Clear existing markers
-    floodMonitoringMarkersRef.current.forEach((marker) => {
-      if (mapRef.current && marker) {
-        mapRef.current.removeLayer(marker);
-      }
-    });
-    floodMonitoringMarkersRef.current = [];
-
-    // Wait for map to be ready
-    if (!mapReady || !mapRef.current) return;
-
-    if (!floodMonitoringData.length) return;
-
-    console.log('Rendering flood monitoring sensors:', floodMonitoringData.length);
-
-    const map = mapRef.current;
-
-    // Add new sensor markers
-    floodMonitoringData.forEach((sensor) => {
-      if (!sensor.location?.value?.coordinates) {
-        console.warn('Sensor missing coordinates:', sensor);
-        return;
-      }
-
-      const [lng, lat] = sensor.location.value.coordinates;
-      const waterLevel = sensor.waterLevel?.value || sensor.currentLevel?.value || 0;
-      const alertLevel = sensor.alertLevel?.value || 0;
-      const dangerLevel = sensor.dangerLevel?.value || 0;
-      const status = sensor.floodLevelStatus?.value || 'normal';
-      const stationID = sensor.stationID?.value || sensor.id.split(':').pop() || sensor.id;
-      const address = sensor.address?.value?.streetAddress || 'N/A';
-
-      // Determine color based on flood level status
-      let sensorColor = '#10b981'; // green
-      let statusText = 'Bình thường';
-      
-      if (status.toLowerCase() === 'danger' || waterLevel >= dangerLevel) {
-        sensorColor = '#ef4444'; // red
-        statusText = 'Nguy hiểm';
-      } else if (status.toLowerCase() === 'alert' || waterLevel >= alertLevel) {
-        sensorColor = '#f59e0b'; // yellow
-        statusText = 'Cảnh báo';
-      }
-
-      // Create custom icon for flood sensor
-      const sensorIcon = L.divIcon({
-        className: 'custom-flood-sensor-marker',
-        html: `
-          <div style="
-            background: linear-gradient(135deg, ${sensorColor} 0%, ${sensorColor}dd 100%);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.3), 0 0 0 3px ${sensorColor}33;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-            cursor: pointer;
-            transition: transform 0.2s;
-          " onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
-            💧
-          </div>
-        `,
-        iconSize: [40, 40],
-        iconAnchor: [20, 20],
-      });
-
-      // Create marker
-      const marker = L.marker([lat, lng], {
-        icon: sensorIcon,
-      }).addTo(map);
-
-      // Create popup content
-      const popupContent = `
-        <div style="min-width: 220px;">
-          <h3 style="font-weight: bold; margin-bottom: 8px; color: ${sensorColor}; display: flex; align-items: center; gap: 6px;">
-            💧 Trạm ngập lụt
-          </h3>
-          <div style="background: ${sensorColor}22; padding: 8px; border-radius: 6px; margin-bottom: 8px;">
-            <div style="font-weight: bold; color: ${sensorColor}; margin-bottom: 4px;">
-              ${statusText}
-            </div>
-            <div style="font-size: 24px; font-weight: bold; color: ${sensorColor};">
-              ${waterLevel.toFixed(2)} m
-            </div>
-          </div>
-          <div style="margin-bottom: 4px;">
-            <strong>📍 Địa điểm:</strong> ${address}
-          </div>
-          <div style="margin-bottom: 4px;">
-            <strong>⚠️ Mức cảnh báo:</strong> ${alertLevel.toFixed(2)} m
-          </div>
-          <div style="margin-bottom: 4px;">
-            <strong>🚨 Mức nguy hiểm:</strong> ${dangerLevel.toFixed(2)} m
-          </div>
-          <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb;">
-            <div style="font-size: 11px; color: #6b7280;">
-              Trạm: ${stationID}
-            </div>
-            ${sensor.dateObserved?.value?.['@value'] ? `
-              <div style="font-size: 11px; color: #6b7280; margin-top: 2px;">
-                Cập nhật: ${new Date(sensor.dateObserved.value['@value']).toLocaleString('vi-VN')}
-              </div>
-            ` : ''}
-          </div>
-        </div>
-      `;
-
-      marker.bindPopup(popupContent);
-      floodMonitoringMarkersRef.current.push(marker);
-    });
-  }, [floodMonitoringData, mapReady, mapRef]);
 
   return (
     <div id="flood-map" className="h-[300px] md:h-[400px] w-full rounded-lg overflow-hidden shadow-sm" />
