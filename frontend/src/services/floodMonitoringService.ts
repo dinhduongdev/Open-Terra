@@ -137,60 +137,74 @@ export async function getLatestFloodMonitoring(): Promise<FloodMonitoringData[]>
          * Transform NGSI-LD formatted data to simplified structure
          */
         function transformNGSILDToFlood(ngsiData: NGSIFlood): FloodMonitoringData {
+            const getProp = (longKey: string, shortKey: string) => ngsiData[longKey] || ngsiData[shortKey];
+
+            const description = getProp('description', 'description'); // Key is just 'description' mostly? Check schema. Simple name usually safe.
+            const address = getProp('https://smartdatamodels.org/address', 'address');
+            const floodLevelStatus = getProp('https://smartdatamodels.org/dataModel.Environment/floodLevelStatus', 'floodLevelStatus');
+            const waterLevel = getProp('https://smartdatamodels.org/dataModel.Environment/waterLevel', 'waterLevel');
+            const stationID = getProp('https://smartdatamodels.org/stationID', 'stationID');
+            const currentLevel = getProp('https://smartdatamodels.org/dataModel.Environment/currentLevel', 'currentLevel');
+            const dangerLevel = getProp('https://smartdatamodels.org/dataModel.Environment/dangerLevel', 'dangerLevel');
+            const alertLevel = getProp('https://smartdatamodels.org/dataModel.Environment/alertLevel', 'alertLevel');
+            const referenceLevel = getProp('https://smartdatamodels.org/dataModel.Environment/referenceLevel', 'referenceLevel');
+            const measuredDistance = getProp('https://smartdatamodels.org/dataModel.Environment/measuredDistance', 'measuredDistance');
+            const dateObserved = getProp('https://smartdatamodels.org/dateObserved', 'dateObserved');
+
             return {
                 id: ngsiData.id,
                 type: ngsiData.type,
-                description: ngsiData['description'] ? {
-                    type: ngsiData['description'].type,
-                    value: ngsiData['description'].value,
-                    observedAt: ngsiData['description'].observedAt
+                description: description ? {
+                    type: description.type,
+                    value: description.value,
+                    observedAt: description.observedAt
                 } : undefined,
-                address: ngsiData['https://smartdatamodels.org/address'] ? {
-                    type: ngsiData['https://smartdatamodels.org/address'].type,
+                address: address ? {
+                    type: address.type,
                     value: {
-                        streetAddress: ngsiData['https://smartdatamodels.org/address'].value.streetAddress
+                        streetAddress: address.value.streetAddress
                     }
                 } : undefined,
-                floodLevelStatus: ngsiData['https://smartdatamodels.org/dataModel.Environment/floodLevelStatus'] ? {
-                    type: ngsiData['https://smartdatamodels.org/dataModel.Environment/floodLevelStatus'].type,
-                    value: ngsiData['https://smartdatamodels.org/dataModel.Environment/floodLevelStatus'].value,
-                    observedAt: ngsiData['https://smartdatamodels.org/dataModel.Environment/floodLevelStatus'].observedAt
+                floodLevelStatus: floodLevelStatus ? {
+                    type: floodLevelStatus.type,
+                    value: floodLevelStatus.value,
+                    observedAt: floodLevelStatus.observedAt
                 } : undefined,
-                waterLevel: ngsiData['https://smartdatamodels.org/dataModel.Environment/waterLevel'] ? {
-                    type: ngsiData['https://smartdatamodels.org/dataModel.Environment/waterLevel'].type,
-                    value: ngsiData['https://smartdatamodels.org/dataModel.Environment/waterLevel'].value,
-                    observedAt: ngsiData['https://smartdatamodels.org/dataModel.Environment/waterLevel'].observedAt,
-                    unitCode: ngsiData['https://smartdatamodels.org/dataModel.Environment/waterLevel'].unitCode
+                waterLevel: waterLevel ? {
+                    type: waterLevel.type,
+                    value: waterLevel.value,
+                    observedAt: waterLevel.observedAt,
+                    unitCode: waterLevel.unitCode
                 } : undefined,
-                stationID: ngsiData['https://smartdatamodels.org/stationID'] ? {
-                    type: ngsiData['https://smartdatamodels.org/stationID'].type,
-                    value: ngsiData['https://smartdatamodels.org/stationID'].value,
-                    observedAt: ngsiData['https://smartdatamodels.org/stationID'].observedAt
+                stationID: stationID ? {
+                    type: stationID.type,
+                    value: stationID.value,
+                    observedAt: stationID.observedAt
                 } : undefined,
-                currentLevel: ngsiData['https://smartdatamodels.org/dataModel.Environment/currentLevel'] ? {
-                    type: ngsiData['https://smartdatamodels.org/dataModel.Environment/currentLevel'].type,
-                    value: ngsiData['https://smartdatamodels.org/dataModel.Environment/currentLevel'].value,
-                    observedAt: ngsiData['https://smartdatamodels.org/dataModel.Environment/currentLevel'].observedAt
+                currentLevel: currentLevel ? {
+                    type: currentLevel.type,
+                    value: currentLevel.value,
+                    observedAt: currentLevel.observedAt
                 } : undefined,
-                dangerLevel: ngsiData['https://smartdatamodels.org/dataModel.Environment/dangerLevel'] ? {
-                    type: ngsiData['https://smartdatamodels.org/dataModel.Environment/dangerLevel'].type,
-                    value: ngsiData['https://smartdatamodels.org/dataModel.Environment/dangerLevel'].value,
-                    observedAt: ngsiData['https://smartdatamodels.org/dataModel.Environment/dangerLevel'].observedAt
+                dangerLevel: dangerLevel ? {
+                    type: dangerLevel.type,
+                    value: dangerLevel.value,
+                    observedAt: dangerLevel.observedAt
                 } : undefined,
-                alertLevel: ngsiData['https://smartdatamodels.org/dataModel.Environment/alertLevel'] ? {
-                    type: ngsiData['https://smartdatamodels.org/dataModel.Environment/alertLevel'].type,
-                    value: ngsiData['https://smartdatamodels.org/dataModel.Environment/alertLevel'].value,
-                    observedAt: ngsiData['https://smartdatamodels.org/dataModel.Environment/alertLevel'].observedAt
+                alertLevel: alertLevel ? {
+                    type: alertLevel.type,
+                    value: alertLevel.value,
+                    observedAt: alertLevel.observedAt
                 } : undefined,
-                referenceLevel: ngsiData['https://smartdatamodels.org/dataModel.Environment/referenceLevel'] ? {
-                    type: ngsiData['https://smartdatamodels.org/dataModel.Environment/referenceLevel'].type,
-                    value: ngsiData['https://smartdatamodels.org/dataModel.Environment/referenceLevel'].value,
-                    observedAt: ngsiData['https://smartdatamodels.org/dataModel.Environment/referenceLevel'].observedAt
+                referenceLevel: referenceLevel ? {
+                    type: referenceLevel.type,
+                    value: referenceLevel.value,
+                    observedAt: referenceLevel.observedAt
                 } : undefined,
-                measuredDistance: ngsiData['https://smartdatamodels.org/dataModel.Environment/measuredDistance'] ? {
-                    type: ngsiData['https://smartdatamodels.org/dataModel.Environment/measuredDistance'].type,
-                    value: ngsiData['https://smartdatamodels.org/dataModel.Environment/measuredDistance'].value,
-                    observedAt: ngsiData['https://smartdatamodels.org/dataModel.Environment/measuredDistance'].observedAt
+                measuredDistance: measuredDistance ? {
+                    type: measuredDistance.type,
+                    value: measuredDistance.value,
+                    observedAt: measuredDistance.observedAt
                 } : undefined,
                 location: {
                     type: ngsiData.location.value.type,
@@ -200,10 +214,10 @@ export async function getLatestFloodMonitoring(): Promise<FloodMonitoringData[]>
                     }
                 },
                 dateObserved: {
-                    type: ngsiData['https://smartdatamodels.org/dateObserved']?.type,
+                    type: dateObserved?.type,
                     value: {
-                        '@type': ngsiData['https://smartdatamodels.org/dateObserved']?.value?.['@type'],
-                        '@value': ngsiData['https://smartdatamodels.org/dateObserved']?.value?.['@value'] || ngsiData['https://smartdatamodels.org/dateObserved']?.value
+                        '@type': dateObserved?.value?.['@type'],
+                        '@value': dateObserved?.value?.['@value'] || dateObserved?.value
                     }
                 }
             };
