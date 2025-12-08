@@ -1,0 +1,7 @@
+{
+  "@context": [
+    "https://raw.githubusercontent.com/smart-data-models/dataModel.Weather/refs/heads/master/context.jsonld",
+    "https://raw.githubusercontent.com/smart-data-models/dataModel.Environment/refs/heads/master/context.jsonld",
+    "https://raw.githubusercontent.com/smart-data-models/dataModel.Transportation/refs/heads/master/context.jsonld"
+  ]
+}

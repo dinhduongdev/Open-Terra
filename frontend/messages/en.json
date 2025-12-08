@@ -1,0 +1,309 @@
+{
+  "header": {
+    "citySelector": {
+      "title": "Select City",
+      "hanoi": "Hanoi",
+      "hochiminh": "Ho Chi Minh",
+      "danang": "Da Nang"
+    }
+  },
+  "sidebar": {
+    "introduction": "Introduction",
+    "overview": "Overview",
+    "traffic": "Traffic",
+    "floodMap": "Flood Map",
+    "trafficJam": "Traffic Jam",
+    "airQuality": "Air Quality",
+    "environment": "Environment",
+    "publicServices": "Public Services",
+    "infrastructure": "Infrastructure",
+    "weather": "Weather",
+    "parking": "Parking",
+    "analytics": "Analytics",
+    "alerts": "Alerts & Notifications"
+  },
+  "traffic": {
+    "title": "Traffic",
+    "subtitle": "Monitor traffic conditions and find optimal routes",
+    "loading": "Loading map...",
+    "reportButton": "Report Traffic Jam",
+    "mapTitle": "Traffic Report Map - OpenStreetMap",
+    "filterTitle": "Filter by status:",
+    "filterAll": "All",
+    "filterReported": "Reported",
+    "filterVerified": "Verified",
+    "noReports": "No traffic jam reports yet",
+    "errorLoading": "Unable to load traffic reports",
+    "retryButton": "Retry",
+    "reportForm": {
+      "title": "Report Traffic Status",
+      "titleIcon": "",
+      "username": "Username",
+      "usernamePlaceholder": "Your name",
+      "usernameRequired": "Please enter username",
+      "streetName": "Street Name",
+      "streetNamePlaceholder": "Ex: Nguyen Hue Street",
+      "streetNameRequired": "Please enter street name",
+      "currentLocationButton": "Current Location",
+      "currentLocationSuccess": "✓ Used current location (Lat: {lat}, Lng: {lng})",
+      "locationError": "Unable to get current location. Please enter manually.",
+      "locationNotSupported": "Browser does not support geolocation.",
+      "severity": "Severity Level",
+      "severityLevels": {
+        "Low": "Low",
+        "Medium": "Medium",
+        "High": "High"
+      },
+      "description": "Detailed Description",
+      "descriptionPlaceholder": "Describe traffic conditions: where traffic jam is, cause if known...",
+      "descriptionRequired": "Please describe traffic conditions",
+      "infoNote": {
+        "icon": "ℹ",
+        "title": "Note:",
+        "privacy": "• Your information will be kept confidential",
+        "verification": "• Reports will be verified before public display",
+        "accuracy": "• Provide accurate information to better support the community"
+      },
+      "cancel": "Cancel",
+      "submit": "Submit Report",
+      "required": "*"
+    },
+    "reportsList": {
+      "title": "Community Reports",
+      "count": "reports",
+      "noReportsIcon": "📭",
+      "noReportsMessage": "No reports yet",
+      "viewOnMap": "View on map →",
+      "justNow": "Just now",
+      "minutesAgo": "minutes ago",
+      "hoursAgo": "hours ago",
+      "severity": {
+        "Low": "Low",
+        "Medium": "Medium",
+        "High": "High",
+        "Critical": "Critical"
+      },
+      "status": {
+        "reported": "Reported",
+        "verified": "Verified",
+        "resolved": "Resolved"
+      }
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome to Smart City Platform",
+    "description": "Smart platform for your city"
+  },
+  "introduction": {
+    "hero": {
+      "title": "Smart City Open Platform",
+      "subtitle": "The open platform for building smart and sustainable cities",
+      "description": "Integrate, manage, and analyze real-time data from your city to create intelligent solutions",
+      "cta": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "features": {
+      "title": "Key Features",
+      "subtitle": "Comprehensive smart city solutions",
+      "realtime": {
+        "title": "Real-time Monitoring",
+        "description": "Monitor traffic, weather, air quality, and flooding 24/7"
+      },
+      "analytics": {
+        "title": "Data Analytics",
+        "description": "Analyze trends and predict issues before they occur"
+      },
+      "integration": {
+        "title": "Easy Integration",
+        "description": "Connect with existing systems via standard APIs"
+      },
+      "opensource": {
+        "title": "Open Source",
+        "description": "Transparent, customizable, and community-driven platform"
+      }
+    },
+    "stats": {
+      "title": "Platform Impact",
+      "cities": "Cities",
+      "sensors": "IoT Sensors",
+      "users": "Active Users",
+      "dataPoints": "Data Points/Day"
+    },
+    "about": {
+      "title": "About the Platform",
+      "description": "Smart City Open Platform is an open-source solution built on FIWARE architecture, designed to help cities become smarter, more sustainable, and more livable.",
+      "mission": {
+        "title": "Our Mission",
+        "description": "Provide accessible technology solutions to help cities worldwide transform into smart cities, improving quality of life for citizens."
+      },
+      "vision": {
+        "title": "Our Vision",
+        "description": "Create a global network of smart cities sharing data and best practices to address common challenges."
+      }
+    },
+    "modules": {
+      "title": "Available Modules",
+      "traffic": "Real-time traffic monitoring and route optimization",
+      "flood": "Flood prediction and early warning system",
+      "air": "Air quality monitoring and health recommendations",
+      "weather": "Weather forecasting and severe weather alerts",
+      "parking": "Smart parking management system",
+      "infrastructure": "Infrastructure monitoring and maintenance"
+    }
+  },
+  "floodMap": {
+    "title": "Flood Map",
+    "subtitle": "Monitor flood conditions and warnings in real-time",
+    "loading": "Loading map...",
+    "toggleLayer": "Flood zones layer:",
+    "layerOn": "✓ On",
+    "layerOff": "Off",
+    "instructions": {
+      "title": "User Guide",
+      "clickZone": "Click on colored areas to view flood details",
+      "clickStation": "Click on 📍 icon to view station information",
+      "clickWarning": "Click on ⚠️ icon to view warning details",
+      "toggleButton": "Use toggle button to show/hide flood zones layer"
+    },
+    "overview": {
+      "totalArea": "Total Affected Area",
+      "affectedPopulation": "Affected Population",
+      "averageDepth": "Average Depth",
+      "criticalZones": "Critical Zones",
+      "activeWarnings": "Active Warnings"
+    },
+    "warnings": {
+      "title": "Flood Warnings",
+      "levels": {
+        "warning": "Warning",
+        "danger": "Danger",
+        "critical": "Critical"
+      }
+    },
+    "statistics": {
+      "chartTitle": "Water Level & Rainfall Chart",
+      "stationsTitle": "Water Level Monitoring Stations",
+      "waterLevel": "Water Level",
+      "rainfall": "Rainfall",
+      "currentLevel": "Current Water Level",
+      "updated": "Updated",
+      "status": {
+        "normal": "Normal",
+        "warning": "Warning",
+        "danger": "Danger",
+        "critical": "Critical"
+      }
+    },
+    "safety": {
+      "title": "Flood Safety Guidelines",
+      "avoid": {
+        "title": "Things to Avoid",
+        "tip1": "Do not walk through fast-flowing or deep water",
+        "tip2": "Stay away from power poles and downed power lines in water",
+        "tip3": "Do not attempt to drive through flooded areas",
+        "tip4": "Do not drink untreated water from flooded areas"
+      },
+      "should": {
+        "title": "What to Do",
+        "tip1": "Monitor warnings from authorities",
+        "tip2": "Prepare emergency kits and essential supplies",
+        "tip3": "Move to higher ground when evacuation is ordered",
+        "tip4": "Contact authorities for assistance: 113, 114, 115"
+      }
+    },
+    "citizenReport": {
+      "button": "Report Flood",
+      "title": "Report Flooding",
+      "listTitle": "Citizen Reports",
+      "noReports": "No citizen reports yet",
+      "noReportsDesc": "Flood reports will be displayed here",
+      "form": {
+        "location": "Flood Location",
+        "locationPlaceholder": "Ex: 123 ABC Street, XYZ Ward, DEF District",
+        "coordinates": "GPS Coordinates",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "currentLocation": "Current Location",
+        "severity": "Severity Level",
+        "waterDepth": "Water Depth (cm)",
+        "waterDepthPlaceholder": "Ex: 30",
+        "description": "Description",
+        "descriptionPlaceholder": "Describe the flood situation, affected area, and damages (if any)...",
+        "reporterInfo": "Reporter Information",
+        "reporterName": "Full Name",
+        "reporterNamePlaceholder": "John Doe",
+        "reporterPhone": "Phone Number",
+        "reporterPhonePlaceholder": "0123456789",
+        "privacyNotice": "Your information will be kept confidential and only used to verify and process flood reports. Authorities may contact you to verify the information.",
+        "cancel": "Cancel",
+        "submit": "Submit Report",
+        "success": "Report submitted successfully! Authorities will process it as soon as possible."
+      }
+    }
+  },
+  "weather": {
+    "title": "Weather",
+    "subtitle": "Monitor real-time weather information and forecasts",
+    "loading": "Loading weather data..."
+  },
+  "overview": {
+    "title": "Overview",
+    "subtitle": "Comprehensive information on environmental quality and traffic",
+    "introduction": {
+      "title": "Introduction",
+      "description": "The overview page provides comprehensive information on air quality, weather, traffic, and flooding conditions in monitored areas. Data is continuously updated from monitoring stations and IoT sensors across the city."
+    },
+    "aiAdvisor": {
+      "title": "AI Advisor",
+      "loading": "Loading AI advice...",
+      "error": "Unable to load AI advice. Please try again later.",
+      "updatedAt": "Updated at",
+      "dataSources": "Data Sources",
+      "description": "Get AI-powered insights and recommendations based on current city data.",
+      "getAdvice": "Get AI Advice",
+      "retry": "Retry",
+      "refresh": "Refresh Advice"
+    },
+    "statistics": {
+      "title": "Statistics Overview",
+      "averageAqi": "Average AQI",
+      "aqStations": "AQ Stations",
+      "totalStations": "Total Stations",
+      "temperature": "Temperature",
+      "floodPoints": "Flood Points",
+      "monitoring": "Monitoring",
+      "trafficSensors": "Traffic Sensors",
+      "active": "Active"
+    },
+    "airQuality": {
+      "title": "Air Quality"
+    },
+    "weather": {
+      "title": "Weather",
+      "temperature": "Temperature",
+      "humidity": "Humidity",
+      "pressure": "Pressure",
+      "wind": "Wind",
+      "area": "Area"
+    },
+    "traffic": {
+      "title": "Traffic",
+      "congested": "Congested",
+      "clear": "Clear",
+      "averageSpeed": "Avg Speed",
+      "density": "Density",
+      "sensor": "Traffic Sensor"
+    },
+    "flood": {
+      "title": "Flood Monitoring",
+      "currentLevel": "Current Level",
+      "waterLevel": "Water Level",
+      "dangerLevel": "Danger Level",
+      "alertLevel": "Alert Level",
+      "monitoringPoint": "Monitoring Point"
+    },
+    "error": {
+      "noData": "Unable to load data. Please try again later."
+    }
+  }
+}

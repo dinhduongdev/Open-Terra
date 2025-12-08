@@ -1,0 +1,48 @@
+services:
+  dummy-iot-devices:
+    image: yudhna04/openterra-dummy-iot-devices:latest
+    container_name: openterra-dummy-iot-devices
+    restart: unless-stopped
+    command: ["node", "cli.js", "auto"]
+    environment:
+      # MQTT Broker Configuration
+      MQTT_BROKER_URL: ${MQTT_BROKER_URL:-mqtt://mosquitto:1883}
+      
+      # IoT Agent Configuration
+      IOTA_URL: ${IOTA_URL:-http://iot-agent:4041}
+      
+      # FIWARE Configuration
+      FIWARE_SERVICE: ${FIWARE_SERVICE:-openiot}
+      FIWARE_SERVICEPATH: ${FIWARE_SERVICEPATH:-/}
+      API_KEY: ${API_KEY:-4jggokgpepnvsb2uv4s40d59ov}
+      
+      # Traffic Devices Configuration
+      TRAFFIC_INTERVAL: ${TRAFFIC_INTERVAL:-30000}
+      TRAFFIC_DEVICE_ID_1: ${TRAFFIC_DEVICE_ID_1:-traffic001}
+      TRAFFIC_ENTITY_NAME_1: ${TRAFFIC_ENTITY_NAME_1:-urn:ngsi-ld:TrafficFlowObserved:001}
+      TRAFFIC_DEVICE_ID_2: ${TRAFFIC_DEVICE_ID_2:-traffic002}
+      TRAFFIC_ENTITY_NAME_2: ${TRAFFIC_ENTITY_NAME_2:-urn:ngsi-ld:TrafficFlowObserved:002}
+      TRAFFIC_DEVICE_ID_3: ${TRAFFIC_DEVICE_ID_3:-traffic003}
+      TRAFFIC_ENTITY_NAME_3: ${TRAFFIC_ENTITY_NAME_3:-urn:ngsi-ld:TrafficFlowObserved:003}
+      
+      # Water Devices Configuration
+      WATER_INTERVAL: ${WATER_INTERVAL:-30000}
+      WATER_DEVICE_ID_1: ${WATER_DEVICE_ID_1:-water001}
+      WATER_ENTITY_NAME_1: ${WATER_ENTITY_NAME_1:-urn:ngsi-ld:FloodMonitoring:001}
+      WATER_DEVICE_ID_2: ${WATER_DEVICE_ID_2:-water002}
+      WATER_ENTITY_NAME_2: ${WATER_ENTITY_NAME_2:-urn:ngsi-ld:FloodMonitoring:002}
+      WATER_DEVICE_ID_3: ${WATER_DEVICE_ID_3:-water003}
+      WATER_ENTITY_NAME_3: ${WATER_ENTITY_NAME_3:-urn:ngsi-ld:FloodMonitoring:003}
+    ports:
+      - 3000:3000
+    networks:
+      - open-terra-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  open-terra-network:
+    external: true

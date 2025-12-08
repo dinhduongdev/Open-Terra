@@ -1,0 +1,309 @@
+{
+  "header": {
+    "citySelector": {
+      "title": "Chọn thành phố",
+      "hanoi": "Hà Nội",
+      "hochiminh": "Hồ Chí Minh",
+      "danang": "Đà Nẵng"
+    }
+  },
+  "sidebar": {
+    "introduction": "Giới thiệu",
+    "overview": "Tổng quan",
+    "traffic": "Giao thông",
+    "floodMap": "Bản đồ ngập nước",
+    "trafficJam": "Kẹt xe",
+    "airQuality": "Chất lượng không khí",
+    "environment": "Môi trường",
+    "publicServices": "Dịch vụ công cộng",
+    "infrastructure": "Hạ tầng kỹ thuật",
+    "weather": "Thời tiết",
+    "parking": "Bãi đỗ xe",
+    "analytics": "Phân tích dữ liệu",
+    "alerts": "Cảnh báo & Thông báo"
+  },
+  "traffic": {
+    "title": "Giao thông",
+    "subtitle": "Theo dõi tình trạng giao thông và tìm đường tối ưu",
+    "loading": "Đang tải bản đồ...",
+    "reportButton": "Báo cáo kẹt xe",
+    "mapTitle": "Bản đồ báo cáo giao thông - OpenStreetMap",
+    "filterTitle": "Lọc theo trạng thái:",
+    "filterAll": "Tất cả",
+    "filterReported": "Đã báo cáo",
+    "filterVerified": "Đã xác minh",
+    "noReports": "Chưa có báo cáo kẹt xe nào",
+    "errorLoading": "Không thể tải báo cáo giao thông",
+    "retryButton": "Thử lại",
+    "reportForm": {
+      "title": "Báo cáo tình trạng giao thông",
+      "titleIcon": "",
+      "username": "Tên người dùng",
+      "usernamePlaceholder": "Tên của bạn",
+      "usernameRequired": "Vui lòng nhập tên người dùng",
+      "streetName": "Tên đường",
+      "streetNamePlaceholder": "VD: Nguyen Hue Street",
+      "streetNameRequired": "Vui lòng nhập tên đường",
+      "currentLocationButton": "Vị trí hiện tại",
+      "currentLocationSuccess": "✓ Đã sử dụng vị trí hiện tại (Lat: {lat}, Lng: {lng})",
+      "locationError": "Không thể lấy vị trí hiện tại. Vui lòng nhập thủ công.",
+      "locationNotSupported": "Trình duyệt không hỗ trợ định vị.",
+      "severity": "Mức độ",
+      "severityLevels": {
+        "Low": "Thấp",
+        "Medium": "Trung bình",
+        "High": "Cao"
+      },
+      "description": "Mô tả chi tiết",
+      "descriptionPlaceholder": "Mô tả tình trạng giao thông: kẹt xe từ đâu đến đâu, nguyên nhân nếu biết...",
+      "descriptionRequired": "Vui lòng mô tả tình trạng giao thông",
+      "infoNote": {
+        "icon": "ℹ",
+        "title": "Lưu ý:",
+        "privacy": "• Thông tin của bạn sẽ được bảo mật",
+        "verification": "• Báo cáo sẽ được xác minh trước khi hiển thị công khai",
+        "accuracy": "• Cung cấp thông tin chính xác để hỗ trợ cộng đồng tốt hơn"
+      },
+      "cancel": "Hủy",
+      "submit": "Gửi báo cáo",
+      "required": "*"
+    },
+    "reportsList": {
+      "title": "Báo cáo từ cộng đồng",
+      "count": "báo cáo",
+      "noReportsIcon": "📭",
+      "noReportsMessage": "Chưa có báo cáo nào",
+      "viewOnMap": "Xem trên bản đồ →",
+      "justNow": "Vừa xong",
+      "minutesAgo": "phút trước",
+      "hoursAgo": "giờ trước",
+      "severity": {
+        "Low": "Nhẹ",
+        "Medium": "Trung bình",
+        "High": "Nặng",
+        "Critical": "Nghiêm trọng"
+      },
+      "status": {
+        "reported": "Đã báo cáo",
+        "verified": "Đã xác minh",
+        "resolved": "Đã giải quyết"
+      }
+    }
+  },
+  "dashboard": {
+    "welcome": "Chào mừng đến với Nền tảng Thành phố Thông minh",
+    "description": "Nền tảng thông minh cho thành phố của bạn"
+  },
+  "introduction": {
+    "hero": {
+      "title": "Nền tảng Mở Thành phố Thông minh",
+      "subtitle": "Nền tảng mở để xây dựng thành phố thông minh và bền vững",
+      "description": "Tích hợp, quản lý và phân tích dữ liệu thời gian thực từ thành phố của bạn để tạo ra các giải pháp thông minh",
+      "cta": "Bắt đầu ngay",
+      "learnMore": "Tìm hiểu thêm"
+    },
+    "features": {
+      "title": "Tính năng nổi bật",
+      "subtitle": "Giải pháp toàn diện cho thành phố thông minh",
+      "realtime": {
+        "title": "Giám sát Thời gian Thực",
+        "description": "Theo dõi giao thông, thời tiết, chất lượng không khí và ngập lụt 24/7"
+      },
+      "analytics": {
+        "title": "Phân tích Dữ liệu",
+        "description": "Phân tích xu hướng và dự đoán vấn đề trước khi xảy ra"
+      },
+      "integration": {
+        "title": "Tích hợp Dễ dàng",
+        "description": "Kết nối với các hệ thống hiện có thông qua API chuẩn"
+      },
+      "opensource": {
+        "title": "Mã nguồn Mở",
+        "description": "Nền tảng minh bạch, linh hoạt và được cộng đồng phát triển"
+      }
+    },
+    "stats": {
+      "title": "Tác động của nền tảng",
+      "cities": "Thành phố",
+      "sensors": "Cảm biến IoT",
+      "users": "Người dùng",
+      "dataPoints": "Dữ liệu/Ngày"
+    },
+    "about": {
+      "title": "Về nền tảng",
+      "description": "Nền tảng Mở Thành phố Thông minh là giải pháp nguồn mở được xây dựng trên kiến trúc FIWARE, được thiết kế để giúp các thành phố trở nên thông minh hơn, bền vững hơn và đáng sống hơn.",
+      "mission": {
+        "title": "Sứ mệnh",
+        "description": "Cung cấp giải pháp công nghệ dễ tiếp cận để giúp các thành phố trên toàn thế giới chuyển đổi thành thành phố thông minh, nâng cao chất lượng cuộc sống cho người dân."
+      },
+      "vision": {
+        "title": "Tầm nhìn",
+        "description": "Tạo ra một mạng lưới toàn cầu các thành phố thông minh chia sẻ dữ liệu và thực tiễn tốt nhất để giải quyết các thách thức chung."
+      }
+    },
+    "modules": {
+      "title": "Các mô-đun có sẵn",
+      "traffic": "Giám sát giao thông và tối ưu hóa lộ trình theo thời gian thực",
+      "flood": "Hệ thống dự báo ngập lụt và cảnh báo sớm",
+      "air": "Giám sát chất lượng không khí và khuyến nghị sức khỏe",
+      "weather": "Dự báo thời tiết và cảnh báo thời tiết khắc nghiệt",
+      "parking": "Hệ thống quản lý bãi đỗ xe thông minh",
+      "infrastructure": "Giám sát và bảo trì cơ sở hạ tầng"
+    }
+  },
+  "floodMap": {
+    "title": "Bản đồ ngập nước",
+    "subtitle": "Theo dõi tình trạng ngập úng và cảnh báo lũ lụt theo thời gian thực",
+    "loading": "Đang tải bản đồ...",
+    "toggleLayer": "Lớp vùng ngập:",
+    "layerOn": "✓ Đang bật",
+    "layerOff": "Tắt",
+    "instructions": {
+      "title": "Hướng dẫn sử dụng",
+      "clickZone": "Click vào các vùng màu để xem chi tiết mức độ ngập",
+      "clickStation": "Click vào biểu tượng 📍 để xem thông tin trạm đo",
+      "clickWarning": "Click vào biểu tượng ⚠️ để xem cảnh báo chi tiết",
+      "toggleButton": "Sử dụng nút bật/tắt để ẩn/hiện lớp vùng ngập"
+    },
+    "overview": {
+      "totalArea": "Tổng diện tích ngập",
+      "affectedPopulation": "Dân số ảnh hưởng",
+      "averageDepth": "Độ sâu trung bình",
+      "criticalZones": "Vùng nguy hiểm",
+      "activeWarnings": "Cảnh báo hoạt động"
+    },
+    "warnings": {
+      "title": "Cảnh báo ngập lụt",
+      "levels": {
+        "warning": "Cảnh báo",
+        "danger": "Nguy hiểm",
+        "critical": "Rất nguy hiểm"
+      }
+    },
+    "statistics": {
+      "chartTitle": "Biểu đồ mực nước & lượng mưa",
+      "stationsTitle": "Trạm đo mực nước",
+      "waterLevel": "Mực nước",
+      "rainfall": "Lượng mưa",
+      "currentLevel": "Mực nước hiện tại",
+      "updated": "Cập nhật",
+      "status": {
+        "normal": "Bình thường",
+        "warning": "Cảnh báo",
+        "danger": "Nguy hiểm",
+        "critical": "Rất nguy hiểm"
+      }
+    },
+    "safety": {
+      "title": "Hướng dẫn an toàn khi ngập lụt",
+      "avoid": {
+        "title": "Cần tránh",
+        "tip1": "Không đi qua vùng nước chảy xiết hoặc nước sâu",
+        "tip2": "Tránh xa các cột điện, dây điện bị đổ hoặc ngập nước",
+        "tip3": "Không cố gắng lái xe qua vùng ngập sâu",
+        "tip4": "Không uống nước chưa qua xử lý từ vùng ngập"
+      },
+      "should": {
+        "title": "Nên làm",
+        "tip1": "Theo dõi thông tin cảnh báo từ cơ quan chức năng",
+        "tip2": "Chuẩn bị túi cứu hộ khẩn cấp và đồ dùng thiết yếu",
+        "tip3": "Di chuyển đến nơi cao hơn khi có lệnh sơ tán",
+        "tip4": "Liên hệ cơ quan chức năng khi cần hỗ trợ: 113, 114, 115"
+      }
+    },
+    "citizenReport": {
+      "button": "Báo cáo ngập lụt",
+      "title": "Báo cáo ngập lụt",
+      "listTitle": "Báo cáo từ người dân",
+      "noReports": "Chưa có báo cáo nào từ người dân",
+      "noReportsDesc": "Các báo cáo ngập lụt sẽ được hiển thị tại đây",
+      "form": {
+        "location": "Địa chỉ ngập",
+        "locationPlaceholder": "VD: 123 Đường ABC, Phường XYZ, Quận DEF",
+        "coordinates": "Tọa độ GPS",
+        "latitude": "Vĩ độ",
+        "longitude": "Kinh độ",
+        "currentLocation": "Vị trí hiện tại",
+        "severity": "Mức độ nghiêm trọng",
+        "waterDepth": "Độ sâu nước (cm)",
+        "waterDepthPlaceholder": "VD: 30",
+        "description": "Mô tả tình trạng",
+        "descriptionPlaceholder": "Mô tả chi tiết tình trạng ngập, phạm vi ảnh hưởng, các thiệt hại (nếu có)...",
+        "reporterInfo": "Thông tin người báo cáo",
+        "reporterName": "Họ và tên",
+        "reporterNamePlaceholder": "Nguyễn Văn A",
+        "reporterPhone": "Số điện thoại",
+        "reporterPhonePlaceholder": "0123456789",
+        "privacyNotice": "Thông tin của bạn sẽ được bảo mật và chỉ sử dụng để xác minh và xử lý báo cáo ngập lụt. Cơ quan chức năng có thể liên hệ với bạn để xác thực thông tin.",
+        "cancel": "Hủy",
+        "submit": "Gửi báo cáo",
+        "success": "Báo cáo đã được gửi thành công! Cơ quan chức năng sẽ xử lý trong thời gian sớm nhất."
+      }
+    }
+  },
+  "weather": {
+    "title": "Thời tiết",
+    "subtitle": "Theo dõi thông tin thời tiết và dự báo theo thời gian thực",
+    "loading": "Đang tải dữ liệu thời tiết..."
+  },
+  "overview": {
+    "title": "Tổng quan",
+    "subtitle": "Thông tin tổng hợp về chất lượng môi trường và giao thông",
+    "introduction": {
+      "title": "Giới thiệu",
+      "description": "Trang tổng quan cung cấp thông tin tổng hợp về chất lượng không khí, thời tiết, giao thông và tình trạng ngập lụt tại các khu vực giám sát. Dữ liệu được cập nhật liên tục từ các trạm quan trắc và cảm biến IoT trên toàn thành phố."
+    },
+    "aiAdvisor": {
+      "title": "Tư vấn từ AI",
+      "loading": "Đang tải tư vấn từ AI...",
+      "error": "Không thể tải tư vấn từ AI. Vui lòng thử lại sau.",
+      "updatedAt": "Cập nhật lúc",
+      "dataSources": "Nguồn dữ liệu",
+      "description": "Nhận thông tin chi tiết và đề xuất được hỗ trợ bởi AI dựa trên dữ liệu hiện tại của thành phố.",
+      "getAdvice": "Nhận tư vấn từ AI",
+      "retry": "Thử lại",
+      "refresh": "Làm mới"
+    },
+    "statistics": {
+      "title": "Thống kê tổng quan",
+      "averageAqi": "AQI Trung bình",
+      "aqStations": "Trạm AQ",
+      "totalStations": "Tổng số trạm",
+      "temperature": "Nhiệt độ",
+      "floodPoints": "Điểm ngập lụt",
+      "monitoring": "Đang theo dõi",
+      "trafficSensors": "Cảm biến giao thông",
+      "active": "Đang hoạt động"
+    },
+    "airQuality": {
+      "title": "Chất lượng không khí"
+    },
+    "weather": {
+      "title": "Thời tiết",
+      "temperature": "Nhiệt độ",
+      "humidity": "Độ ẩm",
+      "pressure": "Áp suất",
+      "wind": "Gió",
+      "area": "Khu vực"
+    },
+    "traffic": {
+      "title": "Giao thông",
+      "congested": "Tắc",
+      "clear": "Thông thoáng",
+      "averageSpeed": "Tốc độ TB",
+      "density": "Mật độ",
+      "sensor": "Cảm biến giao thông"
+    },
+    "flood": {
+      "title": "Giám sát ngập lụt",
+      "currentLevel": "Mực nước hiện tại",
+      "waterLevel": "Mực nước",
+      "dangerLevel": "Ngưỡng nguy hiểm",
+      "alertLevel": "Ngưỡng cảnh báo",
+      "monitoringPoint": "Điểm giám sát"
+    },
+    "error": {
+      "noData": "Không thể tải dữ liệu. Vui lòng thử lại sau."
+    }
+  }
+}

@@ -1,0 +1,310 @@
+/*
+ * Open-Terra - IoT and Smart City Data Platform
+ * @author Vibe Coders / HCMCOU
+ * @copyright (C) 2025 Vibe Coders / HCMCOU. All rights reserved
+ * @license MIT License
+ * @see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
+ */
+
+'use client';
+
+import { useState } from 'react';
+
+export interface FloodReport {
+  id: string;
+  numeric_id?: number;
+  reporter_username: string;
+  latitude: number;
+  longitude: number;
+  street_name: string;
+  severity: 'Low' | 'Medium' | 'High' | 'Critical';
+  description: string;
+  photo_urls?: string[];
+  timestamp: string;
+  status: string;
+  created_at?: string;
+}
+
+interface FloodReportFormProps {
+  onSubmit: (report: Omit<FloodReport, 'id' | 'timestamp' | 'status'>) => void;
+  onClose: () => void;
+}
+
+export default function FloodReportForm({ onSubmit, onClose }: FloodReportFormProps) {
+  const [formData, setFormData] = useState({
+    reporter_username: '',
+    latitude: 10.7769,
+    longitude: 106.7009,
+    street_name: '',
+    severity: 'Medium' as 'Low' | 'Medium' | 'High',
+    description: '',
+    photo_urls: [] as string[],
+  });
+
+  const [useCurrentLocation, setUseCurrentLocation] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  const handleGetCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setFormData({
+            ...formData,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+          setUseCurrentLocation(true);
+        },
+        (error) => {
+          alert('Không thể lấy vị trí hiện tại. Vui lòng nhập thủ công.');
+          console.error(error);
+        }
+      );
+    } else {
+      alert('Trình duyệt không hỗ trợ định vị.');
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.reporter_username.trim()) {
+      newErrors.reporter_username = 'Vui lòng nhập tên người dùng';
+    }
+    if (!formData.street_name.trim()) {
+      newErrors.street_name = 'Vui lòng nhập tên đường';
+    }
+    if (!formData.description.trim()) {
+      newErrors.description = 'Vui lòng mô tả tình trạng ngập';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      onSubmit(formData);
+      // Reset form
+      setFormData({
+        reporter_username: '',
+        latitude: 10.7769,
+        longitude: 106.7009,
+        street_name: '',
+        severity: 'Medium',
+        description: '',
+        photo_urls: [],
+      });
+      setUseCurrentLocation(false);
+    }
+  };
+
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case 'Low':
+        return 'border-green-500 bg-green-50';
+      case 'Medium':
+        return 'border-yellow-500 bg-yellow-50';
+      case 'High':
+        return 'border-orange-500 bg-orange-50';
+      case 'Critical':
+        return 'border-red-500 bg-red-50';
+      default:
+        return 'border-gray-500 bg-gray-50';
+    }
+  };
+
+  return (
+    <div 
+      className="fixed inset-0 flex items-center justify-center p-4" 
+      style={{ zIndex: 9999, backgroundColor: 'rgba(0, 0, 0, 0.3)' }}
+      onClick={handleBackdropClick}
+    >
+      <div 
+        className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" 
+        style={{ position: 'relative', zIndex: 10000 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+             Báo cáo ngập lụt
+          </h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+          >
+            ×
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {/* Reporter Username */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Tên người dùng <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={formData.reporter_username}
+              onChange={(e) => setFormData({ ...formData, reporter_username: e.target.value })}
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 ${
+                errors.reporter_username ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="john_doe"
+            />
+            {errors.reporter_username && (
+              <p className="text-red-500 text-sm mt-1">{errors.reporter_username}</p>
+            )}
+          </div>
+
+          {/* Street Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Tên đường <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={formData.street_name}
+              onChange={(e) => setFormData({ ...formData, street_name: e.target.value })}
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 ${
+                errors.street_name ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="VD: Nguyen Hue Street"
+            />
+            {errors.street_name && (
+              <p className="text-red-500 text-sm mt-1">{errors.street_name}</p>
+            )}
+          </div>
+
+          {/* Coordinates */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Tọa độ GPS
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="number"
+                step="any"
+                value={formData.latitude}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    latitude: parseFloat(e.target.value),
+                  })
+                }
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                placeholder="Vĩ độ"
+              />
+              <input
+                type="number"
+                step="any"
+                value={formData.longitude}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    longitude: parseFloat(e.target.value),
+                  })
+                }
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                placeholder="Kinh độ"
+              />
+              <button
+                type="button"
+                onClick={handleGetCurrentLocation}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors whitespace-nowrap"
+              >
+                Vị trí hiện tại
+              </button>
+            </div>
+            {useCurrentLocation && (
+              <p className="text-green-600 text-sm mt-1">✓ Đã lấy vị trí hiện tại (Lat: {formData.latitude.toFixed(4)}, Lng: {formData.longitude.toFixed(4)})</p>
+            )}
+          </div>
+
+          {/* Severity */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Mức độ nghiêm trọng <span className="text-red-500">*</span>
+            </label>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-gray-900">
+              {[
+                { value: 'Low', label: 'Nhẹ', icon: '' },
+                { value: 'Medium', label: 'Trung bình', icon: '' },
+                { value: 'High', label: 'Cao', icon: '' },
+              ].map((severity) => (
+                <button
+                  key={severity.value}
+                  type="button"
+                  onClick={() =>
+                    setFormData({
+                      ...formData,
+                      severity: severity.value as 'Low' | 'Medium' | 'High',
+                    })
+                  }
+                  className={`px-4 py-3 border-2 rounded-lg font-medium transition-all ${
+                    formData.severity === severity.value
+                      ? getSeverityColor(severity.value) + ' border-opacity-100'
+                      : 'border-gray-200 bg-white hover:bg-gray-50'
+                  }`}
+                >
+                  <div className="text-2xl mb-1">{severity.icon}</div>
+                  <div className="text-sm">{severity.label}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Mô tả tình trạng <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              rows={4}
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 ${
+                errors.description ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="Mô tả chi tiết tình trạng ngập, phạm vi ảnh hưởng, các thiệt hại (nếu có)..."
+            />
+            {errors.description && (
+              <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+            )}
+          </div>
+
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-sm text-blue-800">
+              <strong>Lưu ý:</strong> Thông tin của bạn sẽ được bảo mật và chỉ sử dụng để
+              xác minh và xử lý báo cáo ngập lụt. Cơ quan chức năng có thể liên hệ với bạn
+              để xác thực thông tin.
+            </p>
+          </div>
+
+          <div className="flex gap-3 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+            >
+              Hủy
+            </button>
+            <button
+              type="submit"
+              className="flex-1 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium transition-colors"
+            >
+              Gửi báo cáo
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

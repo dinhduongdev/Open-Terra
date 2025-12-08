@@ -1,0 +1,221 @@
+# ================================
+# Python
+# ================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Testing / Coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.pytest_cache/
+.hypothesis/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+cython_debug/
+
+# Virtual environments (Python)
+*.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ================================
+# TypeScript / Node.js
+# ================================
+
+# Dependencies
+node_modules/
+bower_components
+
+# Logs (Node.js)
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Coverage / Testing (Node.js)
+lib-cov
+coverage
+*.lcov
+.nyc_output
+
+# Build tools
+.grunt
+.lock-wscript
+build/Release
+.cache/
+.parcel-cache
+
+# Misc
+.node_repl_history
+*.tgz
+
+# Yarn
+.yarn-integrity
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Environment variables (Node.js/TypeScript)
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Framework specific builds
+.next/
+out/
+.nuxt
+dist
+.vuepress/dist
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+.vscode-test
+
+# TypeScript
+*.tsbuildinfo
+.eslintcache
+
+# TypeScript
+*.tsbuildinfo
+.eslintcache
+
+# ================================
+# macOS
+# ================================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# ================================
+# Windows
+# ================================
+
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# ================================
+# IDEs & Editors
+# ================================
+
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ================================
+# Logs (General)
+# ================================
+
+logs/
+*.log
+
+# ================================
+# Database
+# ================================
+
+*.db
+*.sqlite
+*.sqlite3
+
+# ================================
+# Docker
+# ================================
+
+.dockerignore
+
+# ================================
+# Project Specific
+# ================================
+
+crudadmin_data/
+
+docs/
+Open-Terra.wiki

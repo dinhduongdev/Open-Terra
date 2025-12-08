@@ -1,0 +1,62 @@
+All Vibe Coders code is Copyright by the original authors.
+
+Copyright 2025 Vibe Coders / HCMCOU
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Vibe Coders includes works under other copyright notices and distributed according to the terms of the MIT License or a compatible license, including:
+
+Name                     Version        License            Description                                                      Url
+Python-Dotenv            1.0.0          BSD-3-Clause       Read key-value pairs from a.env file                             https://github.com/theskumar/python-dotenv
+Pydantic                 2.6.1          MIT                Data validation using Python type hints                          https://docs.pydantic.dev
+FastAPI                  0.109.1        MIT                Modern, high-performance web framework for APIs                  https://fastapi.tiangolo.com
+Uvicorn                  0.27.0         BSD-3-Clause       ASGI web server implementation for Python                        https://www.uvicorn.org
+Uvloop                   0.19.0         MIT/Apache-2.0     Ultra fast asyncio event loop                                    https://github.com/MagicStack/uvloop
+HTTPTools                0.6.1          MIT                HTTP parsing library for Python                                  https://github.com/MagicStack/httptools
+Alembic                  1.13.1         MIT                Database migration tool for SQLAlchemy                           https://alembic.sqlalchemy.org
+Asyncpg                  0.29.0         Apache-2.0         A fast PostgreSQL Database Client Library for Python             https://github.com/MagicStack/asyncpg
+SQLAlchemy-Utils         0.41.1         BSD-3-Clause       Various utility functions for SQLAlchemy                         https://github.com/kvesteri/sqlalchemy-utils
+Python-Jose              3.3.0          MIT                JOSE implementation (JWT, JWS, JWE) in Python                    https://github.com/mpdavis/python-jose
+SQLAlchemy               2.0.25         MIT                Python SQL Toolkit and Object Relational Mapper                  https://www.sqlalchemy.org
+Python-Multipart         0.0.9          Apache-2.0         Streaming multipart parser for Python                            https://github.com/Kludex/python-multipart
+Greenlet                 2.0.25         MIT                Lightweight in-process concurrent programming                    https://github.com/python-greenlet/greenlet
+HTTPX                    0.26.0         BSD-3-Clause       The next generation HTTP client for Python                       https://www.python-httpx.org
+Pydantic-Settings        2.0.3          MIT                Settings management using Pydantic                               https://github.com/pydantic/pydantic-settings
+Redis (Python Client)    5.0.1          MIT                Python client for Redis key-value store                          https://github.com/redis/redis-py
+ARQ                      0.25.0         MIT                Job queues in Python with asyncio and redis                      https://github.com/samuelcolvin/arq
+Bcrypt                   4.1.1          Apache-2.0         Modern password hashing for your software                        https://github.com/pyca/bcrypt
+Psycopg2-Binary          2.9.9          LGPL-3.0           PostgreSQL database adapter for Python                           https://www.psycopg.org
+FastCRUD                 0.19.2         MIT                FastAPI CRUD operations generator                                https://github.com/igorbenav/fastcrud
+CRUDAdmin                0.4.2          MIT                Admin panel for FastAPI with CRUD operations                     https://github.com/igorbenav/crudadmin
+Gunicorn                 21.2.0         MIT                Python WSGI HTTP Server for UNIX                                 https://gunicorn.org
+Ruff                     0.11.13        MIT                An extremely fast Python linter and code formatter               https://github.com/astral-sh/ruff
+Mypy                     1.16.0         MIT                Optional static typing for Python                                https://github.com/python/mypy
+Requests                 2.32.5         Apache-2.0         Elegant HTTP library for Python                                  https://requests.readthedocs.io
+Next.js                  16.0.3         MIT                The React Framework for Production                               https://nextjs.org
+React                    19.2.0         MIT                JavaScript library for building user interfaces                  https://react.dev
+React DOM                19.2.0         MIT                Entry point to the DOM for React                                 https://react.dev
+Next-Intl                4.5.3          MIT                Internationalization for Next.js                                 https://next-intl.dev
+Tailwind CSS             4.x            MIT                Utility-first CSS framework                                      https://tailwindcss.com
+Lucide React             0.555.0        ISC                Beautiful & consistent icon toolkit                              https://lucide.dev
+TypeScript               5.x            Apache-2.0         TypeScript is a superset of JavaScript                           https://www.typescriptlang.org
+Leaflet                  1.9.4          BSD-2-Clause       JavaScript library for interactive maps                          https://leafletjs.com
+React Leaflet            5.0.0          MIT                React components for Leaflet maps                                https://react-leaflet.js.org
+Leaflet Routing Machine  3.2.12         MIT                Routing plugin for Leaflet                                       https://github.com/perliedman/leaflet-routing-machine
+Recharts                 3.5.1          MIT                Redefined chart library built with React and D3                  https://recharts.org
+NProgress                0.2.0          MIT                Slim progress bar for Ajax applications                          https://ricostacruz.com/nprogress
+ESLint                   9.x            MIT                Pluggable JavaScript linter                                      https://eslint.org
+PostgreSQL (DB)          16             PostgreSQL         Object-relational database system                                https://www.postgresql.org
+Nginx                    1.29.3         BSD-2-Clause       HTTP and reverse proxy server                                    https://nginx.org
+MongoDB                  4.2            SSPL               NoSQL document-oriented database                                 https://www.mongodb.com
+TimescaleDB              2.24.0         Apache-2.0         Time-series database built on PostgreSQL                         https://www.timescale.com
+FIWARE Orion-LD          1.10.0         AGPL-3.0           Context Broker for NGSI-LD                                       https://github.com/FIWARE/context.Orion-LD
+FIWARE Mintaka           0.7.0          AGPL-3.0           Temporal API for FIWARE Context Broker                           https://github.com/FIWARE/mintaka
+FIWARE IoT Agent UL      3.7.0          AGPL-3.0           IoT Agent for UltraLight 2.0 protocol                            https://github.com/telefonicaid/iotagent-ul
+Eclipse Mosquitto        3.1.1          EPL-2.0            Open source MQTT broker                                          https://mosquitto.org
+Apache HTTPD             2.4.66         Apache-2.0         HTTP Server Project                                              https://httpd.apache.org
+
+.. see copyright information at the header of source code file.

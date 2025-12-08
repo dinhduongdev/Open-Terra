@@ -1,0 +1,57 @@
+/*
+ * Open-Terra - IoT and Smart City Data Platform
+ * @author Vibe Coders / HCMCOU
+ * @copyright (C) 2025 Vibe Coders / HCMCOU. All rights reserved
+ * @license MIT License
+ * @see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
+ */
+
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
+
+export default function TimeDisplay() {
+    const t = useTranslations('overview');
+    const [time, setTime] = useState<string>('');
+
+    useEffect(() => {
+        // Initial set
+        const updateTime = () => {
+            const now = new Date();
+            // Format: HH:mm:ss UTC
+            const timeString = now.toISOString().split('T')[1].split('.')[0] + ' UTC';
+            // Or prettier format:
+            // const timeString = now.toLocaleTimeString('en-US', { timeZone: 'UTC', hour12: false }) + ' UTC';
+            // Let's use a nice localized format but force UTC
+            const formatted = new Intl.DateTimeFormat('en-GB', {
+                timeZone: 'UTC',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            }).format(now) + ' UTC';
+
+            setTime(formatted);
+        };
+
+        updateTime();
+        const interval = setInterval(updateTime, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // Prevent hydration mismatch by not rendering until client-side (time is empty initially)
+    if (!time) {
+        return <div className="h-6 w-32 animate-pulse bg-slate-200 dark:bg-slate-700 rounded"></div>;
+    }
+
+    return (
+        <div className="flex items-center space-x-2 text-sm font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/50 px-3 py-1 rounded-full w-fit">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{time}</span>
+        </div>
+    );
+}

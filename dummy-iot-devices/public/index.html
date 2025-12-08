@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Device Controller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #000;
+            margin-bottom: 10px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-info {
+            flex: 1;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status.connected {
+            background: #000;
+            color: white;
+            border-color: #000;
+        }
+
+        .status.disconnected {
+            background: white;
+            color: #000;
+        }
+
+        .btn-provision {
+            padding: 10px 20px;
+            background: #000;
+            color: white;
+            border: 1px solid #000;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-provision:hover {
+            background: white;
+            color: #000;
+        }
+
+        .btn-provision:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .iot-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .iot-status .badge {
+            padding: 3px 10px;
+            border: 1px solid #ddd;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .iot-status .badge.success {
+            background: #000;
+            color: white;
+            border-color: #000;
+        }
+
+        .iot-status .badge.error {
+            background: white;
+            color: #000;
+        }
+
+        .devices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .device-card {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+        }
+
+        .device-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .device-title {
+            flex: 1;
+        }
+
+        .device-title h3 {
+            color: #000;
+            font-size: 18px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .device-title .device-id {
+            color: #666;
+            font-size: 13px;
+            font-family: monospace;
+        }
+
+        .device-type {
+            padding: 4px 12px;
+            border: 1px solid #ddd;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .device-type.traffic {
+            background: white;
+            color: #000;
+        }
+
+        .device-type.water {
+            background: #000;
+            color: white;
+        }
+
+        .device-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #000;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-start {
+            background: #000;
+            color: white;
+        }
+
+        .btn-start:hover:not(:disabled) {
+            background: white;
+            color: #000;
+        }
+
+        .btn-stop {
+            background: white;
+            color: #000;
+        }
+
+        .btn-stop:hover:not(:disabled) {
+            background: #000;
+            color: white;
+        }
+
+        .interval-control {
+            margin-bottom: 15px;
+        }
+
+        .interval-control label {
+            display: block;
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .interval-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .interval-input input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        .interval-input button {
+            padding: 8px 16px;
+            background: #000;
+            color: white;
+            border: 1px solid #000;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .interval-input button:hover {
+            background: white;
+            color: #000;
+        }
+
+        .device-data {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 12px;
+        }
+
+        .device-data h4 {
+            color: #000;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 13px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .data-item:last-child {
+            border-bottom: none;
+        }
+
+        .data-item .label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .data-item .value {
+            color: #000;
+            font-family: monospace;
+            font-weight: 500;
+        }
+
+        .device-status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border: 1px solid #000;
+            margin-right: 6px;
+        }
+
+        .device-status.running {
+            background: #000;
+        }
+
+        .device-status.stopped {
+            background: white;
+        }
+
+        .timestamp {
+            color: #999;
+            font-size: 11px;
+            text-align: right;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .devices-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .btn-provision {
+                width: 100%;
+            }
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border: 1px solid #000;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #000;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #000;
+        }
+
+        .modal-close:hover {
+            color: #666;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .provision-option {
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .provision-option:hover {
+            border-color: #000;
+            background: #f5f5f5;
+        }
+
+        .provision-option.selected {
+            border-color: #000;
+            background: #f5f5f5;
+        }
+
+        .provision-option h4 {
+            color: #000;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .provision-option p {
+            color: #666;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-modal {
+            padding: 10px 20px;
+            border: 1px solid #000;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-modal.cancel {
+            background: white;
+            color: #000;
+        }
+
+        .btn-modal.cancel:hover {
+            background: #f5f5f5;
+        }
+
+        .btn-modal.confirm {
+            background: #000;
+            color: white;
+        }
+
+        .btn-modal.confirm:hover {
+            background: #333;
+        }
+
+        .btn-modal:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .provision-status {
+            padding: 12px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .provision-status.loading {
+            background: #f5f5f5;
+            color: #000;
+        }
+
+        .provision-status.success {
+            background: #000;
+            color: white;
+            border-color: #000;
+        }
+
+        .provision-status.error {
+            background: white;
+            color: #000;
+            border-color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="header-info">
+                    <h1>IoT Device Controller</h1>
+                    <p>Traffic & Water Monitoring System</p>
+                    <div style="margin-top: 10px;">
+                        <span class="status" id="connectionStatus">Connecting...</span>
+                    </div>
+                    <div class="iot-status" id="iotAgentStatus" style="margin-top: 8px;">
+                        <span>IoT Agent:</span>
+                        <span class="badge" id="iotAgentBadge">Checking...</span>
+                        <span id="deviceCount"></span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-provision" onclick="openProvisionModal()" id="provisionBtn">
+                        Register Devices
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="devices-grid" id="devicesContainer">
+            <!-- Devices will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Provision Modal -->
+    <div class="modal" id="provisionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Register Devices with IoT Agent</h2>
+                <button class="modal-close" onclick="closeProvisionModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="provisionStatus"></div>
+                
+                <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                    Select device type to register:
+                </p>
+
+                <div class="provision-option" onclick="selectProvisionOption('service-group')" id="option-service-group">
+                    <h4>Service Group</h4>
+                    <p>Register service group (run this first)</p>
+                </div>
+
+                <div class="provision-option" onclick="selectProvisionOption('all')" id="option-all">
+                    <h4>All Devices</h4>
+                    <p>Register both Traffic (3) and Water (3) devices</p>
+                </div>
+
+                <div class="provision-option" onclick="selectProvisionOption('traffic')" id="option-traffic">
+                    <h4>Traffic Devices</h4>
+                    <p>Register only 3 traffic flow sensors</p>
+                </div>
+
+                <div class="provision-option" onclick="selectProvisionOption('water')" id="option-water">
+                    <h4>Water Devices</h4>
+                    <p>Register only 3 water level sensors</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal cancel" onclick="closeProvisionModal()">Cancel</button>
+                <button class="btn-modal confirm" onclick="provisionDevices()" id="confirmProvisionBtn" disabled>
+                    Register
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ws = new WebSocket(`ws://${window.location.host}`);
+        const devices = new Map();
+        let selectedProvisionOption = null;
+
+        // Check IoT Agent status on load
+        checkIoTAgentStatus();
+        setInterval(checkIoTAgentStatus, 30000); // Check every 30 seconds
+
+        async function checkIoTAgentStatus() {
+            try {
+                const response = await fetch('/api/iot-agent/status');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                const badge = document.getElementById('iotAgentBadge');
+                const deviceCount = document.getElementById('deviceCount');
+                
+                if (data.connected) {
+                    badge.className = 'badge success';
+                    badge.textContent = 'Connected';
+                    deviceCount.textContent = `(${data.devicesCount} devices provisioned)`;
+                } else {
+                    badge.className = 'badge error';
+                    badge.textContent = 'Disconnected';
+                    deviceCount.textContent = '';
+                }
+            } catch (error) {
+                console.error('Failed to check IoT Agent status:', error);
+                const badge = document.getElementById('iotAgentBadge');
+                const deviceCount = document.getElementById('deviceCount');
+                badge.className = 'badge error';
+                badge.textContent = 'Error';
+                deviceCount.textContent = `(${error.message})`;
+            }
+        }
+
+        function openProvisionModal() {
+            document.getElementById('provisionModal').classList.add('active');
+        }
+
+        function closeProvisionModal() {
+            document.getElementById('provisionModal').classList.remove('active');
+            selectedProvisionOption = null;
+            document.querySelectorAll('.provision-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.getElementById('confirmProvisionBtn').disabled = true;
+            document.getElementById('provisionStatus').innerHTML = '';
+        }
+
+        function selectProvisionOption(option) {
+            selectedProvisionOption = option;
+            document.querySelectorAll('.provision-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.getElementById(`option-${option}`).classList.add('selected');
+            document.getElementById('confirmProvisionBtn').disabled = false;
+        }
+
+        async function provisionDevices() {
+            if (!selectedProvisionOption) return;
+
+            const statusDiv = document.getElementById('provisionStatus');
+            const confirmBtn = document.getElementById('confirmProvisionBtn');
+            
+            confirmBtn.disabled = true;
+            statusDiv.className = 'provision-status loading';
+            statusDiv.textContent = 'Registering...';
+
+            try {
+                if (selectedProvisionOption === 'service-group') {
+                    // Provision service group
+                    const response = await fetch('/api/provision/service-group', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || `HTTP ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+
+                    if (data.success) {
+                        statusDiv.className = 'provision-status success';
+                        statusDiv.textContent = `${data.message}`;
+                        setTimeout(() => {
+                            checkIoTAgentStatus();
+                            closeProvisionModal();
+                        }, 2000);
+                    } else {
+                        throw new Error(data.error || 'Unknown error');
+                    }
+                } else {
+                    // Provision devices
+                    const response = await fetch('/api/provision/devices', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ deviceType: selectedProvisionOption })
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || `HTTP ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+
+                    if (data.success) {
+                        statusDiv.className = 'provision-status success';
+                        statusDiv.textContent = `${data.message}`;
+                        setTimeout(() => {
+                            checkIoTAgentStatus();
+                            closeProvisionModal();
+                        }, 2000);
+                    } else {
+                        throw new Error(data.error || 'Unknown error');
+                    }
+                }
+            } catch (error) {
+                console.error('Provision error:', error);
+                statusDiv.className = 'provision-status error';
+                statusDiv.textContent = `Error: ${error.message}`;
+                confirmBtn.disabled = false;
+            }
+        }
+
+        ws.onopen = () => {
+            console.log('WebSocket connected');
+            updateConnectionStatus(true);
+        };
+
+        ws.onclose = () => {
+            console.log('WebSocket disconnected');
+            updateConnectionStatus(false);
+        };
+
+        ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+            updateConnectionStatus(false);
+        };
+
+        ws.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            
+            switch (message.type) {
+                case 'deviceList':
+                    initializeDevices(message.devices);
+                    break;
+                case 'deviceUpdate':
+                    updateDevice(message.deviceId, message.data);
+                    break;
+                case 'deviceStatus':
+                    updateDeviceStatus(message.deviceId, message.status);
+                    break;
+            }
+        };
+
+        function updateConnectionStatus(connected) {
+            const status = document.getElementById('connectionStatus');
+            if (connected) {
+                status.textContent = 'Connected';
+                status.className = 'status connected';
+            } else {
+                status.textContent = 'Disconnected';
+                status.className = 'status disconnected';
+            }
+        }
+
+        function initializeDevices(deviceList) {
+            const container = document.getElementById('devicesContainer');
+            container.innerHTML = '';
+
+            deviceList.forEach(device => {
+                devices.set(device.deviceId, device);
+                const card = createDeviceCard(device);
+                container.appendChild(card);
+            });
+        }
+
+        function createDeviceCard(device) {
+            const card = document.createElement('div');
+            card.className = 'device-card';
+            card.id = `device-${device.deviceId}`;
+
+            const typeClass = device.entityType.includes('Traffic') ? 'traffic' : 'water';
+            const typeLabel = device.entityType.includes('Traffic') ? 'Traffic' : 'Water';
+            
+            card.innerHTML = `
+                <div class="device-header">
+                    <div class="device-title">
+                        <h3>
+                            <span class="device-status ${device.running ? 'running' : 'stopped'}"></span>
+                            ${device.entityName}
+                        </h3>
+                        <div class="device-id">${device.deviceId}</div>
+                    </div>
+                    <span class="device-type ${typeClass}">${typeLabel}</span>
+                </div>
+
+                <div class="device-controls">
+                    <button class="btn btn-start" onclick="startDevice('${device.deviceId}')" 
+                            ${device.running ? 'disabled' : ''}>
+                        Start
+                    </button>
+                    <button class="btn btn-stop" onclick="stopDevice('${device.deviceId}')"
+                            ${!device.running ? 'disabled' : ''}>
+                        Stop
+                    </button>
+                </div>
+
+                <div class="interval-control">
+                    <label>Send interval (seconds):</label>
+                    <div class="interval-input">
+                        <input type="number" 
+                               id="interval-${device.deviceId}" 
+                               value="${device.interval / 1000}" 
+                               min="1" 
+                               max="300">
+                        <button onclick="updateInterval('${device.deviceId}')">Update</button>
+                    </div>
+                </div>
+
+                <div class="device-data">
+                    <h4>Latest data:</h4>
+                    <div id="data-${device.deviceId}">
+                        <div class="data-item">
+                            <span class="label">No data yet</span>
+                        </div>
+                    </div>
+                    <div class="timestamp" id="timestamp-${device.deviceId}"></div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function updateDevice(deviceId, data) {
+            const device = devices.get(deviceId);
+            if (!device) return;
+
+            device.lastData = data;
+            
+            const dataContainer = document.getElementById(`data-${deviceId}`);
+            dataContainer.innerHTML = Object.entries(data)
+                .map(([key, value]) => `
+                    <div class="data-item">
+                        <span class="label">${formatKey(key)}</span>
+                        <span class="value">${formatValue(key, value)}</span>
+                    </div>
+                `).join('');
+
+            const timestamp = document.getElementById(`timestamp-${deviceId}`);
+            timestamp.textContent = `Updated: ${new Date().toLocaleTimeString('en-US')}`;
+        }
+
+        function updateDeviceStatus(deviceId, status) {
+            const device = devices.get(deviceId);
+            if (!device) return;
+
+            device.running = status.running;
+            
+            const card = document.getElementById(`device-${deviceId}`);
+            const statusDot = card.querySelector('.device-status');
+            const startBtn = card.querySelector('.btn-start');
+            const stopBtn = card.querySelector('.btn-stop');
+
+            statusDot.className = `device-status ${status.running ? 'running' : 'stopped'}`;
+            startBtn.disabled = status.running;
+            stopBtn.disabled = !status.running;
+        }
+
+        function formatKey(key) {
+            const labels = {
+                intensity: 'Intensity',
+                occupancy: 'Occupancy',
+                averageVehicleSpeed: 'Avg Speed',
+                congestionLevel: 'Congestion',
+                waterLevel: 'Water Level',
+                flow: 'Flow',
+                floodRisk: 'Flood Risk'
+            };
+            return labels[key] || key;
+        }
+
+        function formatValue(key, value) {
+            if (key === 'averageVehicleSpeed') return `${value} km/h`;
+            if (key === 'waterLevel') return `${value} m`;
+            if (key === 'flow') return `${value} m³/s`;
+            if (key === 'occupancy') return `${value}%`;
+            if (typeof value === 'number') return value.toFixed(2);
+            return value;
+        }
+
+        function startDevice(deviceId) {
+            ws.send(JSON.stringify({
+                type: 'start',
+                deviceId: deviceId
+            }));
+        }
+
+        function stopDevice(deviceId) {
+            ws.send(JSON.stringify({
+                type: 'stop',
+                deviceId: deviceId
+            }));
+        }
+
+        function updateInterval(deviceId) {
+            const input = document.getElementById(`interval-${deviceId}`);
+            const intervalSeconds = parseInt(input.value);
+            
+            if (intervalSeconds < 1 || intervalSeconds > 300) {
+                alert('Interval must be between 1 and 300 seconds');
+                return;
+            }
+
+            ws.send(JSON.stringify({
+                type: 'updateInterval',
+                deviceId: deviceId,
+                interval: intervalSeconds * 1000
+            }));
+
+            alert(`Updated interval to ${intervalSeconds} seconds`);
+        }
+    </script>
+</body>
+</html>
