@@ -8,11 +8,15 @@
 
 import { AirQualityAPIResponse, AirQualityStation, NGSILDAirQualityStation } from '@/types/airQuality';
 
-// Use the full base URL without /api since we'll include it in the endpoint
-// For server-side rendering, use localhost directly. For client-side, use NEXT_PUBLIC_API_URL
 const getApiBaseUrl = () => {
   // Check if we're on the server
   if (typeof window === 'undefined') {
+    if (process.env.API_URL) {
+      return process.env.API_URL;
+    }
+    if (process.env.NEXT_PUBLIC_API_URL) {
+      return process.env.NEXT_PUBLIC_API_URL.replace(/\/api$/, '');
+    }
     return 'http://localhost:8000';
   }
   // Client-side

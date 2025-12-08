@@ -258,7 +258,11 @@
       "loading": "Đang tải tư vấn từ AI...",
       "error": "Không thể tải tư vấn từ AI. Vui lòng thử lại sau.",
       "updatedAt": "Cập nhật lúc",
-      "dataSources": "Nguồn dữ liệu"
+      "dataSources": "Nguồn dữ liệu",
+      "description": "Nhận thông tin chi tiết và đề xuất được hỗ trợ bởi AI dựa trên dữ liệu hiện tại của thành phố.",
+      "getAdvice": "Nhận tư vấn từ AI",
+      "retry": "Thử lại",
+      "refresh": "Làm mới"
     },
     "statistics": {
       "title": "Thống kê tổng quan",

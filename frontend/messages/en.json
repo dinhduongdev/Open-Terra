@@ -258,7 +258,11 @@
       "loading": "Loading AI advice...",
       "error": "Unable to load AI advice. Please try again later.",
       "updatedAt": "Updated at",
-      "dataSources": "Data Sources"
+      "dataSources": "Data Sources",
+      "description": "Get AI-powered insights and recommendations based on current city data.",
+      "getAdvice": "Get AI Advice",
+      "retry": "Retry",
+      "refresh": "Refresh Advice"
     },
     "statistics": {
       "title": "Statistics Overview",
