@@ -20,7 +20,11 @@ router = APIRouter(prefix="/ai-advisor", tags=["ai-advisor"])
 logger = logging.getLogger(__name__)
 
 
-def format_data_summary(data: dict, data_type: str) -> str:
+import asyncio
+from app.utils.location import get_street_name
+
+
+async def format_data_summary(data: dict, data_type: str) -> str:
     """
     Format data into a human-readable summary for the prompt.
 
@@ -46,9 +50,15 @@ def format_data_summary(data: dict, data_type: str) -> str:
                 intensity = item.get("intensity", {}).get("value", "N/A")
                 speed = item.get("averageVehicleSpeed", {}).get("value", "N/A")
                 congested = item.get("congested", {}).get("value", False)
-
+                # Get lat/lon
+                coords = item.get("location", {}).get("value", {}).get("coordinates")
+                street = ""
+                if coords and isinstance(coords, list) and len(coords) == 2:
+                    lat, lon = coords[1], coords[0]
+                    street = await asyncio.to_thread(get_street_name, lat, lon)
+                street_info = f" at {street}" if street else ""
                 summary_parts.append(
-                    f"Sensor {sensor_id}: {intensity} vehicles, avg speed {speed} km/h"
+                    f"Sensor {sensor_id}{street_info}: {intensity} vehicles, avg speed {speed} km/h"
                     + (" (congested)" if congested else "")
                 )
 
@@ -64,8 +74,13 @@ def format_data_summary(data: dict, data_type: str) -> str:
                 station_id = item.get("stationID", {}).get("value", "Unknown")
                 current_level = item.get("currentLevel", {}).get("value", "N/A")
                 status = item.get("floodLevelStatus", {}).get("value", "Normal")
-
-                summary_parts.append(f"Station {station_id}: {current_level}m ({status})")
+                coords = item.get("location", {}).get("value", {}).get("coordinates")
+                street = ""
+                if coords and isinstance(coords, list) and len(coords) == 2:
+                    lat, lon = coords[1], coords[0]
+                    street = await asyncio.to_thread(get_street_name, lat, lon)
+                street_info = f" at {street}" if street else ""
+                summary_parts.append(f"Station {station_id}{street_info}: {current_level}m ({status})")
 
             return "Flood Monitoring: " + "; ".join(summary_parts)
 
@@ -77,19 +92,39 @@ def format_data_summary(data: dict, data_type: str) -> str:
             summary_parts = []
             for item in items[:2]:  # Limit to first 2 stations
                 station_id = item.get("id", "Unknown")
-                aqi = item.get("airQualityIndex", {}).get("value", "N/A")
-                pm25 = item.get("pm25", {}).get("value", "N/A")
-                level = item.get("airQualityLevel", {}).get("value", "Unknown")
-
-                summary_parts.append(f"Station {station_id}: AQI {aqi}, PM2.5 {pm25} μg/m³ ({level})")
+                aqi = item.get("https://smartdatamodels.org/dataModel.Weather/airQualityIndex", {}).get(
+                    "value"
+                ) or item.get("airQualityIndex", {}).get("value", "N/A")
+                pm25 = item.get("https://smartdatamodels.org/dataModel.Environment/pm25", {}).get("value") or item.get(
+                    "pm25", {}
+                ).get("value", "N/A")
+                level = item.get("https://smartdatamodels.org/dataModel.Environment/airQualityLevel", {}).get(
+                    "value"
+                ) or item.get("airQualityLevel", {}).get("value", "Unknown")
+                coords = item.get("location", {}).get("value", {}).get("coordinates")
+                street = ""
+                if coords and isinstance(coords, list) and len(coords) == 2:
+                    lat, lon = coords[1], coords[0]
+                    street = await asyncio.to_thread(get_street_name, lat, lon)
+                street_info = f" at {street}" if street else ""
+                summary_parts.append(f"Station {station_id}{street_info}: AQI {aqi}, PM2.5 {pm25} μg/m³ ({level})")
 
             return "Air Quality: " + "; ".join(summary_parts)
 
         elif data_type == "weather":
-            temp = data.get("temperature", {}).get("value", "N/A")
-            humidity = data.get("relativeHumidity", {}).get("value", "N/A")
-            pressure = data.get("atmosphericPressure", {}).get("value", "N/A")
-            weather_type = data.get("weatherType", {}).get("value", "Unknown")
+            # Handle both concise format (with full URIs) and normalized format
+            temp = data.get("https://smartdatamodels.org/dataModel.Weather/temperature", {}).get("value") or data.get(
+                "temperature", {}
+            ).get("value", "N/A")
+            humidity = data.get("https://smartdatamodels.org/dataModel.Weather/relativeHumidity", {}).get(
+                "value"
+            ) or data.get("relativeHumidity", {}).get("value", "N/A")
+            pressure = data.get("https://smartdatamodels.org/dataModel.Weather/atmosphericPressure", {}).get(
+                "value"
+            ) or data.get("atmosphericPressure", {}).get("value", "N/A")
+            weather_type = data.get("https://smartdatamodels.org/dataModel.Weather/weatherType", {}).get(
+                "value"
+            ) or data.get("weatherType", {}).get("value", "Unknown")
 
             # Convert humidity from 0-1 to percentage if needed
             if isinstance(humidity, (int, float)) and humidity <= 1:
@@ -250,7 +285,7 @@ async def fetch_latest_data() -> dict:
     return result
 
 
-def build_prompt(data: dict) -> str:
+async def build_prompt(data: dict) -> str:
     """
     Build the prompt for Gemini AI based on collected data.
 
@@ -261,18 +296,25 @@ def build_prompt(data: dict) -> str:
         Formatted prompt string
     """
     timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    current_hour = datetime.utcnow().strftime("%H")
+
+    traffic = await format_data_summary(data.get("traffic"), "traffic")
+    flood = await format_data_summary(data.get("flood"), "flood")
+    air_quality = await format_data_summary(data.get("air_quality"), "air_quality")
+    weather = await format_data_summary(data.get("weather"), "weather")
 
     prompt = f"""Bạn là trợ lý hữu ích cung cấp tóm tắt thông tin về môi trường và giao thông.
 
+Thời gian hiện tại: {current_hour} giờ UTC
 Tóm tắt dữ liệu hiện tại (tính đến {timestamp}):
 
-{format_data_summary(data.get("traffic"), "traffic")}
+{traffic}
 
-{format_data_summary(data.get("flood"), "flood")}
+{flood}
 
-{format_data_summary(data.get("air_quality"), "air_quality")}
+{air_quality}
 
-{format_data_summary(data.get("weather"), "weather")}
+{weather}
 
 Vui lòng cung cấp bản tóm tắt ngắn gọn, có thông tin (dưới 250 từ) bao gồm:
 1. Tổng quan về điều kiện môi trường hiện tại
@@ -283,6 +325,7 @@ Lưu ý quan trọng:
 - KHÔNG đề cập đến số lượng xe cụ thể (ví dụ: "18884 xe")
 - Chỉ mô tả tình trạng giao thông một cách chung chung (ví dụ: "tắc nghẽn", "lưu thông tốt")
 - Tập trung vào tốc độ trung bình và tình trạng tắc nghẽn
+- Đối với flood monitoring, hãy hiểu và đề cập như nó là một cảm biến đo mức ngập nước, không phải lũ lụt thực tế
 
 Hãy giữ phản hồi thực tế, trung lập và hữu ích. **Trả lời HOÀN TOÀN bằng tiếng Việt.**
 """
@@ -349,7 +392,7 @@ async def get_ai_advice():
         logger.info(f"Data fetched from {available_sources}/4 sources")
 
         # Build prompt
-        prompt = build_prompt(data)
+        prompt = await build_prompt(data)
         logger.info("=" * 80)
         logger.info("PROMPT BEING SENT TO GEMINI:")
         logger.info("=" * 80)
