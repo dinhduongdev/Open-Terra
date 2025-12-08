@@ -12,6 +12,7 @@ import { getLatestWeather } from '@/services/weatherService';
 import { getLatestFloodMonitoring } from '@/services/floodMonitoringService';
 import { getLatestTrafficFlow } from '@/services/trafficFlowService';
 import AIAdvisorSection from '@/components/overview/AIAdvisorSection';
+import TimeDisplay from '@/components/overview/TimeDisplay';
 import { getStreetNameFromCoordinates } from '@/utils/geocoding';
 
 export default async function OverviewPage() {
@@ -95,9 +96,14 @@ export default async function OverviewPage() {
             <div className="container mx-auto px-4 py-8 max-w-7xl">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">
-                        {t('title')}
-                    </h1>
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
+                        <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
+                            {t('title')}
+                        </h1>
+                        <div className="mt-4 md:mt-0">
+                            <TimeDisplay />
+                        </div>
+                    </div>
                     <p className="text-slate-600 dark:text-slate-400">
                         {t('subtitle')}
                     </p>

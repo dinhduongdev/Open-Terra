@@ -118,41 +118,51 @@ export async function getLatestTrafficFlow(): Promise<TrafficFlowData[]> {
          * Transform NGSI-LD formatted data to simplified structure
          */
         function transformNGSILDToTraffic(ngsiData: NGSITraffic): TrafficFlowData {
+            const getProp = (longKey: string, shortKey: string) => ngsiData[longKey] || ngsiData[shortKey];
+
+            const averageVehicleSpeed = getProp('https://smartdatamodels.org/dataModel.Transportation/averageVehicleSpeed', 'averageVehicleSpeed');
+            const congested = getProp('https://smartdatamodels.org/dataModel.Transportation/congested', 'congested');
+            const intensity = getProp('https://smartdatamodels.org/dataModel.Transportation/intensity', 'intensity');
+            const laneId = getProp('https://smartdatamodels.org/dataModel.Transportation/laneId', 'laneId');
+            const occupancy = getProp('https://smartdatamodels.org/dataModel.Transportation/occupancy', 'occupancy');
+            const dateObserved = getProp('https://smartdatamodels.org/dateObserved', 'dateObserved');
+            const address = getProp('https://smartdatamodels.org/address', 'address');
+
             return {
                 id: ngsiData.id,
                 type: ngsiData.type,
-                averageVehicleSpeed: ngsiData['https://smartdatamodels.org/dataModel.Transportation/averageVehicleSpeed'] ? {
-                    type: ngsiData['https://smartdatamodels.org/dataModel.Transportation/averageVehicleSpeed'].type,
-                    value: ngsiData['https://smartdatamodels.org/dataModel.Transportation/averageVehicleSpeed'].value,
-                    observedAt: ngsiData['https://smartdatamodels.org/dataModel.Transportation/averageVehicleSpeed'].observedAt
+                averageVehicleSpeed: averageVehicleSpeed ? {
+                    type: averageVehicleSpeed.type,
+                    value: averageVehicleSpeed.value,
+                    observedAt: averageVehicleSpeed.observedAt
                 } : undefined,
-                congested: ngsiData['https://smartdatamodels.org/dataModel.Transportation/congested'] ? {
-                    type: ngsiData['https://smartdatamodels.org/dataModel.Transportation/congested'].type,
-                    value: ngsiData['https://smartdatamodels.org/dataModel.Transportation/congested'].value,
-                    observedAt: ngsiData['https://smartdatamodels.org/dataModel.Transportation/congested'].observedAt
+                congested: congested ? {
+                    type: congested.type,
+                    value: congested.value,
+                    observedAt: congested.observedAt
                 } : undefined,
-                intensity: ngsiData['https://smartdatamodels.org/dataModel.Transportation/intensity'] ? {
-                    type: ngsiData['https://smartdatamodels.org/dataModel.Transportation/intensity'].type,
-                    value: ngsiData['https://smartdatamodels.org/dataModel.Transportation/intensity'].value,
-                    observedAt: ngsiData['https://smartdatamodels.org/dataModel.Transportation/intensity'].observedAt
+                intensity: intensity ? {
+                    type: intensity.type,
+                    value: intensity.value,
+                    observedAt: intensity.observedAt
                 } : undefined,
-                laneId: ngsiData['https://smartdatamodels.org/dataModel.Transportation/laneId'] ? {
-                    type: ngsiData['https://smartdatamodels.org/dataModel.Transportation/laneId'].type,
-                    value: ngsiData['https://smartdatamodels.org/dataModel.Transportation/laneId'].value,
-                    observedAt: ngsiData['https://smartdatamodels.org/dataModel.Transportation/laneId'].observedAt
+                laneId: laneId ? {
+                    type: laneId.type,
+                    value: laneId.value,
+                    observedAt: laneId.observedAt
                 } : undefined,
-                occupancy: ngsiData['https://smartdatamodels.org/dataModel.Transportation/occupancy'] ? {
-                    type: ngsiData['https://smartdatamodels.org/dataModel.Transportation/occupancy'].type,
-                    value: ngsiData['https://smartdatamodels.org/dataModel.Transportation/occupancy'].value,
-                    observedAt: ngsiData['https://smartdatamodels.org/dataModel.Transportation/occupancy'].observedAt
+                occupancy: occupancy ? {
+                    type: occupancy.type,
+                    value: occupancy.value,
+                    observedAt: occupancy.observedAt
                 } : undefined,
                 dateObserved: {
-                    type: ngsiData['https://smartdatamodels.org/dateObserved']?.type,
+                    type: dateObserved?.type,
                     value: {
-                        '@type': ngsiData['https://smartdatamodels.org/dateObserved']?.value?.['@type'],
-                        '@value': ngsiData['https://smartdatamodels.org/dateObserved']?.value?.['@value'] || ngsiData['https://smartdatamodels.org/dateObserved']?.value
+                        '@type': dateObserved?.value?.['@type'],
+                        '@value': dateObserved?.value?.['@value'] || dateObserved?.value
                     },
-                    observedAt: ngsiData['https://smartdatamodels.org/dateObserved']?.observedAt
+                    observedAt: dateObserved?.observedAt
                 },
                 location: {
                     type: ngsiData.location.value.type,
@@ -162,10 +172,10 @@ export async function getLatestTrafficFlow(): Promise<TrafficFlowData[]> {
                     }
                 },
                 address: {
-                    type: ngsiData['https://smartdatamodels.org/address']?.type,
+                    type: address?.type,
                     value: {
-                        streetAddress: ngsiData['https://smartdatamodels.org/address']?.value?.streetAddress,
-                        addressLocality: ngsiData['https://smartdatamodels.org/address']?.value?.addressLocality
+                        streetAddress: address?.value?.streetAddress,
+                        addressLocality: address?.value?.addressLocality
                     }
                 }
             };
