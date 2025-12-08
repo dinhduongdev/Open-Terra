@@ -13,9 +13,7 @@ import { useTranslations } from 'next-intl';
 import { useState, useEffect } from 'react';
 import FloodReportForm, { FloodReport } from '@/components/common/FloodReportForm';
 import FloodReportsList from '@/components/common/FloodReportsList';
-import FloodMonitoringList from '@/components/common/FloodMonitoringList';
 import { getFloodReports, submitFloodReport } from '@/services/floodReportService';
-import { getLatestFloodMonitoring, FloodMonitoringData } from '@/services/floodMonitoringService';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 // Dynamically import Map component with no SSR to avoid window/document issues
@@ -32,7 +30,6 @@ export default function FloodMapPage() {
   const t = useTranslations('sidebar');
   const [showReportForm, setShowReportForm] = useState(false);
   const [citizenReports, setCitizenReports] = useState<FloodReport[]>([]);
-  const [floodMonitoringData, setFloodMonitoringData] = useState<FloodMonitoringData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<'All' | 'Reported' | 'Verified'>('All');
@@ -41,16 +38,6 @@ export default function FloodMapPage() {
   useEffect(() => {
     fetchFloodReports();
   }, [statusFilter]);
-
-  // Fetch flood monitoring data on mount and periodically
-  useEffect(() => {
-    fetchFloodMonitoringData();
-    
-    // Refresh flood monitoring data every 30 seconds
-    const interval = setInterval(fetchFloodMonitoringData, 30000);
-    
-    return () => clearInterval(interval);
-  }, []);
 
   const fetchFloodReports = async () => {
     try {
@@ -65,17 +52,6 @@ export default function FloodMapPage() {
       console.error('Error fetching flood reports:', err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchFloodMonitoringData = async () => {
-    try {
-      const monitoringData = await getLatestFloodMonitoring();
-      console.log('Fetched flood monitoring data:', monitoringData);
-      setFloodMonitoringData(monitoringData);
-    } catch (err) {
-      console.error('Error fetching flood monitoring data:', err);
-      // Don't set error state for monitoring data to avoid disrupting the page
     }
   };
 
@@ -120,15 +96,7 @@ export default function FloodMapPage() {
         <h2 className="text-lg md:text-xl font-semibold text-gray-700 flex items-center gap-2 mb-4">
           Bản đồ báo cáo ngập lụt - OpenStreetMap
         </h2>
-        <FloodMapDynamic 
-          floodReports={citizenReports}
-          floodMonitoringData={floodMonitoringData}
-        />
-      </div>
-
-      {/* Flood Monitoring Sensors List */}
-      <div className="mt-8">
-        <FloodMonitoringList sensors={floodMonitoringData} />
+        <FloodMapDynamic floodReports={citizenReports} />
       </div>
 
       {/* Citizen Reports */}
