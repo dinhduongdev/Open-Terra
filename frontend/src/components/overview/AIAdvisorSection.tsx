@@ -37,7 +37,7 @@ export default function AIAdvisorSection() {
 
     if (loading) {
         return (
-            <section className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl shadow-lg p-6 border border-blue-200 dark:border-blue-800">
+            <section className="mb-8 bg-white rounded-xl shadow-lg p-6 border border-blue-200">
                 <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
                         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -45,10 +45,10 @@ export default function AIAdvisorSection() {
                         </svg>
                     </div>
                     <div className="flex-1">
-                        <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2">
+                        <h2 className="text-2xl font-semibold text-gray-900 mb-2">
                             {t('title')}
                         </h2>
-                        <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                        <div className="flex items-center gap-2 text-sm text-gray-900">
                             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
                             <span>{t('loading')}</span>
                         </div>
@@ -60,7 +60,7 @@ export default function AIAdvisorSection() {
 
     if (error) {
         return (
-            <section className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl shadow-lg p-6 border border-blue-200 dark:border-blue-800">
+            <section className="mb-8 bg-white rounded-xl shadow-lg p-6 border border-blue-200">
                 <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
                         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,10 +68,10 @@ export default function AIAdvisorSection() {
                         </svg>
                     </div>
                     <div className="flex-1">
-                        <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2">
+                        <h2 className="text-2xl font-semibold text-gray-900 mb-2">
                             {t('title')}
                         </h2>
-                        <p className="text-red-600 dark:text-red-400 mb-4">
+                        <p className="text-red-600 mb-4">
                             {error}
                         </p>
                         <button
@@ -88,7 +88,7 @@ export default function AIAdvisorSection() {
 
     if (!aiAdvice) {
         return (
-            <section className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl shadow-lg p-6 border border-blue-200 dark:border-blue-800">
+            <section className="mb-8 bg-white rounded-xl shadow-lg p-6 border border-blue-200">
                 <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
                         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,10 +96,10 @@ export default function AIAdvisorSection() {
                         </svg>
                     </div>
                     <div className="flex-1">
-                        <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2">
+                        <h2 className="text-2xl font-semibold text-gray-900 mb-2">
                             {t('title')}
                         </h2>
-                        <p className="text-slate-600 dark:text-slate-400 mb-4">
+                        <p className="text-gray-900 mb-4">
                             {t('description')}
                         </p>
                         <button
@@ -118,7 +118,7 @@ export default function AIAdvisorSection() {
     }
 
     return (
-        <section className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl shadow-lg p-6 border border-blue-200 dark:border-blue-800">
+        <section className="mb-8 bg-white rounded-xl shadow-lg p-6 border border-blue-200">
             <div className="flex items-start gap-3 mb-4">
                 <div className="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,16 +128,16 @@ export default function AIAdvisorSection() {
                 <div className="flex-1">
                     <div className="flex justify-between items-start">
                         <div>
-                            <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2">
+                            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
                                 {t('title')}
                             </h2>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                            <p className="text-sm text-gray-900">
                                 {t('updatedAt')}: {new Date(aiAdvice.timestamp).toLocaleString()}
                             </p>
                         </div>
                         <button
                             onClick={fetchAIAdvice}
-                            className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
+                            className="text-blue-600 hover:text-blue-700 text-sm font-medium"
                         >
                             {t('refresh')}
                         </button>
@@ -145,35 +145,35 @@ export default function AIAdvisorSection() {
                 </div>
             </div>
 
-            <div className="prose prose-slate dark:prose-invert max-w-none mb-4">
+            <div className="prose prose-slate max-w-none mb-4">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {aiAdvice.advice}
                 </ReactMarkdown>
             </div>
 
             {aiAdvice.data_sources && (
-                <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-800">
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                <div className="mt-4 pt-4 border-t border-blue-200">
+                    <p className="text-sm text-gray-900 mb-2">
                         {t('dataSources')}:
                     </p>
                     <div className="flex flex-wrap gap-2">
                         {aiAdvice.data_sources.air_quality && (
-                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                 Air Quality
                             </span>
                         )}
                         {aiAdvice.data_sources.weather && (
-                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                 Weather
                             </span>
                         )}
                         {aiAdvice.data_sources.traffic && (
-                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                 Traffic
                             </span>
                         )}
                         {aiAdvice.data_sources.flood && (
-                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                 Flood
                             </span>
                         )}

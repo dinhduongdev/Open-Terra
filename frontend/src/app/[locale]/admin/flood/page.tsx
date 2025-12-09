@@ -21,6 +21,11 @@ export default function AdminFloodPage() {
     FloodMonitoringData[]
   >([]);
 
+  // Update document title
+  useEffect(() => {
+    document.title = 'Open-Terra - Quản lý ngập lụt';
+  }, []);
+
   const fetchFloodMonitoringData = async () => {
     try {
       const monitoringData = await getLatestFloodMonitoring();

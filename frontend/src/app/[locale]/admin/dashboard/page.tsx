@@ -9,6 +9,11 @@
 import StatsCard from '@/components/admin/StatsCard';
 import ChartSection from '@/components/admin/ChartSection';
 import RecentActivities from '@/components/admin/RecentActivities';
+import { generatePageMetadata } from '@/utils/metadata';
+
+export async function generateMetadata() {
+  return generatePageMetadata('adminDashboard');
+}
 
 export default function AdminDashboard() {
   const stats = [

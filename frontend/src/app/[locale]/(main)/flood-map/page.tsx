@@ -17,25 +17,33 @@ import FloodMonitoringList from '@/components/common/FloodMonitoringList';
 import { getFloodReports, submitFloodReport } from '@/services/floodReportService';
 import { getLatestFloodMonitoring, FloodMonitoringData } from '@/services/floodMonitoringService';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import toast from 'react-hot-toast';
 
 // Dynamically import Map component with no SSR to avoid window/document issues
 const FloodMapDynamic = dynamic(() => import('@/components/common/FloodMap'), {
   ssr: false,
   loading: () => (
     <div className="h-[600px] w-full bg-gray-100 flex items-center justify-center">
-      <p className="text-gray-500">Đang tải bản đồ...</p>
+      <LoadingSpinner />
     </div>
   ),
 });
 
 export default function FloodMapPage() {
   const t = useTranslations('sidebar');
+  const tTitle = useTranslations('pageTitles');
+  const tFlood = useTranslations('floodMap');
   const [showReportForm, setShowReportForm] = useState(false);
   const [citizenReports, setCitizenReports] = useState<FloodReport[]>([]);
   const [floodMonitoringData, setFloodMonitoringData] = useState<FloodMonitoringData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<'All' | 'Reported' | 'Verified'>('All');
+
+  // Update document title
+  useEffect(() => {
+    document.title = `Open-Terra - ${tTitle('floodMap')}`;
+  }, [tTitle]);
 
   // Fetch flood reports on mount and when filter changes
   useEffect(() => {
@@ -61,7 +69,7 @@ export default function FloodMapPage() {
       console.log('Fetched flood reports:', reports);
       setCitizenReports(reports);
     } catch (err) {
-      setError('Không thể tải báo cáo ngập lụt');
+      setError(tFlood('errorLoadReports'));
       console.error('Error fetching flood reports:', err);
     } finally {
       setLoading(false);
@@ -74,8 +82,7 @@ export default function FloodMapPage() {
       console.log('Fetched flood monitoring data:', monitoringData);
       setFloodMonitoringData(monitoringData);
     } catch (err) {
-      console.error('Error fetching flood monitoring data:', err);
-      // Don't set error state for monitoring data to avoid disrupting the page
+      toast.error(tFlood('errorLoadMonitoring'));
     }
   };
 
@@ -84,12 +91,10 @@ export default function FloodMapPage() {
       const newReport = await submitFloodReport(report);
       setCitizenReports([newReport, ...citizenReports]);
       setShowReportForm(false);
-      alert('Báo cáo đã được gửi thành công! Cơ quan chức năng sẽ xử lý trong thời gian sớm nhất.');
-      // Refresh reports list
+      toast.success(tFlood('reportSuccess'));
       fetchFloodReports();
     } catch (err) {
-      alert('Không thể gửi báo cáo. Vui lòng thử lại!');
-      console.error(err);
+      toast.error(tFlood('reportError'));
     }
   };
 
@@ -103,14 +108,14 @@ export default function FloodMapPage() {
                 {t('floodMap')}
               </h1>
               <p className="text-gray-600">
-                Theo dõi tình trạng ngập úng và cảnh báo lũ lụt theo thời gian thực
+                {tFlood('subtitle')}
               </p>
             </div>
             <button
               onClick={() => setShowReportForm(true)}
               className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2 whitespace-nowrap"
             >
-              Báo cáo ngập lụt
+              {tFlood('reportButton')}
             </button>
           </div>
         </div>
@@ -118,7 +123,7 @@ export default function FloodMapPage() {
       {/* Main Map */}
       <div className="mt-6 md:mt-8 bg-white rounded-lg shadow-md p-4 md:p-6">
         <h2 className="text-lg md:text-xl font-semibold text-gray-700 flex items-center gap-2 mb-4">
-          Bản đồ báo cáo ngập lụt - OpenStreetMap
+          {tFlood('mapTitle')}
         </h2>
         <FloodMapDynamic 
           floodReports={citizenReports}
@@ -136,7 +141,7 @@ export default function FloodMapPage() {
         {/* Filter Tabs */}
         <div className="bg-white rounded-lg shadow-md p-4 mb-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-gray-700 mr-2">Lọc theo trạng thái:</span>
+            <span className="text-sm font-semibold text-gray-700 mr-2">{tFlood('filterTitle')}</span>
             <button
               onClick={() => setStatusFilter('All')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
@@ -145,7 +150,7 @@ export default function FloodMapPage() {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Tất cả
+              {tFlood('filterAll')}
             </button>
             <button
               onClick={() => setStatusFilter('Reported')}
@@ -155,7 +160,7 @@ export default function FloodMapPage() {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Đã báo cáo
+              {tFlood('filterReported')}
             </button>
             <button
               onClick={() => setStatusFilter('Verified')}
@@ -165,7 +170,7 @@ export default function FloodMapPage() {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Đã xác minh
+              {tFlood('filterVerified')}
             </button>
           </div>
         </div>
@@ -181,14 +186,14 @@ export default function FloodMapPage() {
               onClick={fetchFloodReports}
               className="mt-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
             >
-              Thử lại
+              {tFlood('retryButton')}
             </button>
           </div>
         ) : citizenReports.length > 0 ? (
           <FloodReportsList reports={citizenReports} />
         ) : (
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
-            <p className="text-gray-600">Chưa có báo cáo ngập lụt nào</p>
+            <p className="text-gray-600">{tFlood('noReports')}</p>
           </div>
         )}
       </div>
@@ -202,52 +207,52 @@ export default function FloodMapPage() {
       {/* Safety Tips */}
       <div className="mt-8 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg shadow-md p-6 border-l-4 border-red-500">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-           Hướng dẫn an toàn khi ngập lụt
+           {tFlood('safety.title')}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-white rounded-lg p-4">
             <h3 className="font-semibold text-red-700 mb-2 flex items-center gap-2">
-               Cần tránh
+               {tFlood('safety.avoid.title')}
             </h3>
             <ul className="text-sm text-gray-700 space-y-2">
               <li className="flex items-start gap-2">
                 <span className="text-red-500 mt-1">•</span>
-                <span>Không đi qua vùng nước chảy xiết hoặc nước sâu</span>
+                <span>{tFlood('safety.avoid.tip1')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-red-500 mt-1">•</span>
-                <span>Tránh xa các cột điện, dây điện bị đổ hoặc ngập nước</span>
+                <span>{tFlood('safety.avoid.tip2')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-red-500 mt-1">•</span>
-                <span>Không cố gắng lái xe qua vùng ngập sâu</span>
+                <span>{tFlood('safety.avoid.tip3')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-red-500 mt-1">•</span>
-                <span>Không uống nước chưa qua xử lý từ vùng ngập</span>
+                <span>{tFlood('safety.avoid.tip4')}</span>
               </li>
             </ul>
           </div>
           <div className="bg-white rounded-lg p-4">
             <h3 className="font-semibold text-green-700 mb-2 flex items-center gap-2">
-               Nên làm
+               {tFlood('safety.should.title')}
             </h3>
             <ul className="text-sm text-gray-700 space-y-2">
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">•</span>
-                <span>Theo dõi thông tin cảnh báo từ cơ quan chức năng</span>
+                <span>{tFlood('safety.should.tip1')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">•</span>
-                <span>Chuẩn bị túi cứu hộ khẩn cấp và đồ dùng thiết yếu</span>
+                <span>{tFlood('safety.should.tip2')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">•</span>
-                <span>Di chuyển đến nơi cao hơn khi có lệnh sơ tán</span>
+                <span>{tFlood('safety.should.tip3')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">•</span>
-                <span>Liên hệ cơ quan chức năng khi cần hỗ trợ: 113, 114, 115</span>
+                <span>{tFlood('safety.should.tip4')}</span>
               </li>
             </ul>
           </div>

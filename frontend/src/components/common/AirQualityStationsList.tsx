@@ -8,6 +8,7 @@
 
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { getAQIColor, getAQILabel } from '@/types/airQuality';
 
 interface AirQualityStation {
@@ -46,14 +47,16 @@ interface AirQualityStationsListProps {
 }
 
 export default function AirQualityStationsList({ stations }: AirQualityStationsListProps) {
+  const t = useTranslations('airQuality.stationsList');
+  
   return (
     <div className="mt-8 bg-white rounded-lg shadow-md p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-          Danh sách trạm quan trắc
+          {t('title')}
         </h2>
         <div className="text-sm text-gray-600">
-          Tổng số: <span className="font-semibold text-blue-600">{stations.length}</span> trạm
+          {t('totalCount')} <span className="font-semibold text-blue-600">{stations.length}</span> {t('stations')}
         </div>
       </div>
 
@@ -86,7 +89,7 @@ export default function AirQualityStationsList({ stations }: AirQualityStationsL
                       <span>{station.address.addressLocality}, {station.address.addressCountry}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span>Nguồn: {station.source}</span>
+                      <span>{t('source')} {station.source}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span>
@@ -124,7 +127,7 @@ export default function AirQualityStationsList({ stations }: AirQualityStationsL
               {/* Air Pollutants Section */}
               <div className="mb-4">
                 <h4 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                  Chất ô nhiễm không khí
+                  {t('pollutants')}
                 </h4>
                 <div className="grid grid-cols-2 gap-3">
                   {station.pollutants.pm25 !== undefined && (
@@ -197,14 +200,14 @@ export default function AirQualityStationsList({ stations }: AirQualityStationsL
               {(station.weather.temperature !== undefined || station.weather.humidity !== undefined) && (
                 <div className="pt-4 border-t border-gray-200">
                   <h4 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                    Thông tin thời tiết
+                    {t('weather')}
                   </h4>
                   <div className="grid grid-cols-2 gap-3">
                     {station.weather.temperature !== undefined && (
                       <div className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg p-3 border border-amber-200">
                         <div className="flex items-center justify-between">
                           <div>
-                            <div className="text-xs text-amber-600 font-medium mb-1">Nhiệt độ</div>
+                            <div className="text-xs text-amber-600 font-medium mb-1">{t('temperature')}</div>
                             <div className="text-2xl font-bold text-amber-900">
                               {station.weather.temperature.toFixed(1)}°C
                             </div>
@@ -216,7 +219,7 @@ export default function AirQualityStationsList({ stations }: AirQualityStationsL
                       <div className="bg-gradient-to-br from-sky-50 to-sky-100 rounded-lg p-3 border border-sky-200">
                         <div className="flex items-center justify-between">
                           <div>
-                            <div className="text-xs text-sky-600 font-medium mb-1">Độ ẩm</div>
+                            <div className="text-xs text-sky-600 font-medium mb-1">{t('humidity')}</div>
                             <div className="text-2xl font-bold text-sky-900">
                               {station.weather.humidity.toFixed(0)}%
                             </div>
@@ -231,7 +234,7 @@ export default function AirQualityStationsList({ stations }: AirQualityStationsL
               {/* Location Coordinates */}
               <div className="mt-4 pt-4 border-t border-gray-200">
                 <div className="flex items-center justify-between text-xs text-gray-500">
-                  <span className="font-medium">Tọa độ:</span>
+                  <span className="font-medium">{t('coordinates')}:</span>
                   <span className="font-mono bg-gray-100 px-2 py-1 rounded">
                     {station.location.lat.toFixed(6)}, {station.location.lng.toFixed(6)}
                   </span>

@@ -8,6 +8,8 @@
 
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 interface Pollutant {
   name: string;
   value: number;
@@ -31,26 +33,29 @@ const WHO_STANDARDS: { [key: string]: number } = {
 };
 
 export default function PollutantsOverview({ pollutants }: PollutantsOverviewProps) {
+  const t = useTranslations('airQuality.pollutants');
+  const tLevel = useTranslations('airQuality.pollutants.level');
+  
   const getPollutantLevel = (name: string, value: number): string => {
     const standard = WHO_STANDARDS[name];
-    if (!standard) return 'Không rõ';
+    if (!standard) return tLevel('unknown');
     
     const percentage = (value / standard) * 100;
-    if (percentage <= 50) return 'Tốt';
-    if (percentage <= 100) return 'Trung bình';
-    if (percentage <= 150) return 'Kém';
-    return 'Rất kém';
+    if (percentage <= 50) return tLevel('good');
+    if (percentage <= 100) return tLevel('moderate');
+    if (percentage <= 150) return tLevel('poor');
+    return tLevel('veryPoor');
   };
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case 'Tốt':
+      case tLevel('good'):
         return 'text-green-600 bg-green-50 border-green-200';
-      case 'Trung bình':
+      case tLevel('moderate'):
         return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'Kém':
+      case tLevel('poor'):
         return 'text-orange-600 bg-orange-50 border-orange-200';
-      case 'Rất kém':
+      case tLevel('veryPoor'):
         return 'text-red-600 bg-red-50 border-red-200';
       default:
         return 'text-gray-600 bg-gray-50 border-gray-200';
@@ -73,7 +78,7 @@ export default function PollutantsOverview({ pollutants }: PollutantsOverviewPro
   return (
     <div className="mt-6 md:mt-8 bg-white rounded-lg shadow-md p-4 md:p-6">
       <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-4 md:mb-6 flex items-center gap-2">
-        Các chất ô nhiễm chính
+        {t('title')}
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -99,7 +104,7 @@ export default function PollutantsOverview({ pollutants }: PollutantsOverviewPro
 
               <div className="mb-2">
                 <div className="flex justify-between text-sm text-gray-600 mb-2">
-                  <span>So với tiêu chuẩn WHO</span>
+                  <span>{t('vsWhoStandard')}</span>
                   <span className="font-semibold">{percentage}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
@@ -114,16 +119,16 @@ export default function PollutantsOverview({ pollutants }: PollutantsOverviewPro
 
             {WHO_STANDARDS[pollutant.name] && (
               <div className="text-xs text-gray-500 mt-3">
-                Tiêu chuẩn WHO: <strong>{WHO_STANDARDS[pollutant.name]} {pollutant.unit}</strong>
+                {t('whoStandard')} <strong>{WHO_STANDARDS[pollutant.name]} {pollutant.unit}</strong>
               </div>
             )}
 
             {pollutant.trend !== 0 && (
               <div className="flex items-center gap-1 text-xs mt-2">
                 {pollutant.trend > 0 ? (
-                  <span className="text-red-600">↑ Tăng {Math.abs(pollutant.trend)}%</span>
+                  <span className="text-red-600">↑ {t('increase')} {Math.abs(pollutant.trend)}%</span>
                 ) : (
-                  <span className="text-green-600">↓ Giảm {Math.abs(pollutant.trend)}%</span>
+                  <span className="text-green-600">↓ {t('decrease')} {Math.abs(pollutant.trend)}%</span>
                 )}
               </div>
             )}
@@ -134,14 +139,14 @@ export default function PollutantsOverview({ pollutants }: PollutantsOverviewPro
 
       {/* Pollutants Info */}
       <div className="mt-4 md:mt-6 p-3 md:p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
-        <h3 className="font-semibold text-blue-900 mb-2 text-sm md:text-base">Giải thích các chất ô nhiễm</h3>
+        <h3 className="font-semibold text-blue-900 mb-2 text-sm md:text-base">{t('explainTitle')}</h3>
         <div className="text-xs md:text-sm text-blue-800 space-y-1">
-          <p><strong>PM2.5:</strong> Bụi mịn có đường kính ≤ 2.5 micromet, nguy hiểm vì có thể xâm nhập sâu vào phổi.</p>
-          <p><strong>PM10:</strong> Bụi có đường kính ≤ 10 micromet, gây kích ứng đường hô hấp.</p>
-          <p><strong>O₃ (Ozone):</strong> Khí ozone ở tầng mặt đất, gây kích ứng phổi và đường hô hấp.</p>
-          <p><strong>NO₂:</strong> Nitơ dioxide từ khí thải xe, gây viêm đường hô hấp.</p>
-          <p><strong>SO₂:</strong> Lưu huỳnh dioxide từ đốt nhiên liệu hóa thạch.</p>
-          <p><strong>CO:</strong> Carbon monoxide, khí không màu không mùi, nguy hiểm ở nồng độ cao.</p>
+          <p><strong>PM2.5:</strong> {t('pm25Desc')}</p>
+          <p><strong>PM10:</strong> {t('pm10Desc')}</p>
+          <p><strong>O₃ (Ozone):</strong> {t('o3Desc')}</p>
+          <p><strong>NO₂:</strong> {t('no2Desc')}</p>
+          <p><strong>SO₂:</strong> {t('so2Desc')}</p>
+          <p><strong>CO:</strong> {t('coDesc')}</p>
         </div>
       </div>
     </div>

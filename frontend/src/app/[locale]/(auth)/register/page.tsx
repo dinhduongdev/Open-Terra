@@ -7,6 +7,11 @@
  */
 
 import RegisterForm from '@/components/auth/RegisterForm';
+import { generatePageMetadata } from '@/utils/metadata';
+
+export async function generateMetadata() {
+  return generatePageMetadata('register');
+}
 
 export default function RegisterPage() {
   return (

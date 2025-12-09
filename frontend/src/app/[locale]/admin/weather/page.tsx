@@ -6,10 +6,17 @@
  * @see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
  */
 
-import React from 'react';
+'use client';
+
+import React, { useEffect } from 'react';
 import WeatherTable from '@/components/admin/WeatherTable';
 
 export default function AdminWeatherPage() {
+  // Update document title
+  useEffect(() => {
+    document.title = 'Open-Terra - Quản lý thời tiết';
+  }, []);
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">

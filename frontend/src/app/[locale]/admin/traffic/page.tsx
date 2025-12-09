@@ -16,6 +16,10 @@ import { getLatestTrafficFlow, TrafficFlowData } from '@/services/trafficFlowSer
 export default function AdminTrafficPage() {
   const [trafficFlowData, setTrafficFlowData] = useState<TrafficFlowData[]>([]);
 
+  // Update document title
+  useEffect(() => {
+    document.title = 'Open-Terra - Quản lý giao thông';
+  }, []);
 
   const fetchTrafficFlowData = async () => {
     try {

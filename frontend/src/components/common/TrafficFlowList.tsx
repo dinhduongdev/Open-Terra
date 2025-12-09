@@ -8,6 +8,7 @@
 
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { TrafficFlowData } from '@/services/trafficFlowService';
 
 interface TrafficFlowListProps {
@@ -15,10 +16,12 @@ interface TrafficFlowListProps {
 }
 
 export default function TrafficFlowList({ sensors }: TrafficFlowListProps) {
+  const t = useTranslations('traffic.sensors');
+  
   if (!sensors.length) {
     return (
       <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
-        <p className="text-gray-600">Không có dữ liệu cảm biến giao thông</p>
+        <p className="text-gray-600">{t('noData')}</p>
       </div>
     );
   }
@@ -31,10 +34,10 @@ export default function TrafficFlowList({ sensors }: TrafficFlowListProps) {
   };
 
   const getStatusText = (speed: number, congested: boolean) => {
-    if (congested) return 'Tắc nghẽn';
-    if (speed > 40) return 'Thông thoáng';
-    if (speed > 25) return 'Chậm';
-    return 'Kẹt xe';
+    if (congested) return t('status.congested');
+    if (speed > 40) return t('status.clear');
+    if (speed > 25) return t('status.slow');
+    return t('status.jam');
   };
 
   const getStatusDot = (speed: number, congested: boolean) => {
@@ -48,9 +51,9 @@ export default function TrafficFlowList({ sensors }: TrafficFlowListProps) {
     <div className="bg-white rounded-lg shadow-md">
       <div className="p-4 md:p-6 border-b border-gray-200">
         <h2 className="text-lg md:text-xl font-semibold text-gray-700 flex items-center gap-2">
-          Cảm biến giao thông thời gian thực
+          {t('title')}
           <span className="text-sm font-normal text-gray-500">
-            ({sensors.length} cảm biến)
+            ({sensors.length} {t('count')})
           </span>
         </h2>
       </div>
@@ -79,10 +82,10 @@ export default function TrafficFlowList({ sensors }: TrafficFlowListProps) {
                   <div className="flex items-center gap-3 mb-2">
                     <div>
                       <h3 className="font-semibold text-gray-800 text-sm md:text-base">
-                        Cảm biến #{sensorId}
+                        {t('sensorId')} #{sensorId}
                       </h3>
                       <p className="text-xs text-gray-500">
-                        Làn {laneId} • {lat.toFixed(6)}, {lng.toFixed(6)}
+                        {t('lane')} {laneId} • {lat.toFixed(6)}, {lng.toFixed(6)}
                       </p>
                     </div>
                   </div>
@@ -99,45 +102,45 @@ export default function TrafficFlowList({ sensors }: TrafficFlowListProps) {
                   {/* Speed */}
                   <div className="bg-blue-50 rounded-lg p-3 text-center border border-blue-200">
                     <div className="text-xs text-blue-600 font-medium mb-1">
-                      Tốc độ TB
+                      {t('metrics.averageSpeed')}
                     </div>
                     <div className="text-lg md:text-xl font-bold text-blue-700">
                       {speed.toFixed(1)}
                     </div>
-                    <div className="text-xs text-blue-600">km/h</div>
+                    <div className="text-xs text-blue-600">{t('units.kmh')}</div>
                   </div>
 
                   {/* Intensity */}
                   <div className="bg-purple-50 rounded-lg p-3 text-center border border-purple-200">
                     <div className="text-xs text-purple-600 font-medium mb-1">
-                      Cường độ
+                      {t('metrics.intensity')}
                     </div>
                     <div className="text-lg md:text-xl font-bold text-purple-700">
                       {intensity}
                     </div>
-                    <div className="text-xs text-purple-600">xe/phút</div>
+                    <div className="text-xs text-purple-600">{t('units.vehiclesPerMinute')}</div>
                   </div>
 
                   {/* Occupancy */}
                   <div className="bg-orange-50 rounded-lg p-3 text-center border border-orange-200">
                     <div className="text-xs text-orange-600 font-medium mb-1">
-                      Mật độ
+                      {t('metrics.density')}
                     </div>
                     <div className="text-lg md:text-xl font-bold text-orange-700">
                       {(occupancy * 100).toFixed(0)}
                     </div>
-                    <div className="text-xs text-orange-600">%</div>
+                    <div className="text-xs text-orange-600">{t('units.percent')}</div>
                   </div>
 
                   {/* Lane */}
                   <div className="bg-gray-50 rounded-lg p-3 text-center border border-gray-200">
                     <div className="text-xs text-gray-600 font-medium mb-1">
-                      Làn đường
+                      {t('metrics.laneNumber')}
                     </div>
                     <div className="text-lg md:text-xl font-bold text-gray-700">
                       {laneId}
                     </div>
-                    <div className="text-xs text-gray-600">lane</div>
+                    <div className="text-xs text-gray-600">{t('units.lane')}</div>
                   </div>
                 </div>
               </div>
@@ -148,7 +151,7 @@ export default function TrafficFlowList({ sensors }: TrafficFlowListProps) {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Cập nhật lần cuối: {timestamp}
+                  {t('lastUpdate')}: {timestamp}
                 </div>
               </div>
             </div>

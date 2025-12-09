@@ -75,34 +75,6 @@ export default function ModulesSection() {
         iconText: 'text-orange-600',
         iconTextHover: 'text-white'
       }
-    },
-    {
-      href: '#',
-      icon: ParkingIcon,
-      titleKey: 'parking',
-      descriptionKey: 'modules.parking',
-      colorScheme: {
-        border: 'indigo-500',
-        bg: 'bg-indigo-100',
-        bgHover: 'bg-indigo-500',
-        text: 'text-indigo-600',
-        iconText: 'text-indigo-600',
-        iconTextHover: 'text-white'
-      }
-    },
-    {
-      href: '#',
-      icon: InfrastructureIcon,
-      titleKey: 'infrastructure',
-      descriptionKey: 'modules.infrastructure',
-      colorScheme: {
-        border: 'teal-500',
-        bg: 'bg-teal-100',
-        bgHover: 'bg-teal-500',
-        text: 'text-teal-600',
-        iconText: 'text-teal-600',
-        iconTextHover: 'text-white'
-      }
     }
   ];
 
@@ -112,7 +84,7 @@ export default function ModulesSection() {
         <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-8 md:mb-12">
           {t('modules.title')}
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {modules.map((module, index) => (
             <ModuleCard
               key={index}

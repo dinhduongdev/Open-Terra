@@ -7,6 +7,11 @@
  */
 
 import LoginForm from '@/components/auth/LoginForm';
+import { generatePageMetadata } from '@/utils/metadata';
+
+export async function generateMetadata() {
+  return generatePageMetadata('login');
+}
 
 export default function LoginPage() {
   return (

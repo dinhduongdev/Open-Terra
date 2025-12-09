@@ -6,9 +6,16 @@
  * @see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
  */
 
-import React from 'react';
+'use client';
+
+import React, { useEffect } from 'react';
 
 export default function AdminAlertsPage() {
+  // Update document title
+  useEffect(() => {
+    document.title = 'Open-Terra - Quản lý cảnh báo';
+  }, []);
+
   return (
     <div className="p-6">
       <div className="mb-6 flex justify-between items-center">
