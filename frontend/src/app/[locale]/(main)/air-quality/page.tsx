@@ -26,6 +26,7 @@ import HealthRecommendations from '@/components/common/HealthRecommendations';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorMessage from '@/components/common/ErrorMessage';
 import StationSelector from '@/components/common/StationSelector';
+import ExportDataDialog from '@/components/export/ExportDataDialog';
 
 // Dynamically import Map component with no SSR to avoid window/document issues
 const AirQualityMapDynamic = dynamic(() => import('@/components/common/AirQualityMap'), {
@@ -42,9 +43,11 @@ const AirQualityMapDynamic = dynamic(() => import('@/components/common/AirQualit
 
 export default function AirQualityPage() {
   const t = useTranslations('sidebar');
+  const tExport = useTranslations('export');
   const tTitle = useTranslations('pageTitles');
   const tAir = useTranslations('airQuality');
   const [showStations, setShowStations] = useState(true);
+  const [showExportDialog, setShowExportDialog] = useState(false);
   const [stations, setStations] = useState<AirQualityStation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -242,6 +245,16 @@ export default function AirQualityPage() {
             showStations={showStations}
             onStationLayerToggle={setShowStations}
           />
+          
+          {/* Export Button */}
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={() => setShowExportDialog(true)}
+              className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-2 text-sm"
+            >
+              {tExport('button')}
+            </button>
+          </div>
         </div>
       )}
 
@@ -285,6 +298,14 @@ export default function AirQualityPage() {
           </div>
         </div>
       </div>
+      
+      {/* Export Dialog */}
+      {showExportDialog && (
+        <ExportDataDialog
+          onClose={() => setShowExportDialog(false)}
+          defaultEntityType="AirQualityObserved"
+        />
+      )}
     </div>
   );
 }

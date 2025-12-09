@@ -17,6 +17,7 @@ import TrafficFlowList from '@/components/common/TrafficFlowList';
 import { getTrafficReports, submitTrafficReport } from '@/services/trafficReportService';
 import { getLatestTrafficFlow, TrafficFlowData } from '@/services/trafficFlowService';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import ExportDataDialog from '@/components/export/ExportDataDialog';
 import toast from 'react-hot-toast';
 
 // Dynamically import Map component with no SSR to avoid window/document issues
@@ -31,8 +32,10 @@ const TrafficMapDynamic = dynamic(() => import('@/components/common/TrafficMap')
 
 export default function TrafficPage() {
   const t = useTranslations('traffic');
+  const tExport = useTranslations('export');
   const tTitle = useTranslations('pageTitles');
   const [showReportForm, setShowReportForm] = useState(false);
+  const [showExportDialog, setShowExportDialog] = useState(false);
   const [trafficReports, setTrafficReports] = useState<TrafficReport[]>([]);
   const [trafficFlowData, setTrafficFlowData] = useState<TrafficFlowData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -126,8 +129,16 @@ export default function TrafficPage() {
           trafficReports={trafficReports} 
           trafficFlowData={trafficFlowData}
         />
+        {/* Export Button */}
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={() => setShowExportDialog(true)}
+            className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-2 text-sm"
+          >
+            {tExport('button')}
+          </button>
+        </div>
       </div>
-
       {/* Traffic Flow Sensors List */}
       <div className="mt-8">
         <TrafficFlowList sensors={trafficFlowData} />
@@ -200,6 +211,14 @@ export default function TrafficPage() {
         <TrafficReportForm
           onSubmit={handleSubmitReport}
           onClose={() => setShowReportForm(false)}
+        />
+      )}
+      
+      {/* Export Dialog */}
+      {showExportDialog && (
+        <ExportDataDialog
+          onClose={() => setShowExportDialog(false)}
+          defaultEntityType="TrafficFlowObserved"
         />
       )}
     </div>

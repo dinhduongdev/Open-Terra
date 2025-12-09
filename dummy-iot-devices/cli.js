@@ -202,6 +202,9 @@ COMMANDS:
   provision [type]    Provision devices with IoT Agent
                       type: traffic, water, or all (default: all)
   
+  reprovision [type]  Delete and re-provision devices (useful for resetting)
+                      type: traffic, water, or all (default: all)
+  
   start [options]     Start devices
                       --all           Start all devices (default)
                       --traffic       Start only traffic devices
@@ -232,6 +235,12 @@ EXAMPLES:
 
   # Provision only traffic devices
   node cli.js provision traffic
+
+  # Re-provision all devices (delete and provision again)
+  node cli.js reprovision
+
+  # Re-provision only water devices
+  node cli.js reprovision water
 
   # Start all devices
   node cli.js start
@@ -395,8 +404,8 @@ async function provisionCommand(type = 'all') {
         // Provision service group
         console.log('Provisioning service group...');
         const serviceResult = await provisioning.provisionServiceGroup();
-        if (serviceResult.status === 409) {
-            console.log('  Service group already exists (skipped)');
+        if (serviceResult.recreated) {
+            console.log('✓ Service group recreated');
         } else {
             console.log('✓ Service group provisioned');
         }
@@ -418,6 +427,58 @@ async function provisionCommand(type = 'all') {
 
     } catch (error) {
         console.error('\n✗ Provisioning failed:', error.message);
+        process.exit(1);
+    }
+}
+
+/**
+ * Re-provision devices (delete and provision again)
+ */
+async function reprovisionCommand(type = 'all') {
+    console.log('═══════════════════════════════════════════════════════════════');
+    console.log('  IoT Device Re-provisioning');
+    console.log('═══════════════════════════════════════════════════════════════\n');
+
+    try {
+        // Warning: Stop running devices first
+        console.log('⚠️  WARNING: Make sure to stop all running devices first!');
+        console.log('   If devices are currently running and sending data,');
+        console.log('   stop them (Ctrl+C) before re-provisioning.\n');
+        
+        // Wait 3 seconds to give user time to read the warning
+        console.log('Continuing in 3 seconds...\n');
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        // Check IoT Agent connection
+        console.log('Checking IoT Agent connection...');
+        const isConnected = await provisioning.checkIoTAgent();
+
+        if (!isConnected) {
+            console.error('✗ Cannot connect to IoT Agent');
+            console.error(`  Make sure IoT Agent is running at: ${provisioning.IOTA_URL}`);
+            process.exit(1);
+        }
+        console.log('✓ IoT Agent is reachable\n');
+
+        // Provision service group (will delete and recreate if exists)
+        console.log('Provisioning service group...');
+        const serviceResult = await provisioning.provisionServiceGroup();
+        if (serviceResult.recreated) {
+            console.log('✓ Service group recreated');
+        } else {
+            console.log('✓ Service group provisioned');
+        }
+
+        // Re-provision devices
+        const result = await provisioning.reprovisionDevices(type);
+
+        console.log('\n✓ Re-provisioning complete!\n');
+        console.log(`  Deleted: ${result.deleted} devices`);
+        console.log(`  Provisioned: ${result.provisioned} devices\n`);
+        console.log('Wait 30 seconds, then start devices with: npm start\n');
+
+    } catch (error) {
+        console.error('\n✗ Re-provisioning failed:', error.message);
         process.exit(1);
     }
 }
@@ -580,6 +641,16 @@ async function main() {
                 process.exit(1);
             }
             await provisionCommand(provisionType);
+            break;
+
+        case 'reprovision':
+            const reprovisionType = args[1] || 'all';
+            if (!['all', 'traffic', 'water'].includes(reprovisionType)) {
+                console.error(`Invalid reprovision type: ${reprovisionType}`);
+                console.error('Valid types: all, traffic, water');
+                process.exit(1);
+            }
+            await reprovisionCommand(reprovisionType);
             break;
 
         case 'start':

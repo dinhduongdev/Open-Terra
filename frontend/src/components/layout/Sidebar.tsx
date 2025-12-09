@@ -24,6 +24,7 @@ import WeatherIcon from '@/components/icon/WeatherIcon';
 import ParkingIcon from '@/components/icon/ParkingIcon';
 import AnalyticsIcon from '@/components/icon/AnalyticsIcon';
 import AlertIcon from '@/components/icon/AlertIcon';
+import FeedbackIcon from '@/components/icon/FeedbackIcon';
 
 interface MenuItem {
   id: string;
@@ -126,6 +127,12 @@ export default function Sidebar({ isMobileOpen = false, onClose }: SidebarProps)
     //   href: '/alerts',
     //   icon: <AlertIcon />,
     // },
+    {
+      id: 'feedback',
+      labelKey: 'feedback',
+      href: '/feedback',
+      icon: <FeedbackIcon />,
+    },
   ];
 
   return (

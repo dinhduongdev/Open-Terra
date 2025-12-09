@@ -20,7 +20,8 @@
     "weather": "Thời tiết",
     "parking": "Bãi đỗ xe",
     "analytics": "Phân tích dữ liệu",
-    "alerts": "Cảnh báo & Thông báo"
+    "alerts": "Cảnh báo & Thông báo",
+    "feedback": "Phản hồi"
   },
   "traffic": {
     "title": "Giao thông",
@@ -563,7 +564,8 @@
     "adminFlood": "Quản lý ngập lụt",
     "adminAirQuality": "Quản lý chất lượng không khí",
     "adminWeather": "Quản lý thời tiết",
-    "adminAlerts": "Quản lý cảnh báo"
+    "adminAlerts": "Quản lý cảnh báo",
+    "adminFeedback": "Quản lý phản hồi"
   },
   "overview": {
     "title": "Tổng quan",
@@ -623,6 +625,118 @@
     },
     "error": {
       "noData": "Không thể tải dữ liệu. Vui lòng thử lại sau."
+    }
+  },
+  "feedback": {
+    "title": "Phản hồi",
+    "subtitle": "Giúp chúng tôi cải thiện nền tảng",
+    "submitButton": "Gửi phản hồi",
+    "form": {
+      "title": "Gửi phản hồi",
+      "name": "Họ tên",
+      "namePlaceholder": "Tên của bạn",
+      "nameRequired": "Tên phải từ 2 đến 100 ký tự",
+      "email": "Email",
+      "emailPlaceholder": "email@example.com",
+      "emailRequired": "Vui lòng nhập địa chỉ email hợp lệ",
+      "category": "Danh mục",
+      "categoryPlaceholder": "Chọn danh mục",
+      "categoryRequired": "Vui lòng chọn danh mục phản hồi",
+      "message": "Nội dung",
+      "messagePlaceholder": "Chia sẻ phản hồi, đề xuất hoặc báo cáo vấn đề...",
+      "messageRequired": "Nội dung phải từ 10 đến 5000 ký tự",
+      "characterCount": "{current}/{max} ký tự",
+      "cancel": "Hủy",
+      "submit": "Gửi phản hồi",
+      "submitting": "Đang gửi...",
+      "successTitle": "Cảm ơn bạn!",
+      "successMessage": "Phản hồi của bạn đã được gửi thành công.",
+      "errorTitle": "Lỗi",
+      "errorMessage": "Không thể gửi phản hồi. Vui lòng thử lại."
+    },
+    "categories": {
+      "General": "Chung",
+      "Bug Report": "Báo lỗi",
+      "Feature Request": "Yêu cầu tính năng",
+      "Improvement": "Cải tiến",
+      "Other": "Khác"
+    },
+    "list": {
+      "title": "Quản lý phản hồi",
+      "filter": "Lọc theo danh mục:",
+      "filterAll": "Tất cả danh mục",
+      "search": "Tìm kiếm...",
+      "noFeedback": "Không tìm thấy phản hồi",
+      "loading": "Đang tải phản hồi...",
+      "error": "Không thể tải phản hồi",
+      "retry": "Thử lại",
+      "showingResults": "Hiển thị {start}-{end} trong tổng số {total}",
+      "previous": "Trước",
+      "next": "Tiếp"
+    },
+    "table": {
+      "id": "ID",
+      "name": "Họ tên",
+      "email": "Email",
+      "category": "Danh mục",
+      "status": "Trạng thái",
+      "date": "Ngày",
+      "actions": "Thao tác",
+      "view": "Xem",
+      "changeStatus": "Đổi trạng thái"
+    },
+    "detail": {
+      "title": "Chi tiết phản hồi",
+      "submittedBy": "Người gửi",
+      "date": "Ngày gửi",
+      "message": "Nội dung",
+      "status": "Trạng thái",
+      "changeStatus": "Đổi trạng thái",
+      "back": "Quay lại danh sách",
+      "copyEmail": "Sao chép email",
+      "emailCopied": "Đã sao chép email"
+    },
+    "status": {
+      "pending": "Chờ xử lý",
+      "reviewed": "Đã xem",
+      "resolved": "Đã giải quyết",
+      "rejected": "Đã từ chối"
+    },
+    "statusUpdate": {
+      "success": "Cập nhật trạng thái phản hồi thành công",
+      "error": "Không thể cập nhật trạng thái phản hồi"
+    }
+  },
+  "export": {
+    "title": "Xuất dữ liệu",
+    "button": "Xuất dữ liệu",
+    "entityType": "Loại dữ liệu",
+    "entityTypePlaceholder": "Chọn loại dữ liệu",
+    "entityTypeRequired": "Vui lòng chọn loại dữ liệu",
+    "format": "Định dạng xuất",
+    "formatJson": "JSON",
+    "formatCsv": "CSV",
+    "entityId": "ID thực thể (Tùy chọn)",
+    "entityIdPlaceholder": "Để trống để xuất tất cả",
+    "timeRange": "Khoảng thời gian",
+    "lastN": "N bản ghi gần nhất",
+    "lastNPlaceholder": "Số bản ghi (1-10000)",
+    "customRange": "Khoảng thời gian tùy chỉnh",
+    "startTime": "Từ",
+    "endTime": "Đến",
+    "attributes": "Thuộc tính (Tùy chọn)",
+    "attributesPlaceholder": "VD: pm25,temperature (phân cách bằng dấu phẩy)",
+    "cancel": "Hủy",
+    "export": "Xuất dữ liệu",
+    "exporting": "Đang xuất...",
+    "success": "Xuất dữ liệu thành công",
+    "error": "Xuất dữ liệu thất bại",
+    "validationError": "Vui lòng chọn số bản ghi hoặc khoảng thời gian",
+    "entityTypes": {
+      "AirQualityObserved": "Chất lượng không khí",
+      "WeatherObserved": "Thời tiết",
+      "TrafficFlowObserved": "Lưu lượng giao thông",
+      "FloodMonitoring": "Giám sát ngập lụt"
     }
   }
 }

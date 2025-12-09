@@ -31,6 +31,7 @@ import WeatherTips from '@/components/common/WeatherTips';
 import WeatherInfo from '@/components/common/WeatherInfo';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorMessage from '@/components/common/ErrorMessage';
+import ExportDataDialog from '@/components/export/ExportDataDialog';
 
 const WeatherMapDynamic = dynamic(() => import('@/components/common/WeatherMap'), {
   ssr: false,
@@ -45,7 +46,9 @@ export default function WeatherPage() {
   const t = useTranslations('weather');
   const tSidebar = useTranslations('sidebar');
   const tTitle = useTranslations('pageTitles');
+  const tExport = useTranslations('export');
   const [showStations, setShowStations] = useState(true);
+  const [showExportDialog, setShowExportDialog] = useState(false);
   const { weatherData, loading, error } = useWeatherData();
 
   // Update document title
@@ -134,7 +137,24 @@ export default function WeatherPage() {
 
         {/* Additional Info */}
         {/* <WeatherInfo /> */}
+        {/* Export Button */}
+        <div className="mt-6 flex justify-center">
+          <button
+            onClick={() => setShowExportDialog(true)}
+            className="px-6 py-3 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-2 shadow-md"
+          >
+            {tExport('button')}
+          </button>
+        </div>
       </div>
+      
+      {/* Export Dialog */}
+      {showExportDialog && (
+        <ExportDataDialog
+          onClose={() => setShowExportDialog(false)}
+          defaultEntityType="WeatherObserved"
+        />
+      )}
     </div>
   );
 }

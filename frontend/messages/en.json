@@ -20,7 +20,8 @@
     "weather": "Weather",
     "parking": "Parking",
     "analytics": "Analytics",
-    "alerts": "Alerts & Notifications"
+    "alerts": "Alerts & Notifications",
+    "feedback": "Feedback"
   },
   "traffic": {
     "title": "Traffic",
@@ -563,7 +564,8 @@
     "adminFlood": "Flood Management",
     "adminAirQuality": "Air Quality Management",
     "adminWeather": "Weather Management",
-    "adminAlerts": "Alerts Management"
+    "adminAlerts": "Alerts Management",
+    "adminFeedback": "Feedback Management"
   },
   "overview": {
     "title": "Overview",
@@ -623,6 +625,118 @@
     },
     "error": {
       "noData": "Unable to load data. Please try again later."
+    }
+  },
+  "feedback": {
+    "title": "Feedback",
+    "subtitle": "Help us improve the platform",
+    "submitButton": "Submit Feedback",
+    "form": {
+      "title": "Submit Feedback",
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "nameRequired": "Username must be between 2 and 100 characters",
+      "email": "Email",
+      "emailPlaceholder": "your.email@example.com",
+      "emailRequired": "Please enter a valid email address",
+      "category": "Category",
+      "categoryPlaceholder": "Select category",
+      "categoryRequired": "Please select a feedback category",
+      "message": "Message",
+      "messagePlaceholder": "Share your feedback, suggestions, or report issues...",
+      "messageRequired": "Message must be between 10 and 5000 characters",
+      "characterCount": "{current}/{max} characters",
+      "cancel": "Cancel",
+      "submit": "Submit Feedback",
+      "submitting": "Submitting...",
+      "successTitle": "Thank you!",
+      "successMessage": "Your feedback has been submitted successfully.",
+      "errorTitle": "Error",
+      "errorMessage": "Failed to submit feedback. Please try again."
+    },
+    "categories": {
+      "General": "General",
+      "Bug Report": "Bug Report",
+      "Feature Request": "Feature Request",
+      "Improvement": "Improvement",
+      "Other": "Other"
+    },
+    "list": {
+      "title": "Feedback Management",
+      "filter": "Filter by category:",
+      "filterAll": "All Categories",
+      "search": "Search...",
+      "noFeedback": "No feedback found",
+      "loading": "Loading feedback...",
+      "error": "Failed to load feedback",
+      "retry": "Retry",
+      "showingResults": "Showing {start}-{end} of {total}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "table": {
+      "id": "ID",
+      "name": "Name",
+      "email": "Email",
+      "category": "Category",
+      "status": "Status",
+      "date": "Date",
+      "actions": "Actions",
+      "view": "View",
+      "changeStatus": "Change Status"
+    },
+    "detail": {
+      "title": "Feedback Details",
+      "submittedBy": "Submitted by",
+      "date": "Date",
+      "message": "Message",
+      "status": "Status",
+      "changeStatus": "Change Status",
+      "back": "Back to List",
+      "copyEmail": "Copy email",
+      "emailCopied": "Email copied to clipboard"
+    },
+    "status": {
+      "pending": "Pending",
+      "reviewed": "Reviewed",
+      "resolved": "Resolved",
+      "rejected": "Rejected"
+    },
+    "statusUpdate": {
+      "success": "Feedback status updated successfully",
+      "error": "Failed to update feedback status"
+    }
+  },
+  "export": {
+    "title": "Export Data",
+    "button": "Export Data",
+    "entityType": "Entity Type",
+    "entityTypePlaceholder": "Select entity type",
+    "entityTypeRequired": "Please select entity type",
+    "format": "Export Format",
+    "formatJson": "JSON",
+    "formatCsv": "CSV",
+    "entityId": "Entity ID (Optional)",
+    "entityIdPlaceholder": "Leave empty to export all entities",
+    "timeRange": "Time Range",
+    "lastN": "Last N observations",
+    "lastNPlaceholder": "Number of records (1-10000)",
+    "customRange": "Custom time range",
+    "startTime": "From",
+    "endTime": "To",
+    "attributes": "Attributes (Optional)",
+    "attributesPlaceholder": "e.g., pm25,temperature (comma-separated)",
+    "cancel": "Cancel",
+    "export": "Export Data",
+    "exporting": "Exporting...",
+    "success": "Data exported successfully",
+    "error": "Export failed",
+    "validationError": "Please specify either last N records or a time range",
+    "entityTypes": {
+      "AirQualityObserved": "Air Quality",
+      "WeatherObserved": "Weather",
+      "TrafficFlowObserved": "Traffic Flow",
+      "FloodMonitoring": "Flood Monitoring"
     }
   }
 }

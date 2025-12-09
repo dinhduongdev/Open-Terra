@@ -17,6 +17,7 @@ import FloodMonitoringList from '@/components/common/FloodMonitoringList';
 import { getFloodReports, submitFloodReport } from '@/services/floodReportService';
 import { getLatestFloodMonitoring, FloodMonitoringData } from '@/services/floodMonitoringService';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import ExportDataDialog from '@/components/export/ExportDataDialog';
 import toast from 'react-hot-toast';
 
 // Dynamically import Map component with no SSR to avoid window/document issues
@@ -31,9 +32,11 @@ const FloodMapDynamic = dynamic(() => import('@/components/common/FloodMap'), {
 
 export default function FloodMapPage() {
   const t = useTranslations('sidebar');
+  const tExport = useTranslations('export');
   const tTitle = useTranslations('pageTitles');
   const tFlood = useTranslations('floodMap');
   const [showReportForm, setShowReportForm] = useState(false);
+  const [showExportDialog, setShowExportDialog] = useState(false);
   const [citizenReports, setCitizenReports] = useState<FloodReport[]>([]);
   const [floodMonitoringData, setFloodMonitoringData] = useState<FloodMonitoringData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -129,11 +132,15 @@ export default function FloodMapPage() {
           floodReports={citizenReports}
           floodMonitoringData={floodMonitoringData}
         />
-      </div>
-
-      {/* Flood Monitoring Sensors List */}
-      <div className="mt-8">
-        <FloodMonitoringList sensors={floodMonitoringData} />
+        {/* Export Button */}
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={() => setShowExportDialog(true)}
+            className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-2 text-sm"
+          >
+            {tExport('button')}
+          </button>
+        </div>
       </div>
 
       {/* Citizen Reports */}
@@ -264,6 +271,14 @@ export default function FloodMapPage() {
           <FloodReportForm
             onSubmit={handleSubmitReport}
             onClose={() => setShowReportForm(false)}
+          />
+        )}
+        
+        {/* Export Dialog */}
+        {showExportDialog && (
+          <ExportDataDialog
+            onClose={() => setShowExportDialog(false)}
+            defaultEntityType="FloodMonitoring"
           />
         )}
       </div>

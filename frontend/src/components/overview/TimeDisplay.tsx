@@ -19,18 +19,14 @@ export default function TimeDisplay() {
         // Initial set
         const updateTime = () => {
             const now = new Date();
-            // Format: HH:mm:ss UTC
-            const timeString = now.toISOString().split('T')[1].split('.')[0] + ' UTC';
-            // Or prettier format:
-            // const timeString = now.toLocaleTimeString('en-US', { timeZone: 'UTC', hour12: false }) + ' UTC';
-            // Let's use a nice localized format but force UTC
+            // Format: HH:mm:ss GMT+7 (Asia/Ho_Chi_Minh)
             const formatted = new Intl.DateTimeFormat('en-GB', {
-                timeZone: 'UTC',
+                timeZone: 'Asia/Ho_Chi_Minh',
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
                 hour12: false
-            }).format(now) + ' UTC';
+            }).format(now) + ' GMT+7';
 
             setTime(formatted);
         };
