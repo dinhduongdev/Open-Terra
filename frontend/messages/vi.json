@@ -35,6 +35,32 @@
     "noReports": "Chưa có báo cáo kẹt xe nào",
     "errorLoading": "Không thể tải báo cáo giao thông",
     "retryButton": "Thử lại",
+    "sensors": {
+      "title": "Cảm biến giao thông thời gian thực",
+      "count": "cảm biến",
+      "noData": "Không có dữ liệu cảm biến giao thông",
+      "sensorId": "Cảm biến",
+      "lane": "Làn",
+      "status": {
+        "congested": "Tắc nghẽn",
+        "clear": "Thông thoáng",
+        "slow": "Chậm",
+        "jam": "Kẹt xe"
+      },
+      "metrics": {
+        "averageSpeed": "Tốc độ TB",
+        "intensity": "Cường độ",
+        "density": "Mật độ",
+        "laneNumber": "Làn đường"
+      },
+      "units": {
+        "kmh": "km/h",
+        "vehiclesPerMinute": "xe/phút",
+        "percent": "%",
+        "lane": "lane"
+      },
+      "lastUpdate": "Cập nhật lần cuối"
+    },
     "reportForm": {
       "title": "Báo cáo tình trạng giao thông",
       "titleIcon": "",
@@ -45,7 +71,7 @@
       "streetNamePlaceholder": "VD: Nguyen Hue Street",
       "streetNameRequired": "Vui lòng nhập tên đường",
       "currentLocationButton": "Vị trí hiện tại",
-      "currentLocationSuccess": "✓ Đã sử dụng vị trí hiện tại (Lat: {lat}, Lng: {lng})",
+      "currentLocationSuccess": "Đã sử dụng vị trí hiện tại (Lat: {lat}, Lng: {lng})",
       "locationError": "Không thể lấy vị trí hiện tại. Vui lòng nhập thủ công.",
       "locationNotSupported": "Trình duyệt không hỗ trợ định vị.",
       "severity": "Mức độ",
@@ -155,6 +181,18 @@
     "title": "Bản đồ ngập nước",
     "subtitle": "Theo dõi tình trạng ngập úng và cảnh báo lũ lụt theo thời gian thực",
     "loading": "Đang tải bản đồ...",
+    "mapTitle": "Bản đồ báo cáo ngập lụt - OpenStreetMap",
+    "reportButton": "Báo cáo ngập lụt",
+    "filterTitle": "Lọc theo trạng thái:",
+    "filterAll": "Tất cả",
+    "filterReported": "Đã báo cáo",
+    "filterVerified": "Đã xác minh",
+    "retryButton": "Thử lại",
+    "noReports": "Chưa có báo cáo ngập lụt nào",
+    "errorLoadReports": "Không thể tải báo cáo ngập lụt",
+    "errorLoadMonitoring": "Không thể tải dữ liệu giám sát ngập lụt",
+    "reportSuccess": "Báo cáo đã được gửi thành công! Cơ quan chức năng sẽ xử lý trong thời gian sớm nhất.",
+    "reportError": "Gửi báo cáo thất bại. Vui lòng thử lại sau.",
     "toggleLayer": "Lớp vùng ngập:",
     "layerOn": "✓ Đang bật",
     "layerOff": "Tắt",
@@ -224,6 +262,8 @@
         "latitude": "Vĩ độ",
         "longitude": "Kinh độ",
         "currentLocation": "Vị trí hiện tại",
+        "locationError": "Không thể lấy vị trí hiện tại. Vui lòng nhập thủ công.",
+        "locationNotSupported": "Trình duyệt không hỗ trợ định vị.",
         "severity": "Mức độ nghiêm trọng",
         "waterDepth": "Độ sâu nước (cm)",
         "waterDepthPlaceholder": "VD: 30",
@@ -239,12 +279,291 @@
         "submit": "Gửi báo cáo",
         "success": "Báo cáo đã được gửi thành công! Cơ quan chức năng sẽ xử lý trong thời gian sớm nhất."
       }
+    },
+    "monitoring": {
+      "title": "Cảm biến ngập lụt thời gian thực",
+      "count": "cảm biến",
+      "noData": "Không có dữ liệu cảm biến ngập lụt",
+      "station": "Trạm",
+      "waterLevel": "Mực nước",
+      "alertLevel": "Mức cảnh báo",
+      "dangerLevel": "Mức nguy hiểm",
+      "distance": "Khoảng cách",
+      "referenceLevel": "Mức tham chiếu",
+      "vsD انgerLevel": "Mực nước so với mức nguy hiểm",
+      "lastUpdate": "Cập nhật lần cuối",
+      "status": {
+        "normal": "Bình thường",
+        "alert": "Cảnh báo",
+        "danger": "Nguy hiểm"
+      },
+      "metrics": {
+        "current": "Hiện tại",
+        "alert": "Cảnh báo",
+        "danger": "Nguy hiểm",
+        "reference": "Tham chiếu"
+      },
+      "units": {
+        "meter": "m",
+        "kilometer": "km"
+      }
+    },
+    "reportsList": {
+      "title": "Báo cáo từ người dân",
+      "noReports": "Chưa có báo cáo nào từ người dân",
+      "noReportsHint": "Các báo cáo ngập lụt sẽ được hiển thị tại đây",
+      "reporter": "Người báo:",
+      "coordinates": "Tọa độ:",
+      "timestamp": "Thời gian:",
+      "waterDepth": "Độ sâu:",
+      "severity": {
+        "Low": "Nhẹ",
+        "Medium": "Trung bình",
+        "High": "Cao",
+        "Critical": "Nguy hiểm"
+      },
+      "status": {
+        "Reported": "Đã báo cáo",
+        "Verified": "Đã xác minh",
+        "Resolved": "Đã giải quyết"
+      }
+    }
+  },
+  "airQuality": {
+    "title": "Chất lượng không khí",
+    "subtitle": "Theo dõi chất lượng không khí và các chỉ số ô nhiễm theo thời gian thực",
+    "loading": "Đang tải bản đồ...",
+    "errorLoad": "Không thể tải dữ liệu chất lượng không khí",
+    "retryButton": "Thử lại",
+    "noData": "Không có dữ liệu",
+    "noDataMessage": "Hiện tại chưa có dữ liệu từ các trạm quan trắc chất lượng không khí. Vui lòng thử lại sau.",
+    "instructions": {
+      "title": "Hướng dẫn sử dụng",
+      "clickStation": "Click vào các điểm màu để xem chi tiết trạm quan trắc",
+      "colorMeaning": "Màu sắc thể hiện mức độ chất lượng không khí (Xanh = Tốt, Đỏ = Kém)",
+      "aqiDisplay": "Số hiển thị là chỉ số AQI (Air Quality Index)",
+      "toggleButton": "Sử dụng nút bật/tắt để ẩn/hiện các trạm quan trắc"
+    },
+    "aqiScale": {
+      "title": "Thang đo chỉ số AQI",
+      "good": "Tốt",
+      "moderate": "Trung bình",
+      "unhealthySensitive": "Kém (Nhạy cảm)",
+      "unhealthy": "Kém",
+      "veryUnhealthy": "Rất kém",
+      "hazardous": "Nguy hại"
+    },
+    "additionalInfo": {
+      "title": "Thông tin thêm về chỉ số AQI",
+      "definition": "Chỉ số chất lượng không khí (AQI) là thước đo được sử dụng để đánh giá mức độ ô nhiễm không khí và tác động của nó đến sức khỏe con người.",
+      "calculation": "AQI được tính dựa trên 6 chất ô nhiễm chính: PM2.5, PM10, O₃, NO₂, SO₂ và CO. Chỉ số AQI dao động từ 0 đến 500, với giá trị càng cao nghĩa là mức độ ô nhiễm càng lớn.",
+      "dataSource": "Dữ liệu được cập nhật theo thời gian thực từ các trạm quan trắc môi trường của thành phố và các nguồn dữ liệu quốc tế đáng tin cậy.",
+      "references": "Nguồn tham khảo",
+      "who": "Tổ chức Y tế Thế giới (WHO)",
+      "epa": "Cơ quan Bảo vệ Môi trường Hoa Kỳ (EPA)",
+      "vietnam": "Tổng cục Môi trường Việt Nam"
+    },
+    "overview": {
+      "averageAqi": "AQI Trung bình",
+      "totalStations": "Tổng số trạm",
+      "active": "Đang hoạt động",
+      "goodStations": "Trạm tốt",
+      "warningStations": "Trạm cảnh báo",
+      "moderate": "TB:",
+      "poor": "Kém:"
+    },
+    "stationsList": {
+      "title": "Danh sách trạm quan trắc",
+      "totalCount": "Tổng số:",
+      "stations": "trạm",
+      "source": "Nguồn:",
+      "pollutants": "Chất ô nhiễm không khí",
+      "weather": "Thông tin thời tiết",
+      "temperature": "Nhiệt độ",
+      "humidity": "Độ ẩm",
+      "coordinates": "Tọa độ"
+    },
+    "pollutants": {
+      "title": "Các chất ô nhiễm chính",
+      "vsWhoStandard": "So với tiêu chuẩn WHO",
+      "whoStandard": "Tiêu chuẩn WHO:",
+      "increase": "Tăng",
+      "decrease": "Giảm",
+      "explainTitle": "Giải thích các chất ô nhiễm",
+      "pm25Desc": "Bụi mịn có đường kính ≤ 2.5 micromet, nguy hiểm vì có thể xâm nhập sâu vào phổi.",
+      "pm10Desc": "Bụi có đường kính ≤ 10 micromet, gây kích ứng đường hô hấp.",
+      "o3Desc": "Khí ozone ở tầng mặt đất, gây kích ứng phổi và đường hô hấp.",
+      "no2Desc": "Nitơ dioxide từ khí thải xe, gây viêm đường hô hấp.",
+      "so2Desc": "Lưu huỳnh dioxide từ đốt nhiên liệu hóa thạch.",
+      "coDesc": "Carbon monoxide, khí không màu không mùi, nguy hiểm ở nồng độ cao.",
+      "level": {
+        "unknown": "Không rõ",
+        "good": "Tốt",
+        "moderate": "Trung bình",
+        "poor": "Kém",
+        "veryPoor": "Rất kém"
+      }
+    },
+    "health": {
+      "title": "Khuyến nghị sức khỏe",
+      "general": "Người dân nói chung",
+      "sensitive": "Nhóm nhạy cảm",
+      "sensitiveNote": "(Người bệnh tim phổi, hen suyễn, phụ nữ mang thai)",
+      "children": "Trẻ em",
+      "elderly": "Người cao tuổi",
+      "preventive": "Biện pháp phòng ngừa",
+      "preventiveTip1": "Đeo khẩu trang chống bụi mịn khi ra ngoài (N95, N99)",
+      "preventiveTip2": "Sử dụng máy lọc không khí trong nhà",
+      "preventiveTip3": "Đóng cửa sổ khi chất lượng không khí xấu",
+      "preventiveTip4": "Tăng cường rửa tay, mắt, mũi thường xuyên",
+      "preventiveTip5": "Uống nhiều nước, ăn nhiều rau xanh, trái cây",
+      "avoid": "Cần tránh",
+      "avoidTip1": "Tập thể dục ngoài trời khi chất lượng không khí xấu",
+      "avoidTip2": "Để trẻ em và người cao tuổi tiếp xúc lâu với không khí ô nhiễm",
+      "avoidTip3": "Đi xe máy không đeo khẩu trang bảo vệ",
+      "avoidTip4": "Đốt rác, đốt lửa góp phần làm ô nhiễm không khí",
+      "avoidTip5": "Hút thuốc lá và tiếp xúc với khói thuốc",
+      "emergency": "Liên hệ khẩn cấp",
+      "emergencyMessage": "Chất lượng không khí ở mức nguy hại. Nếu có triệu chứng khó thở, đau ngực, hoặc bất thường, hãy liên hệ ngay:",
+      "emergencyHotline": "Cấp cứu 115",
+      "healthHotline": "Y tế 114",
+      "environmentHotline": "Môi trường 1800-6169"
     }
   },
   "weather": {
     "title": "Thời tiết",
     "subtitle": "Theo dõi thông tin thời tiết và dự báo theo thời gian thực",
-    "loading": "Đang tải dữ liệu thời tiết..."
+    "loading": "Đang tải dữ liệu thời tiết...",
+    "mapLoading": "Đang tải bản đồ...",
+    "current": {
+      "title": "Thời tiết hiện tại",
+      "updated": "Cập nhật",
+      "feelsLike": "Cảm giác như",
+      "humidity": "Độ ẩm",
+      "wind": "Gió",
+      "windDirection": "Đông Nam",
+      "cloudCover": "Mây che phủ",
+      "visibility": "Tầm nhìn",
+      "uvIndex": "Chỉ số UV",
+      "high": "Cao",
+      "pressure": "Áp suất"
+    },
+    "statistics": {
+      "title": "Thống kê thời tiết",
+      "fromDate": "Từ ngày",
+      "toDate": "Đến ngày",
+      "from": "Từ",
+      "to": "đến",
+      "hours": "giờ",
+      "average": "Trung bình",
+      "lowest": "Thấp nhất",
+      "highest": "Cao nhất",
+      "temperature": "Nhiệt độ",
+      "humidity": "Độ ẩm",
+      "windSpeed": "Tốc độ gió",
+      "atmosphericPressure": "Áp suất khí quyển",
+      "dataCalculated": "Dữ liệu được tính từ",
+      "dataPoints": "điểm đo",
+      "startDateError": "Ngày bắt đầu không được lớn hơn ngày kết thúc",
+      "endDateError": "Ngày kết thúc không được nhỏ hơn ngày bắt đầu"
+    },
+    "tips": {
+      "sunProtection": {
+        "title": "Khuyến nghị phòng tránh nắng",
+        "tip1": "Sử dụng kem chống nắng SPF 30+ khi ra ngoài",
+        "tip2": "Đội mũ, đeo kính râm để bảo vệ da và mắt",
+        "tip3": "Hạn chế hoạt động ngoài trời từ 11h-15h khi chỉ số UV cao",
+        "tip4": "Uống đủ nước, tránh mất nước trong ngày nóng",
+        "tip5": "Mặc quần áo mỏng, thoáng mát, màu sáng"
+      },
+      "rainProtection": {
+        "title": "Khuyến nghị khi có mưa",
+        "tip1": "Mang theo áo mưa hoặc ô khi ra ngoài",
+        "tip2": "Kiểm tra dự báo thời tiết trước khi di chuyển xa",
+        "tip3": "Tránh đi qua vùng ngập sâu, nước chảy xiết",
+        "tip4": "Lái xe chậm và cẩn thận khi trời mưa",
+        "tip5": "Tránh xa các cột điện, dây điện khi có sấm sét"
+      }
+    },
+    "info": {
+      "title": "Thông tin về dữ liệu thời tiết",
+      "dataCollectionTitle": "Dữ liệu thời tiết",
+      "dataCollectionDesc": "được thu thập từ các trạm quan trắc khí tượng thủy văn tự động phân bố trên khắp thành phố, cung cấp thông tin chính xác và cập nhật theo thời gian thực.",
+      "measurementParameters": "Các thông số đo lường bao gồm: nhiệt độ, độ ẩm không khí, áp suất khí quyển, tốc độ và hướng gió, lượng mưa, độ che phủ mây, chỉ số UV và tầm nhìn xa.",
+      "forecastTitle": "Dự báo thời tiết",
+      "forecastDesc": "được tính toán dựa trên các mô hình khí tượng hiện đại, kết hợp dữ liệu từ vệ tinh, radar thời tiết và mạng lưới quan trắc mặt đất.",
+      "contactTitle": "Liên hệ và thông tin:",
+      "contact1": "Trung tâm Khí tượng Thủy văn Quốc gia",
+      "contact2": "Tổng cục Khí tượng Thủy văn Việt Nam",
+      "contact3": "Hotline cảnh báo khẩn cấp: 1900-xxxx"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Đăng nhập tài khoản",
+      "subtitle": "Vui lòng nhập thông tin tài khoản của bạn",
+      "username": "Tài khoản",
+      "usernamePlaceholder": "Nhập tên tài khoản",
+      "password": "Mật khẩu",
+      "passwordPlaceholder": "Nhập mật khẩu",
+      "rememberMe": "Nhớ mật khẩu",
+      "forgotPassword": "Quên mật khẩu?",
+      "loginButton": "TỚI TRANG QUẢN TRỊ",
+      "loggingIn": "ĐANG ĐĂNG NHẬP...",
+      "noAccount": "Chưa có tài khoản?",
+      "registerNow": "Đăng ký ngay",
+      "pleaseEnterInfo": "Vui lòng nhập đầy đủ thông tin",
+      "loginSuccess": "Đăng nhập thành công!",
+      "loginFailed": "Đăng nhập thất bại"
+    },
+    "register": {
+      "title": "Đăng ký tài khoản",
+      "subtitle": "Tạo tài khoản mới để sử dụng dịch vụ",
+      "fullName": "Họ và tên",
+      "fullNamePlaceholder": "Nhập họ và tên",
+      "email": "Email",
+      "emailPlaceholder": "Nhập địa chỉ email",
+      "username": "Tên đăng nhập",
+      "usernamePlaceholder": "Nhập tên đăng nhập",
+      "password": "Mật khẩu",
+      "passwordPlaceholder": "Nhập mật khẩu",
+      "confirmPassword": "Xác nhận mật khẩu",
+      "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
+      "agreeWith": "Tôi đồng ý với",
+      "termsOfService": "Điều khoản sử dụng",
+      "and": "và",
+      "privacyPolicy": "Chính sách bảo mật",
+      "registerButton": "ĐĂNG KÝ TÀI KHOẢN",
+      "haveAccount": "Đã có tài khoản?",
+      "loginNow": "Đăng nhập ngay"
+    }
+  },
+  "admin": {
+    "floodReports": {
+      "loadError": "Không thể tải danh sách báo cáo",
+      "verifyError": "Không thể xác minh báo cáo. Vui lòng thử lại sau.",
+      "verifySuccess": "Xác minh báo cáo thành công!"
+    },
+    "trafficReports": {
+      "loadError": "Không thể tải danh sách báo cáo giao thông",
+      "verifySuccess": "Xác minh báo cáo giao thông thành công!"
+    }
+  },
+  "pageTitles": {
+    "introduction": "Giới thiệu",
+    "overview": "Tổng quan",
+    "traffic": "Giao thông",
+    "floodMap": "Bản đồ ngập nước",
+    "airQuality": "Chất lượng không khí",
+    "weather": "Thời tiết",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "adminDashboard": "Bảng điều khiển Admin",
+    "adminTraffic": "Quản lý giao thông",
+    "adminFlood": "Quản lý ngập lụt",
+    "adminAirQuality": "Quản lý chất lượng không khí",
+    "adminWeather": "Quản lý thời tiết",
+    "adminAlerts": "Quản lý cảnh báo"
   },
   "overview": {
     "title": "Tổng quan",

@@ -10,10 +10,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { loginAdmin } from '@/services/authService';
 import toast from 'react-hot-toast';
 
 const LoginForm: React.FC = () => {
+  const t = useTranslations('auth.login');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [username, setUsername] = useState('');
@@ -25,7 +27,7 @@ const LoginForm: React.FC = () => {
     e.preventDefault();
     
     if (!username || !password) {
-      toast.error('Vui lòng nhập đầy đủ thông tin');
+      toast.error(t('pleaseEnterInfo'));
       return;
     }
 
@@ -40,10 +42,10 @@ const LoginForm: React.FC = () => {
       localStorage.setItem('access_token', response.access_token);
       localStorage.setItem('token_type', response.token_type);
       
-      toast.success('Đăng nhập thành công!');
+      toast.success(t('loginSuccess'));
       router.push('/admin/traffic');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Đăng nhập thất bại');
+      toast.error(error instanceof Error ? error.message : t('loginFailed'));
     } finally {
       setLoading(false);
     }
@@ -53,8 +55,8 @@ const LoginForm: React.FC = () => {
     <div className="w-full max-w-md animate-fade-in">
       {/* Title */}
       <div className="text-center mb-8 animate-slide-down">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Đăng nhập tài khoản</h1>
-        <p className="text-gray-500">Vui lòng nhập thông tin tài khoản của bạn</p>
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">{t('title')}</h1>
+        <p className="text-gray-500">{t('subtitle')}</p>
       </div>
 
       {/* Form */}
@@ -62,7 +64,7 @@ const LoginForm: React.FC = () => {
         {/* Username */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Tài khoản
+            {t('username')}
           </label>
           <input
             type="text"
@@ -70,14 +72,14 @@ const LoginForm: React.FC = () => {
             onChange={(e) => setUsername(e.target.value)}
             disabled={loading}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all duration-300 bg-white text-gray-900 placeholder:text-gray-900 hover:border-emerald-400 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            placeholder="Nhập tên tài khoản"
+            placeholder={t('usernamePlaceholder')}
           />
         </div>
 
         {/* Password */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Mật khẩu
+            {t('password')}
           </label>
           <div className="relative">
             <input
@@ -86,7 +88,7 @@ const LoginForm: React.FC = () => {
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
               className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all duration-300 bg-white text-gray-900 placeholder:text-gray-900 hover:border-emerald-400 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-              placeholder="Nhập mật khẩu"
+              placeholder={t('passwordPlaceholder')}
             />
             <button
               type="button"
@@ -116,10 +118,10 @@ const LoginForm: React.FC = () => {
               onChange={(e) => setRememberMe(e.target.checked)}
               className="w-4 h-4 text-emerald-500 border-gray-300 rounded focus:ring-emerald-500"
             />
-            <span className="ml-2 text-sm text-gray-600">Nhớ mật khẩu</span>
+            <span className="ml-2 text-sm text-gray-600">{t('rememberMe')}</span>
           </label>
           <Link href="/forgot-password" className="text-sm text-blue-500 hover:text-blue-600">
-            Quên mật khẩu?
+            {t('forgotPassword')}
           </Link>
         </div>
 
@@ -130,7 +132,7 @@ const LoginForm: React.FC = () => {
             disabled={loading}
             className="flex-1 bg-gradient-to-r from-gray-600 to-gray-800 text-white py-3 px-6 rounded-lg font-medium hover:from-gray-700 hover:to-gray-900 transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
-            {loading ? 'ĐANG ĐĂNG NHẬP...' : 'TỚI TRANG QUẢN TRỊ'}
+            {loading ? t('loggingIn') : t('loginButton')}
           </button>
         </div>
       </form>
@@ -138,12 +140,12 @@ const LoginForm: React.FC = () => {
       {/* Register Link */}
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600">
-          Chưa có tài khoản?{' '}
+          {t('noAccount')}{' '}
           <Link 
             href="/register" 
             className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline transition-all duration-300"
           >
-            Đăng ký ngay
+            {t('registerNow')}
           </Link>
         </p>
       </div>

@@ -8,6 +8,7 @@
 
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { getHealthRecommendation } from '@/constants/airQualityMockData';
 
 interface HealthRecommendationsProps {
@@ -15,6 +16,7 @@ interface HealthRecommendationsProps {
 }
 
 export default function HealthRecommendations({ aqi }: HealthRecommendationsProps) {
+  const t = useTranslations('airQuality.health');
   const recommendations = getHealthRecommendation(aqi);
 
   const getAlertColor = () => {
@@ -30,100 +32,100 @@ export default function HealthRecommendations({ aqi }: HealthRecommendationsProp
     <div className="mt-6 md:mt-8">
       <div className={`bg-gradient-to-r ${getAlertColor()} rounded-lg shadow-md p-4 md:p-6 border-l-4`}>
         <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-4 md:mb-6 flex items-center gap-2">
-          Khuyến nghị sức khỏe
+          {t('title')}
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           {/* General Population */}
-          <div className="bg-white rounded-lg p-4 md:p-5 shadow-sm">
+          {/* <div className="bg-white rounded-lg p-4 md:p-5 shadow-sm">
             <h3 className="font-semibold text-gray-800 mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">
-              Người dân nói chung
+              {t('general')}
             </h3>
             <p className="text-gray-700 text-xs md:text-sm leading-relaxed">{recommendations.general}</p>
-          </div>
+          </div> */}
 
           {/* Sensitive Groups */}
-          <div className="bg-white rounded-lg p-4 md:p-5 shadow-sm">
+          {/* <div className="bg-white rounded-lg p-4 md:p-5 shadow-sm">
             <h3 className="font-semibold text-gray-800 mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">
-              Nhóm nhạy cảm
+              {t('sensitive')}
             </h3>
             <p className="text-gray-700 text-xs md:text-sm leading-relaxed">{recommendations.sensitive}</p>
             <p className="text-[10px] md:text-xs text-gray-500 mt-2">
-              (Người bệnh tim phổi, hen suyễn, phụ nữ mang thai)
+              {t('sensitiveNote')}
             </p>
-          </div>
+          </div> */}
 
           {/* Children */}
-          <div className="bg-white rounded-lg p-4 md:p-5 shadow-sm">
+          {/* <div className="bg-white rounded-lg p-4 md:p-5 shadow-sm">
             <h3 className="font-semibold text-gray-800 mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">
-              Trẻ em
+              {t('children')}
             </h3>
             <p className="text-gray-700 text-xs md:text-sm leading-relaxed">{recommendations.children}</p>
-          </div>
+          </div> */}
 
           {/* Elderly */}
-          <div className="bg-white rounded-lg p-4 md:p-5 shadow-sm">
+          {/* <div className="bg-white rounded-lg p-4 md:p-5 shadow-sm">
             <h3 className="font-semibold text-gray-800 mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">
-              Người cao tuổi
+              {t('elderly')}
             </h3>
             <p className="text-gray-700 text-xs md:text-sm leading-relaxed">{recommendations.elderly}</p>
-          </div>
+          </div> */}
         </div>
 
         {/* General Tips */}
         <div className="mt-4 md:mt-6 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           <div className="bg-white rounded-lg p-3 md:p-4">
             <h3 className="font-semibold text-green-700 mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">
-               Biện pháp phòng ngừa
+               {t('preventive')}
             </h3>
             <ul className="text-xs md:text-sm text-gray-700 space-y-1.5 md:space-y-2">
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">•</span>
-                <span>Đeo khẩu trang chống bụi mịn khi ra ngoài (N95, N99)</span>
+                <span>{t('preventiveTip1')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">•</span>
-                <span>Sử dụng máy lọc không khí trong nhà</span>
+                <span>{t('preventiveTip2')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">•</span>
-                <span>Đóng cửa sổ khi chất lượng không khí xấu</span>
+                <span>{t('preventiveTip3')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">•</span>
-                <span>Tăng cường rửa tay, mắt, mũi thường xuyên</span>
+                <span>{t('preventiveTip4')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">•</span>
-                <span>Uống nhiều nước, ăn nhiều rau xanh, trái cây</span>
+                <span>{t('preventiveTip5')}</span>
               </li>
             </ul>
           </div>
 
           <div className="bg-white rounded-lg p-3 md:p-4">
             <h3 className="font-semibold text-red-700 mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">
-               Cần tránh
+               {t('avoid')}
             </h3>
             <ul className="text-xs md:text-sm text-gray-700 space-y-1.5 md:space-y-2">
               <li className="flex items-start gap-2">
                 <span className="text-red-500 mt-1">•</span>
-                <span>Tập thể dục ngoài trời khi chất lượng không khí xấu</span>
+                <span>{t('avoidTip1')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-red-500 mt-1">•</span>
-                <span>Để trẻ em và người cao tuổi tiếp xúc lâu với không khí ô nhiễm</span>
+                <span>{t('avoidTip2')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-red-500 mt-1">•</span>
-                <span>Đi xe máy không đeo khẩu trang bảo vệ</span>
+                <span>{t('avoidTip3')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-red-500 mt-1">•</span>
-                <span>Đốt rác, đốt lửa góp phần làm ô nhiễm không khí</span>
+                <span>{t('avoidTip4')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-red-500 mt-1">•</span>
-                <span>Hút thuốc lá và tiếp xúc với khói thuốc</span>
+                <span>{t('avoidTip5')}</span>
               </li>
             </ul>
           </div>
@@ -133,15 +135,15 @@ export default function HealthRecommendations({ aqi }: HealthRecommendationsProp
         {aqi > 200 && (
           <div className="mt-4 p-3 md:p-4 bg-red-100 border-l-4 border-red-600 rounded">
             <h3 className="font-bold text-red-800 mb-2 flex items-center gap-2 text-sm md:text-base">
+              ⚠️ {t('emergency')}
             </h3>
             <p className="text-xs md:text-sm text-red-800 mb-2">
-              Chất lượng không khí ở mức nguy hại. Nếu có triệu chứng khó thở, đau ngực, hoặc bất
-              thường, hãy liên hệ ngay:
+              {t('emergencyMessage')}
             </p>
             <div className="flex flex-wrap gap-2 md:gap-4 text-xs md:text-sm font-semibold text-red-800">
-              <span>Cấp cứu 115</span>
-              <span>Y tế 114</span>
-              <span>Môi trường 1800-6169</span>
+              <span>{t('emergencyHotline')}</span>
+              <span>{t('healthHotline')}</span>
+              <span>{t('environmentHotline')}</span>
             </div>
           </div>
         )}

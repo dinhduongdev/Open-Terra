@@ -6,6 +6,10 @@
  * @see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
  */
 
+'use client';
+
+import { useTranslations } from 'next-intl';
+
 const WeatherTipCard = ({ 
   icon, 
   title, 
@@ -36,33 +40,35 @@ const WeatherTipCard = ({
 );
 
 export default function WeatherTips() {
+  const t = useTranslations('weather.tips');
+
   const sunProtectionTips = [
-    'Sử dụng kem chống nắng SPF 30+ khi ra ngoài',
-    'Đội mũ, đeo kính râm để bảo vệ da và mắt',
-    'Hạn chế hoạt động ngoài trời từ 11h-15h khi chỉ số UV cao',
-    'Uống đủ nước, tránh mất nước trong ngày nóng',
-    'Mặc quần áo mỏng, thoáng mát, màu sáng',
+    t('sunProtection.tip1'),
+    t('sunProtection.tip2'),
+    t('sunProtection.tip3'),
+    t('sunProtection.tip4'),
+    t('sunProtection.tip5'),
   ];
 
   const rainProtectionTips = [
-    'Mang theo áo mưa hoặc ô khi ra ngoài',
-    'Kiểm tra dự báo thời tiết trước khi di chuyển xa',
-    'Tránh đi qua vùng ngập sâu, nước chảy xiết',
-    'Lái xe chậm và cẩn thận khi trời mưa',
-    'Tránh xa các cột điện, dây điện khi có sấm sét',
+    t('rainProtection.tip1'),
+    t('rainProtection.tip2'),
+    t('rainProtection.tip3'),
+    t('rainProtection.tip4'),
+    t('rainProtection.tip5'),
   ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
       <WeatherTipCard
-        icon=""
-        title="Khuyến nghị phòng tránh nắng"
+        icon="☀️"
+        title={t('sunProtection.title')}
         tips={sunProtectionTips}
         gradient="bg-gradient-to-br from-yellow-50 to-orange-50"
       />
       <WeatherTipCard
-        icon=""
-        title="Khuyến nghị khi có mưa"
+        icon="🌧️"
+        title={t('rainProtection.title')}
         tips={rainProtectionTips}
         gradient="bg-gradient-to-br from-blue-50 to-cyan-50"
       />

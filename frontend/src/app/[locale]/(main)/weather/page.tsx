@@ -10,7 +10,7 @@
 
 import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   weeklyForecast,
   hourlyForecast,
@@ -44,8 +44,14 @@ const WeatherMapDynamic = dynamic(() => import('@/components/common/WeatherMap')
 export default function WeatherPage() {
   const t = useTranslations('weather');
   const tSidebar = useTranslations('sidebar');
+  const tTitle = useTranslations('pageTitles');
   const [showStations, setShowStations] = useState(true);
   const { weatherData, loading, error } = useWeatherData();
+
+  // Update document title
+  useEffect(() => {
+    document.title = `Open-Terra - ${tTitle('weather')}`;
+  }, [tTitle]);
 
   // Statistics date range (default: first day of current month to today)
   const getDefaultDates = () => {
@@ -127,7 +133,7 @@ export default function WeatherPage() {
         </div>
 
         {/* Additional Info */}
-        <WeatherInfo />
+        {/* <WeatherInfo /> */}
       </div>
     </div>
   );

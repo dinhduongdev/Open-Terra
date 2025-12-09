@@ -17,6 +17,7 @@ import TrafficFlowList from '@/components/common/TrafficFlowList';
 import { getTrafficReports, submitTrafficReport } from '@/services/trafficReportService';
 import { getLatestTrafficFlow, TrafficFlowData } from '@/services/trafficFlowService';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import toast from 'react-hot-toast';
 
 // Dynamically import Map component with no SSR to avoid window/document issues
 const TrafficMapDynamic = dynamic(() => import('@/components/common/TrafficMap'), {
@@ -30,12 +31,18 @@ const TrafficMapDynamic = dynamic(() => import('@/components/common/TrafficMap')
 
 export default function TrafficPage() {
   const t = useTranslations('traffic');
+  const tTitle = useTranslations('pageTitles');
   const [showReportForm, setShowReportForm] = useState(false);
   const [trafficReports, setTrafficReports] = useState<TrafficReport[]>([]);
   const [trafficFlowData, setTrafficFlowData] = useState<TrafficFlowData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<'All' | 'Reported' | 'Verified'>('All');
+
+  // Update document title
+  useEffect(() => {
+    document.title = `Open-Terra - ${tTitle('traffic')}`;
+  }, [tTitle]);
 
   // Fetch traffic reports on mount and when filter changes
   useEffect(() => {
@@ -75,7 +82,6 @@ export default function TrafficPage() {
       setTrafficFlowData(flowData);
     } catch (err) {
       console.error('Error fetching traffic flow data:', err);
-      // Don't set error state for flow data to avoid disrupting the page
     }
   };
 
@@ -84,12 +90,10 @@ export default function TrafficPage() {
       const newReport = await submitTrafficReport(report);
       setTrafficReports([newReport, ...trafficReports]);
       setShowReportForm(false);
-      alert('Báo cáo đã được gửi thành công! Cảm ơn bạn đã đóng góp thông tin cho cộng đồng.');
-      // Refresh reports list
+      toast.success("Báo cáo đã được gửi thành công! Cảm ơn bạn đã đóng góp thông tin cho cộng đồng.");
       fetchTrafficReports();
     } catch (err) {
-      alert('Không thể gửi báo cáo. Vui lòng thử lại!');
-      console.error(err);
+      toast.error("Gửi báo cáo thất bại. Vui lòng thử lại sau.");
     }
   };
 

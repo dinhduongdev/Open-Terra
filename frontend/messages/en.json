@@ -35,6 +35,32 @@
     "noReports": "No traffic jam reports yet",
     "errorLoading": "Unable to load traffic reports",
     "retryButton": "Retry",
+    "sensors": {
+      "title": "Real-time Traffic Sensors",
+      "count": "sensors",
+      "noData": "No traffic sensor data available",
+      "sensorId": "Sensor",
+      "lane": "Lane",
+      "status": {
+        "congested": "Congested",
+        "clear": "Clear",
+        "slow": "Slow",
+        "jam": "Traffic Jam"
+      },
+      "metrics": {
+        "averageSpeed": "Avg Speed",
+        "intensity": "Intensity",
+        "density": "Density",
+        "laneNumber": "Lane"
+      },
+      "units": {
+        "kmh": "km/h",
+        "vehiclesPerMinute": "veh/min",
+        "percent": "%",
+        "lane": "lane"
+      },
+      "lastUpdate": "Last updated"
+    },
     "reportForm": {
       "title": "Report Traffic Status",
       "titleIcon": "",
@@ -155,6 +181,18 @@
     "title": "Flood Map",
     "subtitle": "Monitor flood conditions and warnings in real-time",
     "loading": "Loading map...",
+    "mapTitle": "Flood Report Map - OpenStreetMap",
+    "reportButton": "Report Flood",
+    "filterTitle": "Filter by status:",
+    "filterAll": "All",
+    "filterReported": "Reported",
+    "filterVerified": "Verified",
+    "retryButton": "Retry",
+    "noReports": "No flood reports yet",
+    "errorLoadReports": "Unable to load flood reports",
+    "errorLoadMonitoring": "Unable to load flood monitoring data",
+    "reportSuccess": "Report submitted successfully! Authorities will process it as soon as possible.",
+    "reportError": "Failed to submit report. Please try again later.",
     "toggleLayer": "Flood zones layer:",
     "layerOn": "✓ On",
     "layerOff": "Off",
@@ -224,6 +262,8 @@
         "latitude": "Latitude",
         "longitude": "Longitude",
         "currentLocation": "Current Location",
+        "locationError": "Unable to get current location. Please enter manually.",
+        "locationNotSupported": "Browser does not support geolocation.",
         "severity": "Severity Level",
         "waterDepth": "Water Depth (cm)",
         "waterDepthPlaceholder": "Ex: 30",
@@ -239,12 +279,291 @@
         "submit": "Submit Report",
         "success": "Report submitted successfully! Authorities will process it as soon as possible."
       }
+    },
+    "monitoring": {
+      "title": "Real-time Flood Sensors",
+      "count": "sensors",
+      "noData": "No flood sensor data available",
+      "station": "Station",
+      "waterLevel": "Water Level",
+      "alertLevel": "Alert Level",
+      "dangerLevel": "Danger Level",
+      "distance": "Distance",
+      "referenceLevel": "Reference Level",
+      "vsDangerLevel": "Water level vs danger level",
+      "lastUpdate": "Last updated",
+      "status": {
+        "normal": "Normal",
+        "alert": "Alert",
+        "danger": "Danger"
+      },
+      "metrics": {
+        "current": "Current",
+        "alert": "Alert",
+        "danger": "Danger",
+        "reference": "Reference"
+      },
+      "units": {
+        "meter": "m",
+        "kilometer": "km"
+      }
+    },
+    "reportsList": {
+      "title": "Citizen Reports",
+      "noReports": "No citizen reports yet",
+      "noReportsHint": "Flood reports will be displayed here",
+      "reporter": "Reporter:",
+      "coordinates": "Coordinates:",
+      "timestamp": "Time:",
+      "waterDepth": "Depth:",
+      "severity": {
+        "Low": "Low",
+        "Medium": "Medium",
+        "High": "High",
+        "Critical": "Critical"
+      },
+      "status": {
+        "Reported": "Reported",
+        "Verified": "Verified",
+        "Resolved": "Resolved"
+      }
+    }
+  },
+  "airQuality": {
+    "title": "Air Quality",
+    "subtitle": "Monitor real-time air quality and pollution indicators",
+    "loading": "Loading map...",
+    "errorLoad": "Unable to load air quality data",
+    "retryButton": "Retry",
+    "noData": "No Data",
+    "noDataMessage": "Currently no data available from air quality monitoring stations. Please try again later.",
+    "instructions": {
+      "title": "User Guide",
+      "clickStation": "Click on colored dots to view station details",
+      "colorMeaning": "Colors represent air quality level (Green = Good, Red = Poor)",
+      "aqiDisplay": "Numbers shown are AQI (Air Quality Index) values",
+      "toggleButton": "Use toggle button to show/hide monitoring stations"
+    },
+    "aqiScale": {
+      "title": "AQI Scale",
+      "good": "Good",
+      "moderate": "Moderate",
+      "unhealthySensitive": "Unhealthy for Sensitive Groups",
+      "unhealthy": "Unhealthy",
+      "veryUnhealthy": "Very Unhealthy",
+      "hazardous": "Hazardous"
+    },
+    "additionalInfo": {
+      "title": "Additional Information about AQI",
+      "definition": "The Air Quality Index (AQI) is a measurement used to assess air pollution levels and their impact on human health.",
+      "calculation": "AQI is calculated based on 6 main pollutants: PM2.5, PM10, O₃, NO₂, SO₂ and CO. The AQI ranges from 0 to 500, with higher values indicating greater pollution levels.",
+      "dataSource": "Data is updated in real-time from city environmental monitoring stations and reliable international data sources.",
+      "references": "References",
+      "who": "World Health Organization (WHO)",
+      "epa": "United States Environmental Protection Agency (EPA)",
+      "vietnam": "Vietnam Environment Administration"
+    },
+    "overview": {
+      "averageAqi": "Average AQI",
+      "totalStations": "Total Stations",
+      "active": "Active",
+      "goodStations": "Good Stations",
+      "warningStations": "Warning Stations",
+      "moderate": "Mod:",
+      "poor": "Poor:"
+    },
+    "stationsList": {
+      "title": "Monitoring Stations List",
+      "totalCount": "Total:",
+      "stations": "stations",
+      "source": "Source:",
+      "pollutants": "Air Pollutants",
+      "weather": "Weather Information",
+      "temperature": "Temperature",
+      "humidity": "Humidity",
+      "coordinates": "Coordinates"
+    },
+    "pollutants": {
+      "title": "Main Pollutants",
+      "vsWhoStandard": "vs WHO Standard",
+      "whoStandard": "WHO Standard:",
+      "increase": "Increase",
+      "decrease": "Decrease",
+      "explainTitle": "Pollutant Explanations",
+      "pm25Desc": "Fine particulate matter with diameter ≤ 2.5 micrometers, dangerous as it can penetrate deep into lungs.",
+      "pm10Desc": "Particulate matter with diameter ≤ 10 micrometers, causes respiratory irritation.",
+      "o3Desc": "Ground-level ozone, causes lung and respiratory irritation.",
+      "no2Desc": "Nitrogen dioxide from vehicle emissions, causes respiratory inflammation.",
+      "so2Desc": "Sulfur dioxide from burning fossil fuels.",
+      "coDesc": "Carbon monoxide, colorless and odorless gas, dangerous at high concentrations.",
+      "level": {
+        "unknown": "Unknown",
+        "good": "Good",
+        "moderate": "Moderate",
+        "poor": "Poor",
+        "veryPoor": "Very Poor"
+      }
+    },
+    "health": {
+      "title": "Health Recommendations",
+      "general": "General Public",
+      "sensitive": "Sensitive Groups",
+      "sensitiveNote": "(People with heart/lung disease, asthma, pregnant women)",
+      "children": "Children",
+      "elderly": "Elderly",
+      "preventive": "Preventive Measures",
+      "preventiveTip1": "Wear dust masks when going outside (N95, N99)",
+      "preventiveTip2": "Use air purifiers indoors",
+      "preventiveTip3": "Close windows when air quality is poor",
+      "preventiveTip4": "Wash hands, eyes, and nose regularly",
+      "preventiveTip5": "Drink plenty of water, eat vegetables and fruits",
+      "avoid": "Things to Avoid",
+      "avoidTip1": "Outdoor exercise when air quality is poor",
+      "avoidTip2": "Prolonged exposure of children and elderly to polluted air",
+      "avoidTip3": "Riding motorcycles without protective masks",
+      "avoidTip4": "Burning trash or fires that contribute to air pollution",
+      "avoidTip5": "Smoking and exposure to cigarette smoke",
+      "emergency": "Emergency Contact",
+      "emergencyMessage": "Air quality is at hazardous levels. If you experience difficulty breathing, chest pain, or other abnormal symptoms, contact immediately:",
+      "emergencyHotline": "Emergency 115",
+      "healthHotline": "Health 114",
+      "environmentHotline": "Environment 1800-6169"
     }
   },
   "weather": {
     "title": "Weather",
     "subtitle": "Monitor real-time weather information and forecasts",
-    "loading": "Loading weather data..."
+    "loading": "Loading weather data...",
+    "mapLoading": "Loading map...",
+    "current": {
+      "title": "Current Weather",
+      "updated": "Updated",
+      "feelsLike": "Feels like",
+      "humidity": "Humidity",
+      "wind": "Wind",
+      "windDirection": "Southeast",
+      "cloudCover": "Cloud Cover",
+      "visibility": "Visibility",
+      "uvIndex": "UV Index",
+      "high": "High",
+      "pressure": "Pressure"
+    },
+    "statistics": {
+      "title": "Weather Statistics",
+      "fromDate": "From Date",
+      "toDate": "To Date",
+      "from": "From",
+      "to": "to",
+      "hours": "hours",
+      "average": "Average",
+      "lowest": "Lowest",
+      "highest": "Highest",
+      "temperature": "Temperature",
+      "humidity": "Humidity",
+      "windSpeed": "Wind Speed",
+      "atmosphericPressure": "Atmospheric Pressure",
+      "dataCalculated": "Data calculated from",
+      "dataPoints": "measurement points",
+      "startDateError": "Start date cannot be greater than end date",
+      "endDateError": "End date cannot be less than start date"
+    },
+    "tips": {
+      "sunProtection": {
+        "title": "Sun Protection Recommendations",
+        "tip1": "Use SPF 30+ sunscreen when going outside",
+        "tip2": "Wear a hat and sunglasses to protect skin and eyes",
+        "tip3": "Limit outdoor activities from 11am-3pm when UV index is high",
+        "tip4": "Drink enough water to avoid dehydration on hot days",
+        "tip5": "Wear thin, breathable, light-colored clothing"
+      },
+      "rainProtection": {
+        "title": "Rain Protection Recommendations",
+        "tip1": "Bring a raincoat or umbrella when going outside",
+        "tip2": "Check weather forecast before traveling far",
+        "tip3": "Avoid deep flooded areas and fast-flowing water",
+        "tip4": "Drive slowly and carefully when it rains",
+        "tip5": "Stay away from power poles and electrical wires during thunderstorms"
+      }
+    },
+    "info": {
+      "title": "Weather Data Information",
+      "dataCollectionTitle": "Weather data",
+      "dataCollectionDesc": "is collected from automated meteorological and hydrological monitoring stations distributed throughout the city, providing accurate and real-time updated information.",
+      "measurementParameters": "Measurement parameters include: temperature, humidity, atmospheric pressure, wind speed and direction, rainfall, cloud cover, UV index and visibility.",
+      "forecastTitle": "Weather forecast",
+      "forecastDesc": "is calculated based on modern meteorological models, combining data from satellites, weather radar and ground-based monitoring networks.",
+      "contactTitle": "Contact and Information:",
+      "contact1": "National Center for Hydro-Meteorological Forecasting",
+      "contact2": "Vietnam Institute of Meteorology, Hydrology and Climate Change",
+      "contact3": "Emergency alert hotline: 1900-xxxx"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login to Account",
+      "subtitle": "Please enter your account information",
+      "username": "Username",
+      "usernamePlaceholder": "Enter username",
+      "password": "Password",
+      "passwordPlaceholder": "Enter password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "loginButton": "GO TO ADMIN",
+      "loggingIn": "LOGGING IN...",
+      "noAccount": "Don't have an account?",
+      "registerNow": "Register now",
+      "pleaseEnterInfo": "Please enter all information",
+      "loginSuccess": "Login successful!",
+      "loginFailed": "Login failed"
+    },
+    "register": {
+      "title": "Register Account",
+      "subtitle": "Create a new account to use the service",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "Enter full name",
+      "email": "Email",
+      "emailPlaceholder": "Enter email address",
+      "username": "Username",
+      "usernamePlaceholder": "Enter username",
+      "password": "Password",
+      "passwordPlaceholder": "Enter password",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "Re-enter password",
+      "agreeWith": "I agree with",
+      "termsOfService": "Terms of Service",
+      "and": "and",
+      "privacyPolicy": "Privacy Policy",
+      "registerButton": "REGISTER ACCOUNT",
+      "haveAccount": "Already have an account?",
+      "loginNow": "Login now"
+    }
+  },
+  "admin": {
+    "floodReports": {
+      "loadError": "Unable to load reports list",
+      "verifyError": "Unable to verify report. Please try again later.",
+      "verifySuccess": "Report verified successfully!"
+    },
+    "trafficReports": {
+      "loadError": "Unable to load traffic reports list",
+      "verifySuccess": "Traffic report verified successfully!"
+    }
+  },
+  "pageTitles": {
+    "introduction": "Introduction",
+    "overview": "Overview",
+    "traffic": "Traffic",
+    "floodMap": "Flood Map",
+    "airQuality": "Air Quality",
+    "weather": "Weather",
+    "login": "Login",
+    "register": "Register",
+    "adminDashboard": "Admin Dashboard",
+    "adminTraffic": "Traffic Management",
+    "adminFlood": "Flood Management",
+    "adminAirQuality": "Air Quality Management",
+    "adminWeather": "Weather Management",
+    "adminAlerts": "Alerts Management"
   },
   "overview": {
     "title": "Overview",

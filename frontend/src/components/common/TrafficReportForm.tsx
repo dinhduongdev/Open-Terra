@@ -150,7 +150,7 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
               type="text"
               value={formData.reporter_username}
               onChange={(e) => setFormData({ ...formData, reporter_username: e.target.value })}
-              className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 placeholder:text-gray ${
+              className={`w-full px-4 py-3 border-2 rounded-lg   text-gray-900 placeholder:text-gray ${
                 errors.reporter_username ? 'border-red-300' : 'border-gray-200'
               }`}
               placeholder={t('usernamePlaceholder')}
@@ -165,12 +165,12 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               {t('streetName')} <span className="text-red-500">{t('required')}</span>
             </label>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <input
                 type="text"
                 value={formData.street_name}
                 onChange={(e) => setFormData({ ...formData, street_name: e.target.value })}
-                className={`flex-1 px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder:text-gray ${
+                className={`flex-1 px-4 py-3 border-2 rounded-lg text-black placeholder:text-gray ${
                   errors.street_name ? 'border-red-300' : 'border-gray-200'
                 }`}
                 placeholder={t('streetNamePlaceholder')}
@@ -178,9 +178,9 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
               <button
                 type="button"
                 onClick={handleGetCurrentLocation}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors whitespace-nowrap flex items-center gap-2"
+                className="px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors whitespace-nowrap flex items-center justify-center gap-2"
               >
-                <span className="hidden sm:inline">{t('currentLocationButton')}</span>
+                <span>{t('currentLocationButton')}</span>
               </button>
             </div>
             {errors.street_name && <p className="text-red-500 text-sm mt-1">{errors.street_name}</p>}
@@ -222,7 +222,7 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-black placeholder:text-gray ${
+              className={`w-full px-4 py-3 border-2 rounded-lg text-gray-800 placeholder:text-gray-400 ${
                 errors.description ? 'border-red-300' : 'border-gray-200'
               }`}
               rows={4}
@@ -259,7 +259,7 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
             </button>
             <button
               type="submit"
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg hover:from-red-600 hover:to-orange-600 font-semibold transition-all shadow-lg hover:shadow-xl"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 font-semibold transition-all shadow-lg hover:shadow-xl"
             >
               {t('submit')}
             </button>

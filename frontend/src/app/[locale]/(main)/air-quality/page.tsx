@@ -30,19 +30,29 @@ import StationSelector from '@/components/common/StationSelector';
 // Dynamically import Map component with no SSR to avoid window/document issues
 const AirQualityMapDynamic = dynamic(() => import('@/components/common/AirQualityMap'), {
   ssr: false,
-  loading: () => (
-    <div className="h-[600px] w-full bg-gray-100 flex items-center justify-center">
-      <p className="text-gray-500">Đang tải bản đồ...</p>
-    </div>
-  ),
+  loading: () => {
+    const tAir = useTranslations('airQuality');
+    return (
+      <div className="h-[600px] w-full bg-gray-100 flex items-center justify-center">
+        <p className="text-gray-500">{tAir('loading')}</p>
+      </div>
+    );
+  },
 });
 
 export default function AirQualityPage() {
   const t = useTranslations('sidebar');
+  const tTitle = useTranslations('pageTitles');
+  const tAir = useTranslations('airQuality');
   const [showStations, setShowStations] = useState(true);
   const [stations, setStations] = useState<AirQualityStation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Update document title
+  useEffect(() => {
+    document.title = `Open-Terra - ${tTitle('airQuality')}`;
+  }, [tTitle]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,7 +63,7 @@ export default function AirQualityPage() {
         setStations(data);
       } catch (err) {
         console.error('Failed to fetch air quality data:', err);
-        setError(err instanceof Error ? err.message : 'Không thể tải dữ liệu chất lượng không khí');
+        setError(err instanceof Error ? err.message : tAir('errorLoad'));
       } finally {
         setLoading(false);
       }
@@ -105,7 +115,7 @@ export default function AirQualityPage() {
           onClick={() => window.location.reload()}
           className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
         >
-          Thử lại
+          {tAir('retryButton')}
         </button>
       </div>
     );
@@ -119,7 +129,7 @@ export default function AirQualityPage() {
           {t('airQuality')}
         </h1>
         <p className="text-sm md:text-base text-gray-600">
-          Theo dõi chất lượng không khí và các chỉ số ô nhiễm theo thời gian thực
+          {tAir('subtitle')}
         </p>
       </div>
 
@@ -132,10 +142,9 @@ export default function AirQualityPage() {
           <div className="flex items-center gap-2 md:gap-3">
             <span className="text-2xl md:text-3xl">⚠️</span>
             <div>
-              <h3 className="font-semibold text-yellow-900 mb-1 text-sm md:text-base">Không có dữ liệu</h3>
+              <h3 className="font-semibold text-yellow-900 mb-1 text-sm md:text-base">{tAir('noData')}</h3>
               <p className="text-yellow-800 text-xs md:text-sm">
-                Hiện tại chưa có dữ liệu từ các trạm quan trắc chất lượng không khí. Vui lòng thử
-                lại sau.
+                {tAir('noDataMessage')}
               </p>
             </div>
           </div>
@@ -147,10 +156,10 @@ export default function AirQualityPage() {
         <div className="mt-6 md:mt-8 bg-white rounded-lg shadow-md p-4 md:p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
             <h2 className="text-lg md:text-xl font-semibold text-gray-700 flex items-center gap-2">
-              Bản đồ chất lượng không khí - OpenStreetMap
+              {tAir('title')} - OpenStreetMap
             </h2>
             <div className="flex items-center gap-2">
-              <span className="text-xs md:text-sm text-gray-600">Hiển thị trạm quan trắc:</span>
+              <span className="text-xs md:text-sm text-gray-600">{tAir('stationsList.title')}:</span>
               <button
                 onClick={() => setShowStations(!showStations)}
                 className={`px-3 md:px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
@@ -159,7 +168,7 @@ export default function AirQualityPage() {
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                {showStations ? '✓ Đang bật' : 'Tắt'}
+                {showStations ? `✓ ${tAir('overview.active')}` : tAir('overview.active').replace('Đang hoạt động', 'Tắt')}
               </button>
             </div>
           </div>
@@ -168,12 +177,12 @@ export default function AirQualityPage() {
         <div className="mb-4 p-3 md:p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
           <div className="flex items-start gap-2 md:gap-3">
             <div>
-              <h3 className="font-semibold text-blue-900 mb-1 text-sm md:text-base">Hướng dẫn sử dụng</h3>
+              <h3 className="font-semibold text-blue-900 mb-1 text-sm md:text-base">{tAir('instructions.title')}</h3>
               <ul className="text-xs md:text-sm text-blue-800 space-y-1">
-                <li>• Click vào các điểm màu để xem chi tiết trạm quan trắc</li>
-                <li>• Màu sắc thể hiện mức độ chất lượng không khí (Xanh = Tốt, Đỏ = Kém)</li>
-                <li>• Số hiển thị là chỉ số AQI (Air Quality Index)</li>
-                <li>• Sử dụng nút bật/tắt để ẩn/hiện các trạm quan trắc</li>
+                <li>• {tAir('instructions.clickStation')}</li>
+                <li>• {tAir('instructions.colorMeaning')}</li>
+                <li>• {tAir('instructions.aqiDisplay')}</li>
+                <li>• {tAir('instructions.toggleButton')}</li>
               </ul>
             </div>
           </div>
@@ -181,48 +190,48 @@ export default function AirQualityPage() {
 
         {/* AQI Scale Legend */}
         <div className="mb-4 p-3 md:p-4 bg-gray-50 rounded-lg">
-          <h3 className="font-semibold text-gray-800 mb-3 text-sm">Thang đo chỉ số AQI:</h3>
+          <h3 className="font-semibold text-gray-800 mb-3 text-sm">{tAir('aqiScale.title')}:</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 text-xs">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded" style={{ backgroundColor: '#00e400' }}></div>
               <div>
                 <div className="font-semibold text-black">0-50</div>
-                <div className="text-gray-600">Tốt</div>
+                <div className="text-gray-600">{tAir('aqiScale.good')}</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded" style={{ backgroundColor: '#f5a623' }}></div>
               <div>
                 <div className="font-semibold text-black">51-100</div>
-                <div className="text-gray-600">Trung bình</div>
+                <div className="text-gray-600">{tAir('aqiScale.moderate')}</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded" style={{ backgroundColor: '#ff7e00' }}></div>
               <div>
                 <div className="font-semibold text-black">101-150</div>
-                <div className="text-gray-600">Kém (Nhạy cảm)</div>
+                <div className="text-gray-600">{tAir('aqiScale.unhealthySensitive')}</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded" style={{ backgroundColor: '#ff0000' }}></div>
               <div>
                 <div className="font-semibold text-black">151-200</div>
-                <div className="text-gray-600">Kém</div>
+                <div className="text-gray-600">{tAir('aqiScale.unhealthy')}</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded" style={{ backgroundColor: '#8f3f97' }}></div>
               <div>
                 <div className="font-semibold text-black">201-300</div>
-                <div className="text-gray-600">Rất kém</div>
+                <div className="text-gray-600">{tAir('aqiScale.veryUnhealthy')}</div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded" style={{ backgroundColor: '#7e0023' }}></div>
               <div>
                 <div className="font-semibold text-black">300+</div>
-                <div className="text-gray-600">Nguy hại</div>
+                <div className="text-gray-600">{tAir('aqiScale.hazardous')}</div>
               </div>
             </div>
           </div>
@@ -254,27 +263,24 @@ export default function AirQualityPage() {
       {/* Additional Info */}
       <div className="mt-6 md:mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md p-4 md:p-6 border-l-4 border-blue-500">
         <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 flex items-center gap-2">
-          Thông tin thêm về chỉ số AQI
+          {tAir('additionalInfo.title')}
         </h2>
         <div className="space-y-2 md:space-y-3 text-xs md:text-sm text-gray-700">
           <p>
-            <strong>Chỉ số chất lượng không khí (AQI)</strong> là thước đo được sử dụng để đánh giá
-            mức độ ô nhiễm không khí và tác động của nó đến sức khỏe con người.
+            {tAir('additionalInfo.definition')}
           </p>
           <p>
-            AQI được tính dựa trên 6 chất ô nhiễm chính: PM2.5, PM10, O₃, NO₂, SO₂ và CO. Chỉ số
-            AQI dao động từ 0 đến 500, với giá trị càng cao nghĩa là mức độ ô nhiễm càng lớn.
+            {tAir('additionalInfo.calculation')}
           </p>
           <p>
-            Dữ liệu được cập nhật theo thời gian thực từ các trạm quan trắc môi trường của thành
-            phố và các nguồn dữ liệu quốc tế đáng tin cậy.
+            {tAir('additionalInfo.dataSource')}
           </p>
           <div className="pt-3 border-t border-blue-200">
-            <p className="font-semibold text-blue-900">Nguồn tham khảo:</p>
+            <p className="font-semibold text-blue-900">{tAir('additionalInfo.references')}:</p>
             <ul className="mt-2 space-y-1 text-gray-600">
-              <li>• Tổ chức Y tế Thế giới (WHO)</li>
-              <li>• Cơ quan Bảo vệ Môi trường Hoa Kỳ (EPA)</li>
-              <li>• Tổng cục Môi trường Việt Nam</li>
+              <li>• {tAir('additionalInfo.who')}</li>
+              <li>• {tAir('additionalInfo.epa')}</li>
+              <li>• {tAir('additionalInfo.vietnam')}</li>
             </ul>
           </div>
         </div>

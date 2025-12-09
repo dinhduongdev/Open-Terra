@@ -6,20 +6,23 @@
  * @see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
  */
 
-
-
 import HeroSection from '@/components/common/HeroSection';
 import FeaturesSection from '@/components/common/FeaturesSection';
 import StatsSection from '@/components/common/StatsSection';
 import ModulesSection from '@/components/common/ModulesSection';
 import AboutSection from '@/components/common/AboutSection';
+import { generatePageMetadata } from '@/utils/metadata';
+
+export async function generateMetadata() {
+  return generatePageMetadata('introduction');
+}
 
 export default function MainPage() {
   return (
     <div className="min-h-screen">
       <HeroSection />
       <FeaturesSection />
-      <StatsSection />
+      {/* <StatsSection /> */}
       <ModulesSection />
       <AboutSection />
     </div>

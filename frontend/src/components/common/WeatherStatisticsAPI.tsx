@@ -6,6 +6,7 @@
  * @see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
  */
 
+import { useTranslations } from 'next-intl';
 import { WeatherStatisticsData } from '@/types/weather';
 
 interface WeatherStatisticsAPIProps {
@@ -29,36 +30,40 @@ const StatCard = ({
   max: number;
   avg: number;
   unit: string;
-}) => (
-  <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-4 sm:p-5 border-l-4 border-blue-500 hover:shadow-lg transition-shadow">
-    <div className="flex items-center gap-2 mb-2 sm:mb-3">
-      <span className="text-2xl sm:text-3xl">{icon}</span>
-      <h3 className="text-base sm:text-lg font-semibold text-gray-800">{title}</h3>
-    </div>
-    <div className="space-y-2">
-      <div className="flex justify-between items-center">
-        <span className="text-xs sm:text-sm text-gray-600">Trung bình:</span>
-        <span className="text-lg sm:text-xl font-bold text-blue-600">
-          {avg.toFixed(1)} {unit}
-        </span>
+}) => {
+  const t = useTranslations('weather.statistics');
+  
+  return (
+    <div className="bg-white rounded-lg sm:rounded-xl shadow-md p-4 sm:p-5 border-l-4 border-blue-500 hover:shadow-lg transition-shadow">
+      <div className="flex items-center gap-2 mb-2 sm:mb-3">
+        <span className="text-2xl sm:text-3xl">{icon}</span>
+        <h3 className="text-base sm:text-lg font-semibold text-gray-800">{title}</h3>
       </div>
-      <div className="flex justify-between items-center pt-2 border-t border-gray-100 gap-2">
-        <div className="flex-1">
-          <span className="text-xs text-gray-500">Thấp nhất:</span>
-          <p className="text-sm sm:text-base font-semibold text-green-600">
-            {min.toFixed(1)} {unit}
-          </p>
+      <div className="space-y-2">
+        <div className="flex justify-between items-center">
+          <span className="text-xs sm:text-sm text-gray-600">{t('average')}:</span>
+          <span className="text-lg sm:text-xl font-bold text-blue-600">
+            {avg.toFixed(1)} {unit}
+          </span>
         </div>
-        <div className="flex-1 text-right">
-          <span className="text-xs text-gray-500">Cao nhất:</span>
-          <p className="text-sm sm:text-base font-semibold text-red-600">
-            {max.toFixed(1)} {unit}
-          </p>
+        <div className="flex justify-between items-center pt-2 border-t border-gray-100 gap-2">
+          <div className="flex-1">
+            <span className="text-xs text-gray-500">{t('lowest')}:</span>
+            <p className="text-sm sm:text-base font-semibold text-green-600">
+              {min.toFixed(1)} {unit}
+            </p>
+          </div>
+          <div className="flex-1 text-right">
+            <span className="text-xs text-gray-500">{t('highest')}:</span>
+            <p className="text-sm sm:text-base font-semibold text-red-600">
+              {max.toFixed(1)} {unit}
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default function WeatherStatisticsAPI({ 
   statisticsData, 
@@ -66,6 +71,7 @@ export default function WeatherStatisticsAPI({
   endDate, 
   onDateChange 
 }: WeatherStatisticsAPIProps) {
+  const t = useTranslations('weather.statistics');
   const { result } = statisticsData;
   const { period, statistics } = result;
 
@@ -87,7 +93,7 @@ export default function WeatherStatisticsAPI({
     const currentEndDate = new Date(endDate);
     
     if (newStartDate > currentEndDate) {
-      alert('Ngày bắt đầu không được lớn hơn ngày kết thúc');
+      alert(t('startDateError'));
       return;
     }
     
@@ -100,7 +106,7 @@ export default function WeatherStatisticsAPI({
     const newEndDate = new Date(newEnd);
     
     if (newEndDate < currentStartDate) {
-      alert('Ngày kết thúc không được nhỏ hơn ngày bắt đầu');
+      alert(t('endDateError'));
       return;
     }
     
@@ -112,7 +118,7 @@ export default function WeatherStatisticsAPI({
       {/* Header */}
       <div className="mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 flex items-center gap-2">
-          Thống kê thời tiết
+          {t('title')}
         </h2>
         
         {/* Date Range Selector */}
@@ -120,7 +126,7 @@ export default function WeatherStatisticsAPI({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
-                Từ ngày
+                {t('fromDate')}
               </label>
               <input
                 type="date"
@@ -131,7 +137,7 @@ export default function WeatherStatisticsAPI({
             </div>
             <div>
               <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
-                Đến ngày
+                {t('toDate')}
               </label>
               <input
                 type="date"
@@ -146,11 +152,11 @@ export default function WeatherStatisticsAPI({
         {/* Period Info */}
         <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-600">
           <span className="break-words">
-            Từ <strong>{formatDate(period.start)}</strong> đến{' '}
+            {t('from')} <strong>{formatDate(period.start)}</strong> {t('to')}{' '}
             <strong>{formatDate(period.end)}</strong>
           </span>
           <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-            {Math.round(period.duration_hours)} giờ
+            {Math.round(period.duration_hours)} {t('hours')}
           </span>
         </div>
       </div>
@@ -159,7 +165,7 @@ export default function WeatherStatisticsAPI({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         <StatCard
           icon=""
-          title="Nhiệt độ"
+          title={t('temperature')}
           min={statistics.temperature.min}
           max={statistics.temperature.max}
           avg={statistics.temperature.avg}
@@ -167,7 +173,7 @@ export default function WeatherStatisticsAPI({
         />
         <StatCard
           icon=""
-          title="Độ ẩm"
+          title={t('humidity')}
           min={statistics.relativeHumidity.min * 100}
           max={statistics.relativeHumidity.max * 100}
           avg={statistics.relativeHumidity.avg * 100}
@@ -175,7 +181,7 @@ export default function WeatherStatisticsAPI({
         />
         <StatCard
           icon=""
-          title="Tốc độ gió"
+          title={t('windSpeed')}
           min={statistics.windSpeed.min}
           max={statistics.windSpeed.max}
           avg={statistics.windSpeed.avg}
@@ -183,7 +189,7 @@ export default function WeatherStatisticsAPI({
         />
         <StatCard
           icon=""
-          title="Áp suất khí quyển"
+          title={t('atmosphericPressure')}
           min={statistics.atmosphericPressure.min}
           max={statistics.atmosphericPressure.max}
           avg={statistics.atmosphericPressure.avg}
@@ -192,12 +198,12 @@ export default function WeatherStatisticsAPI({
       </div>
 
       {/* Data Count Info */}
-      <div className="mt-3 sm:mt-4 p-2 sm:p-3 bg-white/70 rounded-lg">
+      {/* <div className="mt-3 sm:mt-4 p-2 sm:p-3 bg-white/70 rounded-lg">
         <p className="text-xs sm:text-sm text-gray-600 text-center">
-          Dữ liệu được tính từ{' '}
-          <strong className="text-blue-600">{statistics.temperature.count}</strong> điểm đo
+          {t('dataCalculated')}{' '}
+          <strong className="text-blue-600">{statistics.temperature.count}</strong> {t('dataPoints')}
         </p>
-      </div>
+      </div> */}
     </div>
   );
 }

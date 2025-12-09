@@ -6,6 +6,7 @@
  * @see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
  */
 
+import { useTranslations } from 'next-intl';
 import { FloodReport } from './FloodReportForm';
 
 interface FloodReportsListProps {
@@ -13,6 +14,7 @@ interface FloodReportsListProps {
 }
 
 export default function FloodReportsList({ reports }: FloodReportsListProps) {
+  const t = useTranslations('floodMap.reportsList');
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case 'Low':
@@ -31,13 +33,13 @@ export default function FloodReportsList({ reports }: FloodReportsListProps) {
   const getSeverityText = (severity: string) => {
     switch (severity) {
       case 'Low':
-        return 'Nhẹ';
+        return t('severity.Low');
       case 'Medium':
-        return 'Trung bình';
+        return t('severity.Medium');
       case 'High':
-        return 'Cao';
+        return t('severity.High');
       case 'Critical':
-        return 'Nguy hiểm';
+        return t('severity.Critical');
       default:
         return severity;
     }
@@ -74,13 +76,14 @@ export default function FloodReportsList({ reports }: FloodReportsListProps) {
 
   const getStatusText = (status: string) => {
     const normalizedStatus = status.toLowerCase();
+    const capitalizedStatus = normalizedStatus.charAt(0).toUpperCase() + normalizedStatus.slice(1);
     switch (normalizedStatus) {
       case 'reported':
-        return 'Đã báo cáo';
+        return t('status.Reported');
       case 'verified':
-        return 'Đã xác minh';
+        return t('status.Verified');
       case 'resolved':
-        return 'Đã giải quyết';
+        return t('status.Resolved');
       default:
         return status;
     }
@@ -90,9 +93,9 @@ export default function FloodReportsList({ reports }: FloodReportsListProps) {
     return (
       <div className="bg-white rounded-lg shadow-md p-8 text-center">
         <div className="text-6xl mb-4">📋</div>
-        <p className="text-gray-500 text-lg">Chưa có báo cáo nào từ người dân</p>
+        <p className="text-gray-500 text-lg">{t('noReports')}</p>
         <p className="text-gray-400 text-sm mt-2">
-          Các báo cáo ngập lụt sẽ được hiển thị tại đây
+          {t('noReportsHint')}
         </p>
       </div>
     );
@@ -101,7 +104,7 @@ export default function FloodReportsList({ reports }: FloodReportsListProps) {
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-         Báo cáo từ người dân ({reports.length})
+         {t('title')} ({reports.length})
       </h2>
       <div className="space-y-4">
         {reports.map((report) => (
@@ -142,21 +145,18 @@ export default function FloodReportsList({ reports }: FloodReportsListProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
               <div className="flex items-center gap-2 text-gray-600">
-                <span>👤</span>
                 <span>
-                  <strong>Người báo:</strong> {report.reporter_username}
+                  <strong>{t('reporter')}</strong> {report.reporter_username}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-gray-600">
-                <span>📍</span>
                 <span>
-                  <strong>Tọa độ:</strong> {report.latitude.toFixed(4)}, {report.longitude.toFixed(4)}
+                  <strong>{t('coordinates')}</strong> {report.latitude.toFixed(4)}, {report.longitude.toFixed(4)}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-gray-600">
-                <span>🕐</span>
                 <span>
-                  <strong>Thời gian:</strong>{' '}
+                  <strong>{t('timestamp')}</strong>{' '}
                   {new Date(report.timestamp).toLocaleString('vi-VN')}
                 </span>
               </div>

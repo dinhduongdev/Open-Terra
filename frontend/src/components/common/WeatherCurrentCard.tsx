@@ -6,6 +6,7 @@
  * @see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
  */
 
+import { useTranslations } from 'next-intl';
 import { WeatherData } from '@/types/weather';
 
 interface WeatherCurrentCardProps {
@@ -34,6 +35,7 @@ const WeatherDetailCard = ({
 );
 
 export default function WeatherCurrentCard({ weatherData }: WeatherCurrentCardProps) {
+  const t = useTranslations('weather.current');
   const { result } = weatherData;
 //   const temperature = Math.round(Number(result.temperature.value));
   const temperature = result.temperature.value;
@@ -54,8 +56,8 @@ export default function WeatherCurrentCard({ weatherData }: WeatherCurrentCardPr
         {/* Header */}
         <div className="flex justify-between items-start mb-3 sm:mb-4">
           <div>
-            <h2 className="text-xs sm:text-sm font-medium opacity-90 mb-0.5">Thời tiết hiện tại</h2>
-            <p className="text-xs opacity-75">Cập nhật: {updateTime}</p>
+            <h2 className="text-xs sm:text-sm font-medium opacity-90 mb-0.5">{t('title')}</h2>
+            <p className="text-xs opacity-75">{t('updated')}: {updateTime}</p>
           </div>
           <div className="text-3xl sm:text-4xl">☁️</div>
         </div>
@@ -69,11 +71,11 @@ export default function WeatherCurrentCard({ weatherData }: WeatherCurrentCardPr
             <span className="text-2xl sm:text-3xl font-light ml-1 sm:ml-2 mt-1">°C</span>
           </div>
           <div className="mt-2 space-y-0.5">
-            <p className="text-base sm:text-lg font-medium">
+            {/* <p className="text-base sm:text-lg font-medium">
               {result.weatherType.value}
-            </p>
+            </p> */}
             <p className="text-xs sm:text-sm opacity-90">
-              Cảm giác như {feelsLike}°C
+              {t('feelsLike')} {feelsLike}°C
             </p>
           </div>
         </div>
@@ -82,23 +84,23 @@ export default function WeatherCurrentCard({ weatherData }: WeatherCurrentCardPr
         <div className="grid grid-cols-2 gap-2 sm:gap-2.5 pt-3 sm:pt-4 border-t border-white/20">
           <WeatherDetailCard 
             icon="" 
-            label="Độ ẩm" 
+            label={t('humidity')} 
             value={`${humidity}%`} 
           />
           <WeatherDetailCard 
             icon="" 
-            label="Gió" 
+            label={t('wind')} 
             value={`${windSpeed} km/h`}
-            subtitle="Đông Nam"
+            subtitle={t('windDirection')}
           />
           <WeatherDetailCard 
             icon="☁️" 
-            label="Mây che phủ" 
+            label={t('cloudCover')} 
             value="40%" 
           />
           <WeatherDetailCard 
             icon="👁️" 
-            label="Tầm nhìn" 
+            label={t('visibility')} 
             value={visibility}
             subtitle="km"
           />
@@ -108,13 +110,13 @@ export default function WeatherCurrentCard({ weatherData }: WeatherCurrentCardPr
         <div className="grid grid-cols-2 gap-2 sm:gap-2.5 mt-2 sm:mt-2.5">
           <WeatherDetailCard 
             icon="" 
-            label="Chỉ số UV" 
+            label={t('uvIndex')} 
             value={result.uVIndexMax.value}
-            subtitle="Cao"
+            subtitle={t('high')}
           />
           <WeatherDetailCard 
             icon="" 
-            label="Áp suất" 
+            label={t('pressure')} 
             value={result.atmosphericPressure.value}
             subtitle="hPa"
           />

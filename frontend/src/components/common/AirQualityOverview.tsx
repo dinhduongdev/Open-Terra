@@ -8,6 +8,7 @@
 
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { getAQIColor, getAQILabel } from '@/types/airQuality';
 
 interface AirQualityOverview {
@@ -23,6 +24,7 @@ interface AirQualityOverviewProps {
 }
 
 export default function AirQualityOverviewComponent({ data }: AirQualityOverviewProps) {
+  const t = useTranslations('airQuality.overview');
   const aqiColor = getAQIColor(data.averageAqi);
   const level = getAQILabel(data.averageAqi);
 
@@ -35,7 +37,7 @@ export default function AirQualityOverviewComponent({ data }: AirQualityOverview
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs md:text-sm text-gray-600 mb-1">AQI Trung bình</p>
+            <p className="text-xs md:text-sm text-gray-600 mb-1">{t('averageAqi')}</p>
             <p className="text-3xl md:text-4xl font-bold" style={{ color: aqiColor }}>
               {data.averageAqi}
             </p>
@@ -50,9 +52,9 @@ export default function AirQualityOverviewComponent({ data }: AirQualityOverview
       <div className="bg-white rounded-lg shadow-md p-4 md:p-6 border-l-4 border-blue-500">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs md:text-sm text-gray-600 mb-1">Tổng số trạm</p>
+            <p className="text-xs md:text-sm text-gray-600 mb-1">{t('totalStations')}</p>
             <p className="text-3xl md:text-4xl font-bold text-blue-600">{data.totalStations}</p>
-            <p className="text-xs md:text-sm text-gray-500 mt-2">Đang hoạt động</p>
+            <p className="text-xs md:text-sm text-gray-500 mt-2">{t('active')}</p>
           </div>
         </div>
       </div>
@@ -61,7 +63,7 @@ export default function AirQualityOverviewComponent({ data }: AirQualityOverview
       <div className="bg-white rounded-lg shadow-md p-4 md:p-6 border-l-4 border-green-500">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs md:text-sm text-gray-600 mb-1">Trạm tốt</p>
+            <p className="text-xs md:text-sm text-gray-600 mb-1">{t('goodStations')}</p>
             <p className="text-3xl md:text-4xl font-bold text-green-600">{data.goodStations}</p>
             <p className="text-xs md:text-sm text-gray-500 mt-2">AQI ≤ 50</p>
           </div>
@@ -72,12 +74,12 @@ export default function AirQualityOverviewComponent({ data }: AirQualityOverview
       <div className="bg-white rounded-lg shadow-md p-4 md:p-6 border-l-4 border-orange-500">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs md:text-sm text-gray-600 mb-1">Trạm cảnh báo</p>
+            <p className="text-xs md:text-sm text-gray-600 mb-1">{t('warningStations')}</p>
             <p className="text-3xl md:text-4xl font-bold text-orange-600">
               {data.moderateStations + data.unhealthyStations}
             </p>
             <p className="text-xs md:text-sm text-gray-500 mt-2">
-              TB: {data.moderateStations} | Kém: {data.unhealthyStations}
+              {t('moderate')} {data.moderateStations} | {t('poor')} {data.unhealthyStations}
             </p>
           </div>
         </div>
