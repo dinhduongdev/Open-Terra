@@ -290,7 +290,7 @@
       "dangerLevel": "Mức nguy hiểm",
       "distance": "Khoảng cách",
       "referenceLevel": "Mức tham chiếu",
-      "vsD انgerLevel": "Mực nước so với mức nguy hiểm",
+      "vsDangerLevel": "Mực nước so với mức nguy hiểm",
       "lastUpdate": "Cập nhật lần cuối",
       "status": {
         "normal": "Bình thường",
