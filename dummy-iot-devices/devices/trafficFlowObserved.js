@@ -22,13 +22,14 @@ class TrafficFlowObserved extends BaseDevice {
     }
 
     /**
-     * Check if current time is in rush hour
+     * Check if current time is in rush hour (Ho Chi Minh timezone UTC+7)
      * @returns {Object} {isRushHour, congestionLevel}
      */
     checkRushHour() {
-        const now = new Date();
-        const hour = now.getHours();
-        const minute = now.getMinutes();
+        // Get current time in Ho Chi Minh City timezone (UTC+7)
+        const hcmcTime = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
+        const hour = hcmcTime.getHours();
+        const minute = hcmcTime.getMinutes();
         const timeInMinutes = hour * 60 + minute;
 
         // Morning rush: 6:30 AM - 9:00 AM (390-540 minutes)
@@ -118,8 +119,8 @@ class TrafficFlowObserved extends BaseDevice {
             occupancy = 0.15 + Math.random() * 0.3;
         }
 
-        // Current observation timestamp
-        const dateObserved = new Date().toISOString();
+        // Current observation timestamp in Ho Chi Minh timezone (UTC+7)
+        const dateObserved = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })).toISOString().replace('Z', '+07:00');
 
         return {
             intensity: this.intensity,

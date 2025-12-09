@@ -8,8 +8,10 @@ services:
     env_file:
       - ./src/.env
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     volumes:
       - ./src:/code/src
     networks:
@@ -71,6 +73,11 @@ services:
       - "5432"
     networks:
       - open-terra-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:alpine

@@ -35,13 +35,15 @@ function getJulianDayNumber(year, month, day) {
 
 /**
  * Convert Gregorian date to Lunar date
- * @param {Date} date - Gregorian date
+ * @param {Date} date - Gregorian date (will be converted to Ho Chi Minh timezone UTC+7)
  * @returns {Object} {day, month, year, isFullMoon, isNewMoon}
  */
 function getLunarDate(date) {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
+    // Convert to Ho Chi Minh City timezone (UTC+7)
+    const hcmcTime = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
+    const year = hcmcTime.getFullYear();
+    const month = hcmcTime.getMonth() + 1;
+    const day = hcmcTime.getDate();
     
     const jd = getJulianDayNumber(year, month, day);
     

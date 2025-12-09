@@ -36,8 +36,7 @@ module.exports = {
 			{
 				deviceId: process.env.TRAFFIC_DEVICE_ID_1 || "traffic001",
 				entityName:
-					process.env.TRAFFIC_ENTITY_NAME_1 ||
-					"urn:ngsi-ld:TrafficFlowObserved:001",
+					process.env.TRAFFIC_ENTITY_NAME_1 || "urn:ngsi-ld:TrafficFlowObserved:001",
 				entityType: "TrafficFlowObserved",
 				interval: parseInt(process.env.TRAFFIC_INTERVAL) || 30000,
 				laneId: 1,
@@ -58,8 +57,7 @@ module.exports = {
 			{
 				deviceId: process.env.TRAFFIC_DEVICE_ID_2 || "traffic002",
 				entityName:
-					process.env.TRAFFIC_ENTITY_NAME_2 ||
-					"urn:ngsi-ld:TrafficFlowObserved:002",
+					process.env.TRAFFIC_ENTITY_NAME_2 || "urn:ngsi-ld:TrafficFlowObserved:002",
 				entityType: "TrafficFlowObserved",
 				interval: parseInt(process.env.TRAFFIC_INTERVAL) || 30000,
 				laneId: 2,
@@ -80,8 +78,7 @@ module.exports = {
 			{
 				deviceId: process.env.TRAFFIC_DEVICE_ID_3 || "traffic003",
 				entityName:
-					process.env.TRAFFIC_ENTITY_NAME_3 ||
-					"urn:ngsi-ld:TrafficFlowObserved:003",
+					process.env.TRAFFIC_ENTITY_NAME_3 || "urn:ngsi-ld:TrafficFlowObserved:003",
 				entityType: "TrafficFlowObserved",
 				interval: parseInt(process.env.TRAFFIC_INTERVAL) || 30000,
 				laneId: 1,

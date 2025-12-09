@@ -16,6 +16,7 @@ import AlertIcon from '../icon/AlertIcon';
 import FloodIcon from '../icon/FloodIcon';
 import AirQualityIcon from '../icon/AirQualityIcon';
 import WeatherIcon from '../icon/WeatherIcon';
+import FeedbackIcon from '../icon/FeedbackIcon';
 
 
 const menuItems = [
@@ -43,6 +44,11 @@ const menuItems = [
     title: 'Thời tiết',
     icon: WeatherIcon,
     href: '/admin/weather',
+  },
+  {
+    title: 'Phản hồi',
+    icon: FeedbackIcon,
+    href: '/admin/feedback',
   },
   // {
   //   title: 'Cảnh báo',

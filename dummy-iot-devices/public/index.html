@@ -814,7 +814,7 @@
                 `).join('');
 
             const timestamp = document.getElementById(`timestamp-${deviceId}`);
-            timestamp.textContent = `Updated: ${new Date().toLocaleTimeString('en-US')}`;
+            timestamp.textContent = `Updated: ${new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' })}`;
         }
 
         function updateDeviceStatus(deviceId, status) {

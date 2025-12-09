@@ -31,8 +31,10 @@ class FloodMonitoring extends BaseDevice {
      * @returns {Object} Flood measurement data
      */
     generateData() {
+        // Get current time in Ho Chi Minh City timezone (UTC+7)
         const now = new Date();
-        const hour = now.getHours();
+        const hcmcTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
+        const hour = hcmcTime.getHours();
         
         // Check for tidal surge period (rằm or mùng 1 ±1-2 days)
         const tidalInfo = checkTidalSurge(now);
@@ -51,7 +53,7 @@ class FloodMonitoring extends BaseDevice {
             tidalEffect = 0.20 + (intensity * 0.30); // 0.20-0.50m rise
             
             // Add daily tidal variation (2 high tides per day)
-            const hourAngle = (hour + now.getMinutes() / 60) / 12 * Math.PI;
+            const hourAngle = (hour + hcmcTime.getMinutes() / 60) / 12 * Math.PI;
             const tidalVariation = Math.sin(hourAngle) * 0.10; // ±0.10m
             tidalEffect += tidalVariation;
         }
@@ -82,8 +84,8 @@ class FloodMonitoring extends BaseDevice {
         // currentLevel = referenceLevel - measuredDistance
         const currentLevel = parseFloat((this.referenceLevel - actualMeasuredDistance).toFixed(2));
 
-        // Current observation timestamp
-        const dateObserved = now.toISOString();
+        // Current observation timestamp in Ho Chi Minh timezone (UTC+7)
+        const dateObserved = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })).toISOString().replace('Z', '+07:00');
 
         // Determine flood level status based on thresholds
         let floodLevelStatus;
