@@ -120,12 +120,12 @@ export default function Sidebar({ isMobileOpen = false, onClose }: SidebarProps)
     //   href: '/analytics',
     //   icon: <AnalyticsIcon />,
     // },
-    {
-      id: 'alerts',
-      labelKey: 'alerts',
-      href: '/alerts',
-      icon: <AlertIcon />,
-    },
+    // {
+    //   id: 'alerts',
+    //   labelKey: 'alerts',
+    //   href: '/alerts',
+    //   icon: <AlertIcon />,
+    // },
   ];
 
   return (
