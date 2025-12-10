@@ -10,6 +10,8 @@
 
 import { useTranslations } from 'next-intl';
 import { FloodMonitoringData } from '@/services/floodMonitoringService';
+import { getStreetNameFromCoordinates } from '@/utils/geocoding';
+import { useEffect, useState } from 'react';
 
 interface FloodMonitoringListProps {
   sensors: FloodMonitoringData[];
@@ -18,6 +20,30 @@ interface FloodMonitoringListProps {
 export default function FloodMonitoringList({ sensors }: FloodMonitoringListProps) {
   const t = useTranslations('floodMap.monitoring');
   console.log("sensors",sensors);
+  const [locationNames, setLocationNames] = useState<Record<string, string>>({});
+  
+  // Fetch street names for all sensors
+  useEffect(() => {
+    const fetchLocationNames = async () => {
+      const names: Record<string, string> = {};
+      
+      for (const sensor of sensors) {
+        const [lng, lat] = sensor.location?.value?.coordinates || [0, 0];
+        if (lat && lng) {
+          const streetName = await getStreetNameFromCoordinates(lat, lng);
+          if (streetName) {
+            names[sensor.id] = streetName;
+          }
+        }
+      }
+      
+      setLocationNames(names);
+    };
+    
+    if (sensors.length > 0) {
+      fetchLocationNames();
+    }
+  }, [sensors]);
     
   if (!sensors.length) {
     return (
@@ -110,7 +136,7 @@ export default function FloodMonitoringList({ sensors }: FloodMonitoringListProp
                         {address}
                       </p>
                       <p className="text-xs text-gray-400">
-                        {lat.toFixed(6)}, {lng.toFixed(6)}
+                        {locationNames[sensor.id] || `${lat.toFixed(6)}, ${lng.toFixed(6)}`}
                       </p>
                       {description && (
                         <p className="text-xs text-gray-600 mt-1">{description}</p>
