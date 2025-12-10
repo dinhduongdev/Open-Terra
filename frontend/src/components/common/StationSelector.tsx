@@ -13,6 +13,7 @@ import { getStationAirQuality } from '@/services/airQualityService';
 import { AirQualityStation } from '@/types/airQuality';
 import { getAQIColor, getAQILabel } from '@/types/airQuality';
 import LoadingSpinner from './LoadingSpinner';
+import { getStreetNameFromCoordinates } from '@/utils/geocoding';
 
 interface StationOption {
   id: string;
@@ -29,6 +30,7 @@ export default function StationSelector({ stations }: StationSelectorProps) {
   const [stationData, setStationData] = useState<AirQualityStation | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [locationName, setLocationName] = useState<string | null>(null);
 
   const handleStationChange = async (stationId: string) => {
     if (!stationId) {
@@ -44,10 +46,18 @@ export default function StationSelector({ stations }: StationSelectorProps) {
     try {
       const data = await getStationAirQuality(stationId);
       setStationData(data);
+      
+      // Fetch street name for the location
+      const [lng, lat] = data.location.coordinates;
+      if (lat && lng) {
+        const streetName = await getStreetNameFromCoordinates(lat, lng);
+        setLocationName(streetName);
+      }
     } catch (err) {
       console.error('Failed to fetch station data:', err);
       setError(err instanceof Error ? err.message : 'Không thể tải dữ liệu trạm');
       setStationData(null);
+      setLocationName(null);
     } finally {
       setLoading(false);
     }
@@ -146,17 +156,14 @@ export default function StationSelector({ stations }: StationSelectorProps) {
               </div>
               <div className="space-y-2 text-sm text-gray-600">
                 <div className="flex items-center gap-2">
-                  <span>📍</span>
                   <span>
                     {formattedStation.address.addressLocality}, {formattedStation.address.addressCountry}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span>📡</span>
                   <span>Nguồn: {formattedStation.source}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span>⏰</span>
                   <span>
                     Cập nhật: {formattedStation.lastUpdate.toLocaleString('vi-VN', {
                       day: '2-digit',
@@ -168,9 +175,8 @@ export default function StationSelector({ stations }: StationSelectorProps) {
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span>🌐</span>
                   <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
-                    {formattedStation.location.lat.toFixed(6)}, {formattedStation.location.lng.toFixed(6)}
+                    {locationName || `${formattedStation.location.lat.toFixed(6)}, ${formattedStation.location.lng.toFixed(6)}`}
                   </span>
                 </div>
               </div>
@@ -198,7 +204,6 @@ export default function StationSelector({ stations }: StationSelectorProps) {
           {/* Air Pollutants */}
           <div>
             <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <span>🧪</span>
               Chất ô nhiễm không khí
             </h4>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

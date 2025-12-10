@@ -10,6 +10,8 @@
 
 import { useTranslations } from 'next-intl';
 import { TrafficFlowData } from '@/services/trafficFlowService';
+import { getStreetNameFromCoordinates } from '@/utils/geocoding';
+import { useEffect, useState } from 'react';
 
 interface TrafficFlowListProps {
   sensors: TrafficFlowData[];
@@ -17,6 +19,30 @@ interface TrafficFlowListProps {
 
 export default function TrafficFlowList({ sensors }: TrafficFlowListProps) {
   const t = useTranslations('traffic.sensors');
+  const [locationNames, setLocationNames] = useState<Record<string, string>>({});
+  
+  // Fetch street names for all sensors
+  useEffect(() => {
+    const fetchLocationNames = async () => {
+      const names: Record<string, string> = {};
+      
+      for (const sensor of sensors) {
+        const [lng, lat] = sensor.location?.value?.coordinates || [0, 0];
+        if (lat && lng) {
+          const streetName = await getStreetNameFromCoordinates(lat, lng);
+          if (streetName) {
+            names[sensor.id] = streetName;
+          }
+        }
+      }
+      
+      setLocationNames(names);
+    };
+    
+    if (sensors.length > 0) {
+      fetchLocationNames();
+    }
+  }, [sensors]);
   
   if (!sensors.length) {
     return (
@@ -85,7 +111,7 @@ export default function TrafficFlowList({ sensors }: TrafficFlowListProps) {
                         {t('sensorId')} #{sensorId}
                       </h3>
                       <p className="text-xs text-gray-500">
-                        {t('lane')} {laneId} • {lat.toFixed(6)}, {lng.toFixed(6)}
+                        {locationNames[sensor.id] || `${lat.toFixed(6)}, ${lng.toFixed(6)}`}
                       </p>
                     </div>
                   </div>
