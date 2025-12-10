@@ -151,11 +151,10 @@ async def crawl_air_quality_data(ctx: Worker) -> dict:
             if air_quality_normalizer._is_location_active(location):
                 active_locations.append(location)
             else:
-                datetime_last = location.get('datetimeLast')
-                last_update = datetime_last.get('utc', 'N/A') if datetime_last else 'N/A'
+                datetime_last = location.get("datetimeLast")
+                last_update = datetime_last.get("utc", "N/A") if datetime_last else "N/A"
                 logger.info(
-                    f"Skipping inactive location: {location.get('name', 'Unknown')} "
-                    f"(last update: {last_update})"
+                    f"Skipping inactive location: {location.get('name', 'Unknown')} (last update: {last_update})"
                 )
 
         if not active_locations:
@@ -280,6 +279,9 @@ async def crawl_air_quality_data(ctx: Worker) -> dict:
 
 # -------- base functions --------
 async def startup(ctx: Worker) -> None:
+    await asyncio.sleep(10)
+    await crawl_weather_data(ctx)
+    await crawl_air_quality_data(ctx)
     logging.info("Worker Started")
 
 
