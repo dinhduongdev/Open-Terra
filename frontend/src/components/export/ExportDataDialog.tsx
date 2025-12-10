@@ -23,6 +23,7 @@ export default function ExportDataDialog({ onClose, defaultEntityType }: ExportD
   const t = useTranslations('export');
   const [isExporting, setIsExporting] = useState(false);
   const [useLastN, setUseLastN] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   
   const [formData, setFormData] = useState<ExportParams>({
     entity_type: defaultEntityType || 'AirQualityObserved',
@@ -40,6 +41,17 @@ export default function ExportDataDialog({ onClose, defaultEntityType }: ExportD
     'TrafficFlowObserved',
     'FloodMonitoring',
   ];
+
+  useEffect(() => {
+    // Trigger animation after mount
+    setIsOpen(true);
+  }, []);
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
   const handleExport = async () => {
     // Validation
@@ -111,11 +123,23 @@ export default function ExportDataDialog({ onClose, defaultEntityType }: ExportD
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div
+      className={`fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-500 ease-out ${
+        isOpen ? 'opacity-100' : 'opacity-0'
+      }`}
+      style={{ zIndex: 9999, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+      onClick={handleBackdropClick}
+    >
+      <div
+        className={`bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transition-all duration-500 ease-out ${
+          isOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0'
+        }`}
+        style={{ position: 'relative', zIndex: 10000 }}
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-gray-900">{t('title')}</h2>
+          <h2 className="text-xl font-bold text-gray-800">{t('title')}</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
@@ -136,7 +160,7 @@ export default function ExportDataDialog({ onClose, defaultEntityType }: ExportD
               name="entity_type"
               value={formData.entity_type}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800"
             >
               {entityTypes.map((type) => (
                 <option key={type} value={type}>
@@ -152,7 +176,7 @@ export default function ExportDataDialog({ onClose, defaultEntityType }: ExportD
               {t('format')} <span className="text-red-500">*</span>
             </label>
             <div className="flex gap-4">
-              <label className="flex items-center">
+              <label className="flex items-center text-gray-800">
                 <input
                   type="radio"
                   name="format"
@@ -163,7 +187,7 @@ export default function ExportDataDialog({ onClose, defaultEntityType }: ExportD
                 />
                 {t('formatCsv')}
               </label>
-              <label className="flex items-center">
+              <label className="flex items-center text-gray-800">
                 <input
                   type="radio"
                   name="format"
@@ -189,7 +213,7 @@ export default function ExportDataDialog({ onClose, defaultEntityType }: ExportD
               value={formData.entity_id}
               onChange={handleChange}
               placeholder={t('entityIdPlaceholder')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
             />
           </div>
 
@@ -201,7 +225,7 @@ export default function ExportDataDialog({ onClose, defaultEntityType }: ExportD
             
             {/* Last N */}
             <div className="mb-4">
-              <label className="flex items-center mb-2">
+              <label className="flex items-center mb-2 text-gray-800">
                 <input
                   type="radio"
                   checked={useLastN}
@@ -219,14 +243,14 @@ export default function ExportDataDialog({ onClose, defaultEntityType }: ExportD
                   placeholder={t('lastNPlaceholder')}
                   min="1"
                   max="10000"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 />
               )}
             </div>
 
             {/* Custom Range */}
             <div>
-              <label className="flex items-center mb-2">
+              <label className="flex items-center mb-2 text-gray-800">
                 <input
                   type="radio"
                   checked={!useLastN}
@@ -249,7 +273,7 @@ export default function ExportDataDialog({ onClose, defaultEntityType }: ExportD
                           start_time: e.target.value ? `${e.target.value}:00Z` : '',
                         }))
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                   </div>
                   <div>
@@ -264,7 +288,7 @@ export default function ExportDataDialog({ onClose, defaultEntityType }: ExportD
                           end_time: e.target.value ? `${e.target.value}:00Z` : '',
                         }))
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -284,7 +308,7 @@ export default function ExportDataDialog({ onClose, defaultEntityType }: ExportD
               value={formData.attrs}
               onChange={handleChange}
               placeholder={t('attributesPlaceholder')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
             />
           </div>
         </div>

@@ -568,6 +568,17 @@
     "adminAlerts": "Alerts Management",
     "adminFeedback": "Feedback Management"
   },
+  "adminDashboard": {
+    "title": "Dashboard",
+    "subtitle": "Smart City System Overview",
+    "sections": {
+      "traffic": "Traffic Flow",
+      "flood": "Flood Monitoring",
+      "airQuality": "Air Quality",
+      "weather": "Weather",
+      "feedback": "Citizen Feedback"
+    }
+  },
   "overview": {
     "title": "Overview",
     "subtitle": "Comprehensive information on environmental quality and traffic",

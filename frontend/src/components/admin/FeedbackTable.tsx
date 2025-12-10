@@ -50,7 +50,7 @@ export default function FeedbackTable() {
   const getCategoryColor = (category: FeedbackCategory) => {
     switch (category) {
       case FeedbackCategory.GENERAL:
-        return 'bg-blue-100 text-blue-800 border-blue-300';
+        return 'bg-blue-100 text-blue-ơ- border-blue-300';
       case FeedbackCategory.BUG_REPORT:
         return 'bg-red-100 text-red-800 border-red-300';
       case FeedbackCategory.FEATURE_REQUEST:
@@ -126,7 +126,7 @@ export default function FeedbackTable() {
                 setCategoryFilter(e.target.value ? e.target.value as FeedbackCategory : undefined);
                 setCurrentPage(1);
               }}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800"
+              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">{t('list.filterAll')}</option>
               {Object.values(FeedbackCategory).map((cat) => (
@@ -149,22 +149,22 @@ export default function FeedbackTable() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
                   {t('table.id')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
                   {t('table.name')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
                   {t('table.email')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
                   {t('table.category')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
                   {t('table.date')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">
                   {t('table.actions')}
                 </th>
               </tr>
@@ -172,20 +172,20 @@ export default function FeedbackTable() {
             <tbody className="bg-white divide-y divide-gray-200">
               {feedbacks.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-800">
                     {t('list.noFeedback')}
                   </td>
                 </tr>
               ) : (
                 feedbacks.map((feedback) => (
                   <tr key={feedback.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
                       #{feedback.id}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                       {feedback.username}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                       {feedback.email}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -193,7 +193,7 @@ export default function FeedbackTable() {
                         {t(`categories.${feedback.category}`)}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                       {formatDate(feedback.created_at)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -253,11 +253,18 @@ export default function FeedbackTable() {
 
       {/* Detail Modal */}
       {showModal && selectedFeedback && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div 
+          className="fixed inset-0 flex items-center justify-center z-50 p-4" 
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+          onClick={closeModal}
+        >
+          <div 
+            className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-gray-800">
                   {t('detail.title')} #{selectedFeedback.id}
                 </h2>
                 <button
@@ -281,7 +288,7 @@ export default function FeedbackTable() {
                   <h3 className="text-sm font-medium text-gray-700 mb-1">
                     {t('detail.submittedBy')}
                   </h3>
-                  <p className="text-gray-900">{selectedFeedback.username}</p>
+                  <p className="text-gray-800">{selectedFeedback.username}</p>
                   <p className="text-gray-600 text-sm">{selectedFeedback.email}</p>
                 </div>
 
@@ -289,7 +296,7 @@ export default function FeedbackTable() {
                   <h3 className="text-sm font-medium text-gray-700 mb-1">
                     {t('detail.date')}
                   </h3>
-                  <p className="text-gray-900">{formatDate(selectedFeedback.created_at)}</p>
+                  <p className="text-gray-800">{formatDate(selectedFeedback.created_at)}</p>
                 </div>
 
                 <div>
@@ -297,7 +304,7 @@ export default function FeedbackTable() {
                     {t('detail.message')}
                   </h3>
                   <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <p className="text-gray-900 whitespace-pre-wrap">{selectedFeedback.message}</p>
+                    <p className="text-gray-800 whitespace-pre-wrap">{selectedFeedback.message}</p>
                   </div>
                 </div>
               </div>

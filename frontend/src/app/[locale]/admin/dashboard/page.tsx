@@ -6,78 +6,108 @@
  * @see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
  */
 
-import StatsCard from '@/components/admin/StatsCard';
-import ChartSection from '@/components/admin/ChartSection';
-import RecentActivities from '@/components/admin/RecentActivities';
-import { generatePageMetadata } from '@/utils/metadata';
+'use client';
 
-export async function generateMetadata() {
-  return generatePageMetadata('adminDashboard');
-}
+import React, { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
+import AirQualityTable from '@/components/admin/AirQualityTable';
+import TrafficFlowTable from '@/components/admin/TrafficFlowTable';
+import FloodMonitoringTable from '@/components/admin/FloodMonitoringTable';
+import WeatherTable from '@/components/admin/WeatherTable';
+import FeedbackTable from '@/components/admin/FeedbackTable';
+import { getLatestTrafficFlow, TrafficFlowData } from '@/services/trafficFlowService';
+import { getLatestFloodMonitoring, FloodMonitoringData } from '@/services/floodMonitoringService';
 
 export default function AdminDashboard() {
-  const stats = [
-    {
-      title: 'Tổng số thiết bị',
-      value: '1,234',
-      change: '+12%',
-      iconName: 'dashboard',
-      color: 'bg-blue-500',
-    },
-    {
-      title: 'Giao thông',
-      value: '567',
-      change: '+8%',
-      iconName: 'traffic',
-      color: 'bg-green-500',
-    },
-    {
-      title: 'Môi trường',
-      value: '89',
-      change: '-3%',
-      iconName: 'environment',
-      color: 'bg-yellow-500',
-    },
-    {
-      title: 'Cảnh báo',
-      value: '23',
-      change: '+5%',
-      iconName: 'alert',
-      color: 'bg-red-500',
-    },
-  ];
+  const t = useTranslations('adminDashboard');
+  const [trafficFlowData, setTrafficFlowData] = useState<TrafficFlowData[]>([]);
+  const [floodMonitoringData, setFloodMonitoringData] = useState<FloodMonitoringData[]>([]);
+
+  // Update document title
+  useEffect(() => {
+    document.title = `Open-Terra - ${t('title')}`;
+  }, [t]);
+
+  // Fetch traffic flow data
+  const fetchTrafficFlowData = async () => {
+    try {
+      const flowData = await getLatestTrafficFlow();
+      setTrafficFlowData(flowData);
+    } catch (err) {
+      console.error('Error fetching traffic flow data:', err);
+    }
+  };
+
+  // Fetch flood monitoring data
+  const fetchFloodMonitoringData = async () => {
+    try {
+      const monitoringData = await getLatestFloodMonitoring();
+      setFloodMonitoringData(monitoringData);
+    } catch (err) {
+      console.error('Error fetching flood monitoring data:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchTrafficFlowData();
+    fetchFloodMonitoringData();
+    
+    // Refresh data every 30 seconds
+    const interval = setInterval(() => {
+      fetchTrafficFlowData();
+      fetchFloodMonitoringData();
+    }, 30000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
-        <p className="text-gray-600 mt-2">Tổng quan hệ thống Smart City</p>
+        <h1 className="text-3xl font-bold text-gray-800">{t('title')}</h1>
+        <p className="text-gray-600 mt-2">{t('subtitle')}</p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
-          <StatsCard
-            key={index}
-            title={stat.title}
-            value={stat.value}
-            change={stat.change}
-            iconName={stat.iconName}
-            color={stat.color}
-            index={index}
-          />
-        ))}
+      {/* Traffic Flow Section */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-3">
+          {t('sections.traffic')}
+        </h2>
+        <TrafficFlowTable sensors={trafficFlowData} onRefresh={fetchTrafficFlowData} />
       </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartSection title="Lưu lượng giao thông" description="Biểu đồ giao thông" />
-        <ChartSection title="Chất lượng môi trường" description="Biểu đồ môi trường" />
+      {/* Flood Monitoring Section */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-3">
+          {t('sections.flood')}
+        </h2>
+        <FloodMonitoringTable sensors={floodMonitoringData} onRefresh={fetchFloodMonitoringData} />
       </div>
 
-      {/* Recent Activities */}
-      <RecentActivities />
+      {/* Air Quality Section */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-3">
+          {t('sections.airQuality')}
+        </h2>
+        <AirQualityTable />
+      </div>
+
+      {/* Weather Section */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-3">
+          {t('sections.weather')}
+        </h2>
+        <WeatherTable />
+      </div>
+
+      {/* Feedback Section */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-3">
+          {t('sections.feedback')}
+        </h2>
+        <FeedbackTable />
+      </div>
     </div>
   );
 }
