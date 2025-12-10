@@ -9,6 +9,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { FloodMonitoringData } from '@/services/floodMonitoringService';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -18,6 +19,7 @@ interface FloodMonitoringTableProps {
 }
 
 export default function FloodMonitoringTable({ sensors, onRefresh }: FloodMonitoringTableProps) {
+  const t = useTranslations('adminFloodMonitoring');
   const [selectedSensor, setSelectedSensor] = useState<FloodMonitoringData | null>(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -37,13 +39,13 @@ export default function FloodMonitoringTable({ sensors, onRefresh }: FloodMonito
   const getStatusText = (status: string) => {
     switch (status?.toLowerCase()) {
       case 'normal':
-        return 'Bình thường';
+        return t('status.normal');
       case 'alert':
-        return 'Cảnh báo';
+        return t('status.alert');
       case 'danger':
-        return 'Nguy hiểm';
+        return t('status.danger');
       default:
-        return status || 'Không xác định';
+        return status || t('status.unknown');
     }
   };
 
@@ -101,9 +103,9 @@ export default function FloodMonitoringTable({ sensors, onRefresh }: FloodMonito
     });
 
     return [
-      { name: 'Bình thường', value: statusCounts.normal, color: '#22c55e' },
-      { name: 'Cảnh báo', value: statusCounts.alert, color: '#eab308' },
-      { name: 'Nguy hiểm', value: statusCounts.danger, color: '#ef4444' },
+      { name: t('status.normal'), value: statusCounts.normal, color: '#22c55e' },
+      { name: t('status.alert'), value: statusCounts.alert, color: '#eab308' },
+      { name: t('status.danger'), value: statusCounts.danger, color: '#ef4444' },
     ];
   };
 
@@ -113,24 +115,24 @@ export default function FloodMonitoringTable({ sensors, onRefresh }: FloodMonito
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Water Level Chart */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Mực nước các trạm</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('charts.waterLevel')}</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={getWaterLevelChartData()}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
-              <YAxis label={{ value: 'Mét (m)', angle: -90, position: 'insideLeft' }} />
+              <YAxis label={{ value: t('charts.meters'), angle: -90, position: 'insideLeft' }} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="waterLevel" name="Mực nước hiện tại" fill="#3b82f6" />
-              <Bar dataKey="alertLevel" name="Mức cảnh báo" fill="#eab308" />
-              <Bar dataKey="dangerLevel" name="Mức nguy hiểm" fill="#ef4444" />
+              <Bar dataKey="waterLevel" name={t('charts.currentLevel')} fill="#3b82f6" />
+              <Bar dataKey="alertLevel" name={t('charts.alertLevel')} fill="#eab308" />
+              <Bar dataKey="dangerLevel" name={t('charts.dangerLevel')} fill="#ef4444" />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Status Distribution Chart */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Phân bố trạng thái</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('charts.statusDistribution')}</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={getStatusChartData()}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -138,7 +140,7 @@ export default function FloodMonitoringTable({ sensors, onRefresh }: FloodMonito
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="value" name="Số lượng trạm" fill="#3b82f6" />
+              <Bar dataKey="value" name={t('charts.stationCount')} fill="#3b82f6" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -146,15 +148,15 @@ export default function FloodMonitoringTable({ sensors, onRefresh }: FloodMonito
 
       {/* Controls */}
       <div className="flex gap-4 items-center bg-white p-4 rounded-lg shadow">
-        <label className="font-semibold text-gray-900">Cảm biến ngập lụt</label>
+        <label className="font-semibold text-gray-900">{t('label')}</label>
         <div className="ml-auto flex gap-2">
-          <span className="text-sm text-gray-600">Tổng số: {sensors.length} cảm biến</span>
+          <span className="text-sm text-gray-600">{t('totalSensors', { count: sensors.length })}</span>
           {onRefresh && (
             <button
               onClick={onRefresh}
               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >
-              Làm mới
+              {t('refresh')}
             </button>
           )}
         </div>
@@ -167,28 +169,28 @@ export default function FloodMonitoringTable({ sensors, onRefresh }: FloodMonito
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Trạm
+                  {t('table.station')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Địa điểm
+                  {t('table.location')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Trạng thái
+                  {t('table.status')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Mực nước
+                  {t('table.waterLevel')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Mức cảnh báo
+                  {t('table.alertLevel')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Mức nguy hiểm
+                  {t('table.dangerLevel')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Cập nhật
+                  {t('table.updated')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Hành động
+                  {t('table.actions')}
                 </th>
               </tr>
             </thead>
@@ -196,7 +198,7 @@ export default function FloodMonitoringTable({ sensors, onRefresh }: FloodMonito
               {sensors.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="px-6 py-4 text-center text-gray-500">
-                    Không có dữ liệu cảm biến ngập lụt
+                    {t('table.noData')}
                   </td>
                 </tr>
               ) : (
@@ -243,7 +245,7 @@ export default function FloodMonitoringTable({ sensors, onRefresh }: FloodMonito
                           onClick={() => handleViewDetail(sensor)}
                           className="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700"
                         >
-                          Xem
+                          {t('table.view')}
                         </button>
                       </td>
                     </tr>
@@ -267,7 +269,7 @@ export default function FloodMonitoringTable({ sensors, onRefresh }: FloodMonito
           >
             {/* Modal Header */}
             <div className="flex justify-between items-center p-6 border-b border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900">Chi tiết cảm biến ngập lụt</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{t('modal.title')}</h2>
               <button
                 onClick={handleCloseModal}
                 className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
@@ -296,7 +298,7 @@ export default function FloodMonitoringTable({ sensors, onRefresh }: FloodMonito
                     {/* Status */}
                     <div className="flex gap-4">
                       <div>
-                        <span className="text-sm text-gray-600">Trạng thái: </span>
+                        <span className="text-sm text-gray-600">{t('modal.status')}: </span>
                         <span className={`px-3 py-1 inline-flex text-sm font-semibold rounded-full border ${getStatusColor(status)}`}>
                           {getStatusText(status)}
                         </span>
@@ -305,40 +307,40 @@ export default function FloodMonitoringTable({ sensors, onRefresh }: FloodMonito
 
                     {/* Station Info */}
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <h3 className="font-semibold text-gray-900 mb-2">Thông tin trạm</h3>
-                      <p className="text-gray-700"><span className="font-medium">Mã trạm:</span> #{stationID}</p>
-                      <p className="text-gray-700"><span className="font-medium">Địa chỉ:</span> {address}</p>
+                      <h3 className="font-semibold text-gray-900 mb-2">{t('modal.stationInfo')}</h3>
+                      <p className="text-gray-700"><span className="font-medium">{t('modal.stationId')}:</span> #{stationID}</p>
+                      <p className="text-gray-700"><span className="font-medium">{t('modal.address')}:</span> {address}</p>
                       {description && (
-                        <p className="text-gray-700"><span className="font-medium">Mô tả:</span> {description}</p>
+                        <p className="text-gray-700"><span className="font-medium">{t('modal.description')}:</span> {description}</p>
                       )}
-                      <p className="text-gray-700"><span className="font-medium">Tọa độ:</span> {lat.toFixed(6)}, {lng.toFixed(6)}</p>
+                      <p className="text-gray-700"><span className="font-medium">{t('modal.coordinates')}:</span> {lat.toFixed(6)}, {lng.toFixed(6)}</p>
                     </div>
 
                     {/* Water Level Metrics */}
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <h3 className="font-semibold text-gray-900 mb-2">Thông số mực nước</h3>
+                      <h3 className="font-semibold text-gray-900 mb-2">{t('modal.waterLevelMetrics')}</h3>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="bg-white p-3 rounded border border-blue-200">
-                          <p className="text-xs text-gray-600 mb-1">Mực nước hiện tại</p>
+                          <p className="text-xs text-gray-600 mb-1">{t('modal.currentLevel')}</p>
                           <p className="text-2xl font-bold text-blue-700">{waterLevel.toFixed(2)} m</p>
                         </div>
                         <div className="bg-white p-3 rounded border border-yellow-200">
-                          <p className="text-xs text-gray-600 mb-1">Mức cảnh báo</p>
+                          <p className="text-xs text-gray-600 mb-1">{t('modal.alertLevel')}</p>
                           <p className="text-2xl font-bold text-yellow-700">{alertLevel.toFixed(2)} m</p>
                         </div>
                         <div className="bg-white p-3 rounded border border-red-200">
-                          <p className="text-xs text-gray-600 mb-1">Mức nguy hiểm</p>
+                          <p className="text-xs text-gray-600 mb-1">{t('modal.dangerLevel')}</p>
                           <p className="text-2xl font-bold text-red-700">{dangerLevel.toFixed(2)} m</p>
                         </div>
                         {referenceLevel > 0 && (
                           <div className="bg-white p-3 rounded border border-gray-200">
-                            <p className="text-xs text-gray-600 mb-1">Mức tham chiếu</p>
+                            <p className="text-xs text-gray-600 mb-1">{t('modal.referenceLevel')}</p>
                             <p className="text-2xl font-bold text-gray-700">{referenceLevel.toFixed(2)} m</p>
                           </div>
                         )}
                         {measuredDistance > 0 && (
                           <div className="bg-white p-3 rounded border border-purple-200">
-                            <p className="text-xs text-gray-600 mb-1">Khoảng cách đo</p>
+                            <p className="text-xs text-gray-600 mb-1">{t('modal.measuredDistance')}</p>
                             <p className="text-2xl font-bold text-purple-700">{measuredDistance.toFixed(2)} m</p>
                           </div>
                         )}
@@ -348,9 +350,9 @@ export default function FloodMonitoringTable({ sensors, onRefresh }: FloodMonito
                     {/* Progress Bar */}
                     {dangerLevel > 0 && (
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-2">Mức độ nguy hiểm</h3>
+                        <h3 className="font-semibold text-gray-900 mb-2">{t('modal.dangerLevel')}</h3>
                         <div className="flex justify-between text-xs text-gray-600 mb-1">
-                          <span>Mực nước so với mức nguy hiểm</span>
+                          <span>{t('modal.waterLevelVsDanger')}</span>
                           <span>{((waterLevel / dangerLevel) * 100).toFixed(0)}%</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-3">
@@ -370,7 +372,7 @@ export default function FloodMonitoringTable({ sensors, onRefresh }: FloodMonito
 
                     {/* Timestamp */}
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-2">Thời gian cập nhật</h3>
+                      <h3 className="font-semibold text-gray-900 mb-2">{t('modal.lastUpdate')}</h3>
                       <p className="text-gray-700">{timestamp ? formatDate(timestamp) : 'N/A'}</p>
                     </div>
                   </>
@@ -384,7 +386,7 @@ export default function FloodMonitoringTable({ sensors, onRefresh }: FloodMonito
                 onClick={handleCloseModal}
                 className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 text-gray-700"
               >
-                Đóng
+                {t('close')}
               </button>
             </div>
           </div>

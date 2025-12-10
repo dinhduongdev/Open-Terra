@@ -6,14 +6,17 @@
  * @see https://github.com/dinhduongdev/Open-Terra The Open-Terra GitHub project
  */
 
-'use client';
-
 import React from 'react';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
+import { generatePageMetadata } from '@/utils/metadata';
 import FeedbackForm from '@/components/feedback/FeedbackForm';
 
-export default function FeedbackPage() {
-  const t = useTranslations('feedback');
+export async function generateMetadata() {
+  return generatePageMetadata('feedback');
+}
+
+export default async function FeedbackPage() {
+  const t = await getTranslations('feedback');
 
   return (
     <div className="min-h-screen bg-gray-50">

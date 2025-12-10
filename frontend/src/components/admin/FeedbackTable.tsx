@@ -126,7 +126,7 @@ export default function FeedbackTable() {
                 setCategoryFilter(e.target.value ? e.target.value as FeedbackCategory : undefined);
                 setCurrentPage(1);
               }}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800"
             >
               <option value="">{t('list.filterAll')}</option>
               {Object.values(FeedbackCategory).map((cat) => (

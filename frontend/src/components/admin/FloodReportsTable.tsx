@@ -9,12 +9,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { FloodReport } from '@/components/common/FloodReportForm';
 import { getFloodReports, verifyFloodReport } from '@/services/floodReportService';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import toast from 'react-hot-toast';
 
 export default function FloodReportsTable() {
+  const t = useTranslations('adminFloodReports');
   const [reports, setReports] = useState<FloodReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +41,7 @@ export default function FloodReportsTable() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch reports';
       setError(errorMessage);
-      toast.error('Không thể tải danh sách báo cáo');
+      toast.error(t('errors.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -94,18 +96,18 @@ export default function FloodReportsTable() {
 
   const handleVerify = async (report: FloodReport) => {
     if (!report.numeric_id) {
-      toast.error('Không thể xác minh báo cáo. ID không hợp lệ.');
+      toast.error(t('errors.verifyInvalidId'));
       return;
     }
     try {
       setVerifying(report.id);
       await verifyFloodReport(report.numeric_id);
-      toast.success('Xác minh báo cáo thành công!');
+      toast.success(t('success.verified'));
       // After verification, refresh the list
       await fetchReports();
     } catch (err) {
       console.error('Error verifying report:', err);
-      toast.error('Không thể xác minh báo cáo. Vui lòng thử lại.');
+      toast.error(t('errors.verifyFailed'));
     } finally {
       setVerifying(null);
     }
@@ -147,8 +149,8 @@ export default function FloodReportsTable() {
     });
 
     return [
-      { name: 'Đã báo cáo', value: statusCounts.Reported, color: '#eab308' },
-      { name: 'Đã xác minh', value: statusCounts.Verified, color: '#3b82f6' },
+      { name: t('status.reported'), value: statusCounts.Reported, color: '#eab308' },
+      { name: t('status.verified'), value: statusCounts.Verified, color: '#3b82f6' },
     ];
   };
 
@@ -163,13 +165,13 @@ export default function FloodReportsTable() {
   if (error) {
     return (
       <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-        <p className="font-bold">Lỗi</p>
+        <p className="font-bold">{t('error')}</p>
         <p>{error}</p>
         <button
           onClick={fetchReports}
           className="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
         >
-          Thử lại
+          {t('retry')}
         </button>
       </div>
     );
@@ -181,7 +183,7 @@ export default function FloodReportsTable() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Severity Chart */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Báo cáo theo mức độ</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('charts.bySeverity')}</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={getSeverityChartData()}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -189,7 +191,7 @@ export default function FloodReportsTable() {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="value" name="Số lượng">
+              <Bar dataKey="value" name={t('charts.count')}>
                 {getSeverityChartData().map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
@@ -200,7 +202,7 @@ export default function FloodReportsTable() {
 
         {/* Status Chart */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Báo cáo theo trạng thái</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('charts.byStatus')}</h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -226,7 +228,7 @@ export default function FloodReportsTable() {
 
       {/* Filter Controls */}
       <div className="flex gap-4 items-center bg-white p-4 rounded-lg shadow">
-        <label className="font-semibold text-gray-900">Lọc theo trạng thái:</label>
+        <label className="font-semibold text-gray-900">{t('filter.label')}</label>
         <select
           value={statusFilter || 'all'}
           onChange={(e) => {
@@ -235,15 +237,15 @@ export default function FloodReportsTable() {
           }}
           className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
         >
-          <option value="all">Tất cả</option>
-          <option value="Reported">Đã báo cáo</option>
-          <option value="Verified">Đã xác minh</option>
+          <option value="all">{t('filter.all')}</option>
+          <option value="Reported">{t('status.reported')}</option>
+          <option value="Verified">{t('status.verified')}</option>
         </select>
         <button
           onClick={fetchReports}
           className="ml-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
-          Làm mới
+          {t('filter.refresh')}
         </button>
       </div>
 
@@ -254,25 +256,25 @@ export default function FloodReportsTable() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Người báo cáo
+                  {t('table.reporter')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Vị trí
+                  {t('table.location')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Mức độ
+                  {t('table.severity')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Trạng thái
+                  {t('table.status')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Mô tả
+                  {t('table.description')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Thời gian
+                  {t('table.time')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Hành động
+                  {t('table.actions')}
                 </th>
               </tr>
             </thead>
@@ -280,7 +282,7 @@ export default function FloodReportsTable() {
               {reports.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
-                    Không tìm thấy báo cáo ngập lụt
+                    {t('table.noReports')}
                   </td>
                 </tr>
               ) : (
@@ -316,7 +318,7 @@ export default function FloodReportsTable() {
                         onClick={() => handleViewDetail(report)}
                         className="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 mr-2"
                       >
-                        Xem
+                        {t('table.view')}
                       </button>
                       {report.status === 'Reported' && (
                         <button 
@@ -324,7 +326,7 @@ export default function FloodReportsTable() {
                           disabled={verifying === report.id}
                           className="bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          {verifying === report.id ? 'Đang xử lý...' : 'Xác minh'}
+                          {verifying === report.id ? t('table.verifying') : t('table.verify')}
                         </button>
                       )}
                     </td>
@@ -339,7 +341,7 @@ export default function FloodReportsTable() {
       {/* Pagination */}
       <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow">
         <div className="text-sm text-gray-700">
-          Trang {currentPage}
+          {t('pagination.page')} {currentPage}
         </div>
         <div className="flex gap-2">
           <button
@@ -347,14 +349,14 @@ export default function FloodReportsTable() {
             disabled={currentPage === 1}
             className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Trước
+            {t('pagination.previous')}
           </button>
           <button
             onClick={() => setCurrentPage(prev => prev + 1)}
             disabled={reports.length < itemsPerPage}
             className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Sau
+            {t('pagination.next')}
           </button>
         </div>
       </div>
@@ -371,7 +373,7 @@ export default function FloodReportsTable() {
           >
             {/* Modal Header */}
             <div className="flex justify-between items-center p-6 border-b border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900">Chi tiết báo cáo ngập lụt</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{t('modal.title')}</h2>
               <button
                 onClick={handleCloseModal}
                 className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
@@ -385,13 +387,13 @@ export default function FloodReportsTable() {
               {/* Status and Severity */}
               <div className="flex gap-4">
                 <div>
-                  <span className="text-sm text-gray-600">Trạng thái: </span>
+                  <span className="text-sm text-gray-600">{t('modal.status')}: </span>
                   <span className={`px-3 py-1 inline-flex text-sm font-semibold rounded-full border ${getStatusColor(selectedReport.status)}`}>
-                    {selectedReport.status === 'Reported' ? 'Đã báo cáo' : 'Đã xác minh'}
+                    {selectedReport.status === 'Reported' ? t('status.reported') : t('status.verified')}
                   </span>
                 </div>
                 <div>
-                  <span className="text-sm text-gray-600">Mức độ: </span>
+                  <span className="text-sm text-gray-600">{t('modal.severity')}: </span>
                   <span className={`px-3 py-1 inline-flex text-sm font-semibold rounded-full border ${getSeverityColor(selectedReport.severity)}`}>
                     {selectedReport.severity}
                   </span>
@@ -400,14 +402,14 @@ export default function FloodReportsTable() {
 
               {/* Reporter Info */}
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Thông tin người báo cáo</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('modal.reporterInfo')}</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-600">Tên người dùng</p>
+                    <p className="text-sm text-gray-600">{t('modal.name')}</p>
                     <p className="font-medium text-gray-900">{selectedReport.reporter_username}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Thời gian báo cáo</p>
+                    <p className="text-sm text-gray-600">{t('modal.time')}</p>
                     <p className="font-medium text-gray-900">{formatDate(selectedReport.timestamp)}</p>
                   </div>
                 </div>
@@ -415,19 +417,19 @@ export default function FloodReportsTable() {
 
               {/* Location Info */}
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Thông tin vị trí</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('modal.location')}</h3>
                 <div className="space-y-2">
                   <div>
-                    <p className="text-sm text-gray-600">Tên đường</p>
+                    <p className="text-sm text-gray-600">{t('modal.street')}</p>
                     <p className="font-medium text-gray-900">{selectedReport.street_name}</p>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-600">Vĩ độ</p>
+                      <p className="text-sm text-gray-600">{t('modal.latitude')}</p>
                       <p className="font-medium text-gray-900">{selectedReport.latitude.toFixed(6)}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Kinh độ</p>
+                      <p className="text-sm text-gray-600">{t('modal.longitude')}</p>
                       <p className="font-medium text-gray-900">{selectedReport.longitude.toFixed(6)}</p>
                     </div>
                   </div>
@@ -436,14 +438,14 @@ export default function FloodReportsTable() {
 
               {/* Description */}
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Mô tả chi tiết</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('modal.description')}</h3>
                 <p className="text-gray-700 whitespace-pre-wrap">{selectedReport.description}</p>
               </div>
 
               {/* Photos */}
               {selectedReport.photo_urls && selectedReport.photo_urls.length > 0 && (
                 <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Hình ảnh</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('modal.photos')}</h3>
                   <div className="grid grid-cols-2 gap-4">
                     {selectedReport.photo_urls.map((url, index) => (
                       <img
@@ -464,7 +466,7 @@ export default function FloodReportsTable() {
                 onClick={handleCloseModal}
                 className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 font-medium"
               >
-                Đóng
+                {t('close')}
               </button>
             </div>
           </div>

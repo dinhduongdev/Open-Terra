@@ -9,6 +9,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { getLatestAirQuality, formatStationForDisplay } from '@/services/airQualityService';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import toast from 'react-hot-toast';
@@ -42,6 +43,7 @@ interface FormattedStation {
 }
 
 export default function AirQualityTable() {
+  const t = useTranslations('adminAirQualityTable');
   const [stations, setStations] = useState<FormattedStation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,7 +64,7 @@ export default function AirQualityTable() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch air quality data';
       setError(errorMessage);
-      toast.error('Không thể tải dữ liệu chất lượng không khí');
+      toast.error(t('errors.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -79,12 +81,12 @@ export default function AirQualityTable() {
 
   const getLevelText = (level: string) => {
     const levels: Record<string, string> = {
-      good: 'Tốt',
-      moderate: 'Trung bình',
-      unhealthyForSensitiveGroups: 'Không tốt cho nhóm nhạy cảm',
-      unhealthy: 'Không tốt',
-      veryUnhealthy: 'Rất không tốt',
-      hazardous: 'Nguy hại',
+      good: t('levels.good'),
+      moderate: t('levels.moderate'),
+      unhealthyForSensitiveGroups: t('levels.unhealthyForSensitiveGroups'),
+      unhealthy: t('levels.unhealthy'),
+      veryUnhealthy: t('levels.veryUnhealthy'),
+      hazardous: t('levels.hazardous'),
     };
     return levels[level] || level;
   };
@@ -112,30 +114,30 @@ export default function AirQualityTable() {
   // Calculate chart data
   const getAqiDistributionData = () => {
     const distribution = {
-      'Tốt (0-50)': 0,
-      'Trung bình (51-100)': 0,
-      'Kém (101-150)': 0,
-      'Xấu (151-200)': 0,
-      'Rất xấu (201-300)': 0,
-      'Nguy hại (>300)': 0,
+      'good': 0,
+      'moderate': 0,
+      'poor': 0,
+      'bad': 0,
+      'veryBad': 0,
+      'hazardous': 0,
     };
 
     stations.forEach((station) => {
-      if (station.aqi <= 50) distribution['Tốt (0-50)']++;
-      else if (station.aqi <= 100) distribution['Trung bình (51-100)']++;
-      else if (station.aqi <= 150) distribution['Kém (101-150)']++;
-      else if (station.aqi <= 200) distribution['Xấu (151-200)']++;
-      else if (station.aqi <= 300) distribution['Rất xấu (201-300)']++;
-      else distribution['Nguy hại (>300)']++;
+      if (station.aqi <= 50) distribution['good']++;
+      else if (station.aqi <= 100) distribution['moderate']++;
+      else if (station.aqi <= 150) distribution['poor']++;
+      else if (station.aqi <= 200) distribution['bad']++;
+      else if (station.aqi <= 300) distribution['veryBad']++;
+      else distribution['hazardous']++;
     });
 
     return [
-      { name: 'Tốt', value: distribution['Tốt (0-50)'], color: '#22c55e' },
-      { name: 'Trung bình', value: distribution['Trung bình (51-100)'], color: '#eab308' },
-      { name: 'Kém', value: distribution['Kém (101-150)'], color: '#f97316' },
-      { name: 'Xấu', value: distribution['Xấu (151-200)'], color: '#ef4444' },
-      { name: 'Rất xấu', value: distribution['Rất xấu (201-300)'], color: '#a855f7' },
-      { name: 'Nguy hại', value: distribution['Nguy hại (>300)'], color: '#be123c' },
+      { name: t('charts.good'), value: distribution['good'], color: '#22c55e' },
+      { name: t('charts.moderate'), value: distribution['moderate'], color: '#eab308' },
+      { name: t('charts.poor'), value: distribution['poor'], color: '#f97316' },
+      { name: t('charts.bad'), value: distribution['bad'], color: '#ef4444' },
+      { name: t('charts.veryBad'), value: distribution['veryBad'], color: '#a855f7' },
+      { name: t('charts.hazardous'), value: distribution['hazardous'], color: '#be123c' },
     ];
   };
 
@@ -180,13 +182,13 @@ export default function AirQualityTable() {
   if (error) {
     return (
       <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-        <p className="font-bold">Lỗi</p>
+        <p className="font-bold">{t('error')}</p>
         <p>{error}</p>
         <button
           onClick={fetchStations}
           className="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
         >
-          Thử lại
+          {t('retry')}
         </button>
       </div>
     );
@@ -198,7 +200,7 @@ export default function AirQualityTable() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* AQI Distribution Chart */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Phân bố chất lượng không khí</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('charts.aqiDistribution')}</h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -223,7 +225,7 @@ export default function AirQualityTable() {
 
         {/* Pollutants Chart */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Chất ô nhiễm trung bình</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('charts.averagePollutants')}</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={getPollutantsData()}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -231,7 +233,7 @@ export default function AirQualityTable() {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="value" name="Giá trị TB" fill="#3b82f6" />
+              <Bar dataKey="value" name={t('charts.avgValue')} fill="#3b82f6" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -239,12 +241,12 @@ export default function AirQualityTable() {
 
       {/* Controls */}
       <div className="flex gap-4 items-center bg-white p-4 rounded-lg shadow">
-        <span className="font-semibold text-gray-900">Tổng số trạm: {stations.length}</span>
+        <span className="font-semibold text-gray-900">{t('totalStations', { count: stations.length })}</span>
         <button
           onClick={fetchStations}
           className="ml-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
-          Làm mới
+          {t('refresh')}
         </button>
       </div>
 
@@ -255,25 +257,25 @@ export default function AirQualityTable() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Trạm quan trắc
+                  {t('table.station')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Khu vực
+                  {t('table.area')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  AQI
+                  {t('table.aqi')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Mức độ
+                  {t('table.level')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  PM2.5
+                  {t('table.pm25')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Thời gian
+                  {t('table.time')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Hành động
+                  {t('table.actions')}
                 </th>
               </tr>
             </thead>
@@ -281,7 +283,7 @@ export default function AirQualityTable() {
               {stations.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
-                    Không tìm thấy dữ liệu trạm quan trắc
+                    {t('table.noData')}
                   </td>
                 </tr>
               ) : (
@@ -312,7 +314,7 @@ export default function AirQualityTable() {
                         onClick={() => handleViewDetail(station)}
                         className="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700"
                       >
-                        Xem
+                        {t('table.view')}
                       </button>
                     </td>
                   </tr>
@@ -335,7 +337,7 @@ export default function AirQualityTable() {
           >
             {/* Modal Header */}
             <div className="flex justify-between items-center p-6 border-b border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900">Chi tiết trạm quan trắc</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{t('modal.title')}</h2>
               <button
                 onClick={handleCloseModal}
                 className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
@@ -348,22 +350,22 @@ export default function AirQualityTable() {
             <div className="p-6 space-y-6">
               {/* Station Info */}
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Thông tin trạm</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('modal.stationInfo')}</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-600">Tên trạm</p>
+                    <p className="text-sm text-gray-600">{t('modal.stationName')}</p>
                     <p className="font-medium text-gray-900">{selectedStation.name}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Khu vực phục vụ</p>
+                    <p className="text-sm text-gray-600">{t('modal.areaServed')}</p>
                     <p className="font-medium text-gray-900">{selectedStation.areaServed}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Thời gian cập nhật</p>
+                    <p className="text-sm text-gray-600">{t('modal.lastUpdate')}</p>
                     <p className="font-medium text-gray-900">{formatDate(selectedStation.lastUpdate)}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Nguồn dữ liệu</p>
+                    <p className="text-sm text-gray-600">{t('modal.dataSource')}</p>
                     <p className="font-medium text-gray-900">{selectedStation.source}</p>
                   </div>
                 </div>
@@ -371,16 +373,16 @@ export default function AirQualityTable() {
 
               {/* AQI Info */}
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Chỉ số chất lượng không khí</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('modal.aqiIndex')}</h3>
                 <div className="flex items-center gap-4">
                   <div className="text-center">
-                    <p className="text-sm text-gray-600 mb-1">AQI</p>
+                    <p className="text-sm text-gray-600 mb-1">{t('modal.aqi')}</p>
                     <span className={`text-3xl font-bold px-4 py-2 rounded-full ${getAqiColor(selectedStation.aqi).replace('border', '')}`}>
                       {selectedStation.aqi}
                     </span>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Mức độ</p>
+                    <p className="text-sm text-gray-600">{t('modal.level')}</p>
                     <p className="text-xl font-semibold text-gray-900">{getLevelText(selectedStation.level)}</p>
                   </div>
                 </div>
@@ -388,7 +390,7 @@ export default function AirQualityTable() {
 
               {/* Pollutants */}
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Chất ô nhiễm</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('modal.pollutants')}</h3>
                 <div className="grid grid-cols-2 gap-4">
                   {selectedStation.pollutants.pm25 && (
                     <div className="bg-white p-3 rounded">
@@ -438,17 +440,17 @@ export default function AirQualityTable() {
               {/* Weather */}
               {(selectedStation.weather.temperature || selectedStation.weather.humidity) && (
                 <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Thời tiết</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('modal.weather')}</h3>
                   <div className="grid grid-cols-2 gap-4">
                     {selectedStation.weather.temperature && (
                       <div>
-                        <p className="text-sm text-gray-600">Nhiệt độ</p>
+                        <p className="text-sm text-gray-600">{t('modal.temperature')}</p>
                         <p className="font-medium text-gray-900">{selectedStation.weather.temperature.toFixed(1)}°C</p>
                       </div>
                     )}
                     {selectedStation.weather.humidity && (
                       <div>
-                        <p className="text-sm text-gray-600">Độ ẩm</p>
+                        <p className="text-sm text-gray-600">{t('modal.humidity')}</p>
                         <p className="font-medium text-gray-900">{selectedStation.weather.humidity.toFixed(0)}%</p>
                       </div>
                     )}
@@ -458,17 +460,17 @@ export default function AirQualityTable() {
 
               {/* Location */}
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Vị trí</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('modal.location')}</h3>
                 <div className="space-y-2">
                   <div>
-                    <p className="text-sm text-gray-600">Tọa độ</p>
+                    <p className="text-sm text-gray-600">{t('modal.coordinates')}</p>
                     <p className="font-medium text-gray-900">
                       {selectedStation.location.lat.toFixed(6)}, {selectedStation.location.lng.toFixed(6)}
                     </p>
                   </div>
                   {selectedStation.address && (
                     <div>
-                      <p className="text-sm text-gray-600">Địa chỉ</p>
+                      <p className="text-sm text-gray-600">{t('modal.address')}</p>
                       <p className="font-medium text-gray-900">
                         {selectedStation.address.addressLocality}, {selectedStation.address.addressCountry}
                       </p>
@@ -484,7 +486,7 @@ export default function AirQualityTable() {
                 onClick={handleCloseModal}
                 className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 font-medium"
               >
-                Đóng
+                {t('close')}
               </button>
             </div>
           </div>

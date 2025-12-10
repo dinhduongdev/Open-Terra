@@ -17,6 +17,7 @@ import toast from 'react-hot-toast';
 
 export default function TrafficReportsTable() {
   const t = useTranslations('traffic');
+  const tAdmin = useTranslations('adminTrafficReports');
   const [reports, setReports] = useState<TrafficReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +42,7 @@ export default function TrafficReportsTable() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch reports';
       setError(errorMessage);
-      toast.error('Không thể tải danh sách báo cáo giao thông');
+      toast.error(tAdmin('errors.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -96,18 +97,18 @@ export default function TrafficReportsTable() {
 
   const handleVerify = async (report: TrafficReport) => {
     if (!report.numeric_id) {
-      toast.error('Không thể xác minh báo cáo. ID không hợp lệ.');
+      toast.error(tAdmin('errors.verifyInvalidId'));
       return;
     }
     try {
       setVerifying(report.id);
       await verifyTrafficReport(report.numeric_id);
-      toast.success('Xác minh báo cáo giao thông thành công!');
+      toast.success(tAdmin('success.verified'));
       // After verification, refresh the list
       await fetchReports();
     } catch (err) {
       console.error('Error verifying report:', err);
-      toast.error('Không thể xác minh báo cáo. Vui lòng thử lại.');
+      toast.error(tAdmin('errors.verifyFailed'));
     } finally {
       setVerifying(null);
     }
@@ -149,8 +150,8 @@ export default function TrafficReportsTable() {
     });
 
     return [
-      { name: 'Đã báo cáo', value: statusCounts.Reported, color: '#eab308' },
-      { name: 'Đã xác minh', value: statusCounts.Verified, color: '#3b82f6' },
+      { name: tAdmin('status.reported'), value: statusCounts.Reported, color: '#eab308' },
+      { name: tAdmin('status.verified'), value: statusCounts.Verified, color: '#3b82f6' },
     ];
   };
 
@@ -165,13 +166,13 @@ export default function TrafficReportsTable() {
   if (error) {
     return (
       <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-        <p className="font-bold">Lỗi</p>
+        <p className="font-bold">{tAdmin('error')}</p>
         <p>{error}</p>
         <button
           onClick={fetchReports}
           className="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
         >
-          Thử lại
+          {tAdmin('retry')}
         </button>
       </div>
     );
@@ -183,7 +184,7 @@ export default function TrafficReportsTable() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Severity Chart */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Báo cáo theo mức độ</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{tAdmin('charts.bySeverity')}</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={getSeverityChartData()}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -191,7 +192,7 @@ export default function TrafficReportsTable() {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="value" name="Số lượng">
+              <Bar dataKey="value" name={tAdmin('charts.count')}>
                 {getSeverityChartData().map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
@@ -202,7 +203,7 @@ export default function TrafficReportsTable() {
 
         {/* Status Chart */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Báo cáo theo trạng thái</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{tAdmin('charts.byStatus')}</h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -228,7 +229,7 @@ export default function TrafficReportsTable() {
 
       {/* Filter Controls */}
       <div className="flex gap-4 items-center bg-white p-4 rounded-lg shadow">
-        <label className="font-semibold text-gray-900">Lọc theo trạng thái:</label>
+        <label className="font-semibold text-gray-900">{tAdmin('filter')}:</label>
         <select
           value={statusFilter || 'all'}
           onChange={(e) => {
@@ -237,15 +238,15 @@ export default function TrafficReportsTable() {
           }}
           className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
         >
-          <option value="all">Tất cả</option>
-          <option value="Reported">Đã báo cáo</option>
-          <option value="Verified">Đã xác minh</option>
+          <option value="all">{tAdmin('filterAll')}</option>
+          <option value="Reported">{tAdmin('filterReported')}</option>
+          <option value="Verified">{tAdmin('filterVerified')}</option>
         </select>
         <button
           onClick={fetchReports}
           className="ml-auto bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
-          Làm mới
+          {tAdmin('refresh')}
         </button>
       </div>
 
@@ -256,25 +257,25 @@ export default function TrafficReportsTable() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Người báo cáo
+                  {tAdmin('table.reporter')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Vị trí
+                  {tAdmin('table.location')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Mức độ
+                  {tAdmin('table.severity')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Trạng thái
+                  {tAdmin('table.status')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Mô tả
+                  {tAdmin('table.description')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Thời gian
+                  {tAdmin('table.time')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Hành động
+                  {tAdmin('table.actions')}
                 </th>
               </tr>
             </thead>
@@ -282,7 +283,7 @@ export default function TrafficReportsTable() {
               {reports.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
-                    Không tìm thấy báo cáo giao thông
+                    {tAdmin('table.noReports')}
                   </td>
                 </tr>
               ) : (
@@ -318,7 +319,7 @@ export default function TrafficReportsTable() {
                         onClick={() => handleViewDetail(report)}
                         className="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 mr-2"
                       >
-                        Xem
+                        {tAdmin('table.view')}
                       </button>
                       {report.status === 'Reported' && (
                         <button 
@@ -326,7 +327,7 @@ export default function TrafficReportsTable() {
                           disabled={verifying === report.id}
                           className="bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          {verifying === report.id ? 'Đang xử lý...' : 'Xác minh'}
+                          {verifying === report.id ? tAdmin('verifying') : tAdmin('verify')}
                         </button>
                       )}
                     </td>
@@ -341,7 +342,7 @@ export default function TrafficReportsTable() {
       {/* Pagination */}
       <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow">
         <div className="text-sm text-gray-700">
-          Trang {currentPage}
+          {tAdmin('page')} {currentPage}
         </div>
         <div className="flex gap-2">
           <button
@@ -349,14 +350,14 @@ export default function TrafficReportsTable() {
             disabled={currentPage === 1}
             className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Trước
+            {tAdmin('pagination.previous')}
           </button>
           <button
             onClick={() => setCurrentPage(prev => prev + 1)}
             disabled={reports.length < itemsPerPage}
             className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Sau
+            {tAdmin('pagination.next')}
           </button>
         </div>
       </div>
@@ -373,7 +374,7 @@ export default function TrafficReportsTable() {
           >
             {/* Modal Header */}
             <div className="flex justify-between items-center p-6 border-b border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900">Chi tiết báo cáo giao thông</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{tAdmin('modal.title')}</h2>
               <button
                 onClick={handleCloseModal}
                 className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
@@ -387,13 +388,13 @@ export default function TrafficReportsTable() {
               {/* Status and Severity */}
               <div className="flex gap-4">
                 <div>
-                  <span className="text-sm text-gray-600">Trạng thái: </span>
+                  <span className="text-sm text-gray-600">{tAdmin('modal.status')}: </span>
                   <span className={`px-3 py-1 inline-flex text-sm font-semibold rounded-full border ${getStatusColor(selectedReport.status)}`}>
-                    {selectedReport.status === 'Reported' ? 'Đã báo cáo' : 'Đã xác minh'}
+                    {selectedReport.status === 'Reported' ? tAdmin('status.reported') : tAdmin('status.verified')}
                   </span>
                 </div>
                 <div>
-                  <span className="text-sm text-gray-600">Mức độ: </span>
+                  <span className="text-sm text-gray-600">{tAdmin('modal.severity')}: </span>
                   <span className={`px-3 py-1 inline-flex text-sm font-semibold rounded-full border ${getSeverityColor(selectedReport.severity)}`}>
                     {selectedReport.severity}
                   </span>
@@ -402,28 +403,28 @@ export default function TrafficReportsTable() {
 
               {/* Reporter Info */}
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-gray-900 mb-2">Thông tin người báo cáo</h3>
-                <p className="text-gray-700"><span className="font-medium">Tên:</span> {selectedReport.reporter_username}</p>
-                <p className="text-gray-700"><span className="font-medium">Thời gian:</span> {formatDate(selectedReport.timestamp)}</p>
+                <h3 className="font-semibold text-gray-900 mb-2">{tAdmin('modal.reporterInfo')}</h3>
+                <p className="text-gray-700"><span className="font-medium">{tAdmin('modal.name')}:</span> {selectedReport.reporter_username}</p>
+                <p className="text-gray-700"><span className="font-medium">{tAdmin('modal.time')}:</span> {formatDate(selectedReport.timestamp)}</p>
               </div>
 
               {/* Location Info */}
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-gray-900 mb-2">Vị trí</h3>
-                <p className="text-gray-700"><span className="font-medium">Đường:</span> {selectedReport.street_name}</p>
-                <p className="text-gray-700"><span className="font-medium">Tọa độ:</span> {selectedReport.latitude.toFixed(6)}, {selectedReport.longitude.toFixed(6)}</p>
+                <h3 className="font-semibold text-gray-900 mb-2">{tAdmin('modal.location')}</h3>
+                <p className="text-gray-700"><span className="font-medium">{tAdmin('modal.street')}:</span> {selectedReport.street_name}</p>
+                <p className="text-gray-700"><span className="font-medium">{tAdmin('modal.coordinates')}:</span> {selectedReport.latitude.toFixed(6)}, {selectedReport.longitude.toFixed(6)}</p>
               </div>
 
               {/* Description */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Mô tả</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">{tAdmin('modal.description')}</h3>
                 <p className="text-gray-700 whitespace-pre-wrap">{selectedReport.description}</p>
               </div>
 
               {/* Photos */}
               {selectedReport.photo_urls && selectedReport.photo_urls.length > 0 && (
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Hình ảnh</h3>
+                  <h3 className="font-semibold text-gray-900 mb-2">{tAdmin('modal.photos')}</h3>
                   <div className="grid grid-cols-2 gap-4">
                     {selectedReport.photo_urls.map((url, index) => (
                       <img
@@ -444,7 +445,7 @@ export default function TrafficReportsTable() {
                 onClick={handleCloseModal}
                 className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 text-gray-700"
               >
-                Đóng
+                {tAdmin('close')}
               </button>
               {selectedReport.status === 'Reported' && (
                 <button
@@ -455,7 +456,7 @@ export default function TrafficReportsTable() {
                   disabled={verifying === selectedReport.id}
                   className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {verifying === selectedReport.id ? 'Đang xử lý...' : 'Xác minh báo cáo'}
+                  {verifying === selectedReport.id ? tAdmin('verifying') : tAdmin('modal.verifyButton')}
                 </button>
               )}
             </div>

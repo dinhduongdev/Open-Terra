@@ -72,7 +72,7 @@
       "streetNamePlaceholder": "Ex: Nguyen Hue Street",
       "streetNameRequired": "Please enter street name",
       "currentLocationButton": "Current Location",
-      "currentLocationSuccess": "✓ Used current location (Lat: {lat}, Lng: {lng})",
+      "currentLocationSuccess": "Used current location (Lat: {lat}, Lng: {lng})",
       "locationError": "Unable to get current location. Please enter manually.",
       "locationNotSupported": "Browser does not support geolocation.",
       "severity": "Severity Level",
@@ -557,6 +557,7 @@
     "floodMap": "Flood Map",
     "airQuality": "Air Quality",
     "weather": "Weather",
+    "feedback": "Feedback",
     "login": "Login",
     "register": "Register",
     "adminDashboard": "Admin Dashboard",
@@ -707,6 +708,156 @@
       "error": "Failed to update feedback status"
     }
   },
+  "adminSidebar": {
+    "title": "Smart City",
+    "subtitle": "Admin Panel",
+    "menu": {
+      "dashboard": "Dashboard",
+      "traffic": "Traffic",
+      "flood": "Flood",
+      "airQuality": "Air Quality",
+      "weather": "Weather",
+      "feedback": "Feedback",
+      "alerts": "Alerts"
+    },
+    "user": {
+      "role": "Admin",
+      "email": "admin@smartcity.vn"
+    }
+  },
+  "adminHeader": {
+    "searchPlaceholder": "Search...",
+    "logoutSuccess": "Logged out successfully!",
+    "user": {
+      "name": "Admin",
+      "role": "Administrator",
+      "email": "admin@smartcity.vn"
+    }
+  },
+  "userMenu": {
+    "goToHome": "Go to Home",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "adminTraffic": {
+    "pageTitle": "Traffic Management",
+    "title": "Traffic Reports Management",
+    "subtitle": "View and manage traffic reports and sensor data",
+    "sensorDataTitle": "Traffic Sensor Data",
+    "citizenReportsTitle": "Citizen Reports"
+  },
+  "adminTrafficFlow": {
+    "status": {
+      "congested": "Congested",
+      "smooth": "Smooth",
+      "slow": "Slow",
+      "jam": "Traffic Jam"
+    },
+    "charts": {
+      "averageSpeed": "Average Speed of Sensors",
+      "speed": "Speed (km/h)",
+      "intensityOccupancy": "Traffic Intensity & Occupancy",
+      "intensity": "Intensity",
+      "occupancy": "Occupancy (%)"
+    },
+    "table": {
+      "title": "Traffic Sensors",
+      "total": "Total",
+      "sensors": "sensors",
+      "station": "Station",
+      "location": "Location",
+      "status": "Status",
+      "avgSpeed": "Avg Speed",
+      "intensity": "Intensity",
+      "occupancy": "Occupancy",
+      "lane": "Lane",
+      "updated": "Updated",
+      "actions": "Actions",
+      "noData": "No traffic sensor data available",
+      "vehiclesPerMin": "vehicles/min",
+      "view": "View"
+    },
+    "modal": {
+      "title": "Traffic Sensor Details",
+      "status": "Status",
+      "stationInfo": "Station Information",
+      "stationId": "Station ID",
+      "lane": "Lane",
+      "address": "Address",
+      "coordinates": "Coordinates",
+      "trafficMetrics": "Traffic Metrics",
+      "averageSpeed": "Average Speed",
+      "vehicleIntensity": "Vehicle Intensity",
+      "vehiclesPerMin": "vehicles/min",
+      "roadOccupancy": "Road Occupancy",
+      "congested": "Congested",
+      "yes": "Yes",
+      "no": "No",
+      "updateTime": "Update Time"
+    },
+    "refresh": "Refresh",
+    "close": "Close"
+  },
+  "adminTrafficReports": {
+    "errors": {
+      "loadFailed": "Unable to load traffic reports",
+      "verifyInvalidId": "Unable to verify report. Invalid ID.",
+      "verifyFailed": "Unable to verify report. Please try again."
+    },
+    "success": {
+      "verified": "Traffic report verified successfully!"
+    },
+    "error": "Error",
+    "retry": "Retry",
+    "charts": {
+      "bySeverity": "Reports by Severity",
+      "byStatus": "Reports by Status",
+      "count": "Count"
+    },
+    "status": {
+      "reported": "Reported",
+      "verified": "Verified"
+    },
+    "filter": "Filter by status",
+    "filterAll": "All",
+    "filterReported": "Reported",
+    "filterVerified": "Verified",
+    "refresh": "Refresh",
+    "table": {
+      "reporter": "Reporter",
+      "location": "Location",
+      "severity": "Severity",
+      "status": "Status",
+      "description": "Description",
+      "time": "Time",
+      "actions": "Actions",
+      "noReports": "No traffic reports found",
+      "view": "View"
+    },
+    "verify": "Verify",
+    "verifying": "Processing...",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "page": "Page",
+    "modal": {
+      "title": "Traffic Report Details",
+      "status": "Status",
+      "severity": "Severity",
+      "reporterInfo": "Reporter Information",
+      "name": "Name",
+      "time": "Time",
+      "location": "Location",
+      "street": "Street",
+      "coordinates": "Coordinates",
+      "description": "Description",
+      "photos": "Photos",
+      "verifyButton": "Verify Report"
+    },
+    "close": "Close"
+  },
   "export": {
     "title": "Export Data",
     "button": "Export Data",
@@ -738,5 +889,272 @@
       "TrafficFlowObserved": "Traffic Flow",
       "FloodMonitoring": "Flood Monitoring"
     }
+  },
+  "adminFlood": {
+    "title": "Flood Report Management",
+    "description": "View and manage flood reports and sensor data",
+    "sensorSection": "Flood Sensor Data",
+    "reportSection": "Reports from Citizens"
+  },
+  "adminFloodReports": {
+    "errors": {
+      "loadFailed": "Failed to load reports",
+      "verifyInvalidId": "Cannot verify report. Invalid ID.",
+      "verifyFailed": "Cannot verify report. Please try again."
+    },
+    "success": {
+      "verified": "Report verified successfully!"
+    },
+    "error": "Error",
+    "retry": "Try Again",
+    "charts": {
+      "bySeverity": "Reports by Severity",
+      "byStatus": "Reports by Status",
+      "count": "Count"
+    },
+    "status": {
+      "reported": "Reported",
+      "verified": "Verified"
+    },
+    "filter": {
+      "label": "Filter by status:",
+      "all": "All",
+      "refresh": "Refresh"
+    },
+    "table": {
+      "reporter": "Reporter",
+      "location": "Location",
+      "severity": "Severity",
+      "status": "Status",
+      "description": "Description",
+      "time": "Time",
+      "actions": "Actions",
+      "noReports": "No flood reports found",
+      "view": "View",
+      "verify": "Verify",
+      "verifying": "Processing..."
+    },
+    "pagination": {
+      "page": "Page",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "modal": {
+      "title": "Flood Report Details",
+      "status": "Status",
+      "severity": "Severity",
+      "reporterInfo": "Reporter Information",
+      "name": "Username",
+      "time": "Report Time",
+      "location": "Location Information",
+      "street": "Street Name",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "description": "Detailed Description",
+      "photos": "Photos"
+    },
+    "close": "Close"
+  },
+  "adminFloodMonitoring": {
+    "status": {
+      "normal": "Normal",
+      "alert": "Alert",
+      "danger": "Danger",
+      "unknown": "Unknown"
+    },
+    "charts": {
+      "waterLevel": "Water Level by Station",
+      "statusDistribution": "Status Distribution",
+      "meters": "Meters (m)",
+      "currentLevel": "Current Water Level",
+      "alertLevel": "Alert Level",
+      "dangerLevel": "Danger Level",
+      "stationCount": "Station Count"
+    },
+    "label": "Flood Sensors",
+    "totalSensors": "Total: {count} sensors",
+    "refresh": "Refresh",
+    "table": {
+      "station": "Station",
+      "location": "Location",
+      "status": "Status",
+      "waterLevel": "Water Level",
+      "alertLevel": "Alert Level",
+      "dangerLevel": "Danger Level",
+      "updated": "Updated",
+      "actions": "Actions",
+      "noData": "No flood sensor data",
+      "view": "View"
+    },
+    "modal": {
+      "title": "Flood Sensor Details",
+      "status": "Status",
+      "stationInfo": "Station Information",
+      "stationId": "Station ID",
+      "address": "Address",
+      "description": "Description",
+      "coordinates": "Coordinates",
+      "waterLevelMetrics": "Water Level Metrics",
+      "currentLevel": "Current Water Level",
+      "alertLevel": "Alert Level",
+      "dangerLevel": "Danger Level",
+      "referenceLevel": "Reference Level",
+      "measuredDistance": "Measured Distance",
+      "waterLevelVsDanger": "Water level vs. danger level",
+      "lastUpdate": "Last Update"
+    },
+    "close": "Close"
+  },
+  "adminAirQuality": {
+    "title": "Air Quality Management",
+    "description": "Monitor and manage data from air quality monitoring stations"
+  },
+  "adminAirQualityTable": {
+    "errors": {
+      "loadFailed": "Failed to load air quality data"
+    },
+    "error": "Error",
+    "retry": "Try Again",
+    "levels": {
+      "good": "Good",
+      "moderate": "Moderate",
+      "unhealthyForSensitiveGroups": "Unhealthy for Sensitive Groups",
+      "unhealthy": "Unhealthy",
+      "veryUnhealthy": "Very Unhealthy",
+      "hazardous": "Hazardous"
+    },
+    "charts": {
+      "aqiDistribution": "Air Quality Distribution",
+      "averagePollutants": "Average Pollutants",
+      "avgValue": "Avg Value",
+      "good": "Good",
+      "moderate": "Moderate",
+      "poor": "Poor",
+      "bad": "Bad",
+      "veryBad": "Very Bad",
+      "hazardous": "Hazardous"
+    },
+    "totalStations": "Total stations: {count}",
+    "refresh": "Refresh",
+    "table": {
+      "station": "Station",
+      "area": "Area",
+      "aqi": "AQI",
+      "level": "Level",
+      "pm25": "PM2.5",
+      "time": "Time",
+      "actions": "Actions",
+      "noData": "No monitoring station data found",
+      "view": "View"
+    },
+    "modal": {
+      "title": "Station Details",
+      "stationInfo": "Station Information",
+      "stationName": "Station Name",
+      "areaServed": "Area Served",
+      "lastUpdate": "Last Update",
+      "dataSource": "Data Source",
+      "aqiIndex": "Air Quality Index",
+      "aqi": "AQI",
+      "level": "Level",
+      "pollutants": "Pollutants",
+      "weather": "Weather",
+      "temperature": "Temperature",
+      "humidity": "Humidity",
+      "location": "Location",
+      "coordinates": "Coordinates",
+      "address": "Address"
+    },
+    "close": "Close"
+  },
+  "adminWeather": {
+    "title": "Weather Management",
+    "description": "Monitor and manage data from weather monitoring stations"
+  },
+  "adminWeatherTable": {
+    "errors": {
+      "loadFailed": "Failed to load weather data"
+    },
+    "error": "Error",
+    "retry": "Try Again",
+    "uvLevels": {
+      "low": "Low",
+      "moderate": "Moderate",
+      "high": "High",
+      "veryHigh": "Very High",
+      "extreme": "Extreme"
+    },
+    "windDirections": {
+      "north": "North",
+      "northeast": "Northeast",
+      "east": "East",
+      "southeast": "Southeast",
+      "south": "South",
+      "southwest": "Southwest",
+      "west": "West",
+      "northwest": "Northwest"
+    },
+    "charts": {
+      "weatherMetrics": "Weather Metrics",
+      "temperatureDistribution": "Temperature Distribution",
+      "avgTemperature": "Avg Temperature",
+      "humidityDistribution": "Humidity Distribution",
+      "avgHumidity": "Avg Humidity",
+      "windSpeedDistribution": "Wind Speed Distribution",
+      "avgWindSpeed": "Avg Wind Speed",
+      "windVisibility": "Wind & Visibility",
+      "value": "Value"
+    },
+    "metrics": {
+      "temperature": "Temperature",
+      "feelsLike": "Feels Like",
+      "humidity": "Humidity",
+      "pressure": "Pressure",
+      "windSpeed": "Wind Speed",
+      "visibility": "Visibility",
+      "precipitation": "Precipitation"
+    },
+    "overview": {
+      "avgTemperature": "Average Temperature",
+      "avgHumidity": "Average Humidity",
+      "avgWindSpeed": "Average Wind Speed",
+      "avgPrecipitation": "Average Precipitation"
+    },
+    "totalStations": "Total stations: {count}",
+    "refresh": "Refresh",
+    "table": {
+      "title": "Detailed Weather Information",
+      "viewFull": "View Full Details",
+      "parameter": "Parameter",
+      "value": "Value",
+      "unit": "Unit",
+      "observedAt": "Observed At",
+      "station": "Weather Station",
+      "area": "Area",
+      "weatherType": "Weather Type",
+      "temperature": "Temperature",
+      "feelsLike": "Feels Like",
+      "humidity": "Humidity",
+      "pressure": "Atmospheric Pressure",
+      "windSpeed": "Wind Speed",
+      "windDirection": "Wind Direction",
+      "precipitation": "Precipitation",
+      "visibility": "Visibility",
+      "uvIndex": "UV Index Max",
+      "noData": "No weather station data found"
+    },
+    "modal": {
+      "title": "Complete Weather Information",
+      "stationInfo": "Station Information",
+      "stationName": "Station Name",
+      "area": "Area",
+      "address": "Address",
+      "dataSource": "Data Source",
+      "description": "Description",
+      "location": "Location",
+      "coordinates": "Coordinates",
+      "observationTime": "Observation Time"
+    },
+    "close": "Close"
   }
 }

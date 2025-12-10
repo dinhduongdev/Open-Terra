@@ -9,20 +9,23 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import WeatherTable from '@/components/admin/WeatherTable';
 
 export default function AdminWeatherPage() {
+  const t = useTranslations('adminWeather');
+  
   // Update document title
   useEffect(() => {
-    document.title = 'Open-Terra - Quản lý thời tiết';
-  }, []);
+    document.title = `Open-Terra - ${t('title')}`;
+  }, [t]);
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Quản lý Thời tiết</h1>
-          <p className="text-gray-600 mt-2">Theo dõi và quản lý dữ liệu thời tiết từ trạm quan trắc</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
+          <p className="text-gray-600 mt-2">{t('description')}</p>
         </div>
       </div>
       
