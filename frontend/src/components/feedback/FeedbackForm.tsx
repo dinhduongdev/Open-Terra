@@ -117,7 +117,7 @@ export default function FeedbackForm({ onSuccess, onCancel }: FeedbackFormProps)
           value={formData.username}
           onChange={handleChange}
           placeholder={t('namePlaceholder')}
-          className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent ${
+          className={`w-full px-4 py-2 border rounded-lg text-gray-800 placeholder:text-gray-400 ${
             errors.username ? 'border-red-500' : 'border-gray-300'
           }`}
         />
@@ -138,7 +138,7 @@ export default function FeedbackForm({ onSuccess, onCancel }: FeedbackFormProps)
           value={formData.email}
           onChange={handleChange}
           placeholder={t('emailPlaceholder')}
-          className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent ${
+          className={`w-full px-4 py-2 border rounded-lg text-gray-800 placeholder:text-gray-400 ${
             errors.email ? 'border-red-500' : 'border-gray-300'
           }`}
         />
@@ -157,7 +157,7 @@ export default function FeedbackForm({ onSuccess, onCancel }: FeedbackFormProps)
           name="category"
           value={formData.category}
           onChange={handleChange}
-          className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent ${
+          className={`w-full px-4 py-2 border rounded-lg text-gray-800 ${
             errors.category ? 'border-red-500' : 'border-gray-300'
           }`}
         >
@@ -184,7 +184,7 @@ export default function FeedbackForm({ onSuccess, onCancel }: FeedbackFormProps)
           onChange={handleChange}
           placeholder={t('messagePlaceholder')}
           rows={6}
-          className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none ${
+          className={`w-full px-4 py-2 border rounded-lg text-gray-800 placeholder:text-gray-400 resize-none ${
             errors.message ? 'border-red-500' : 'border-gray-300'
           }`}
         />

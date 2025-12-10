@@ -21,11 +21,11 @@ import FeedbackIcon from '../icon/FeedbackIcon';
 
 
 const menuItems = [
-  // {
-  //   titleKey: 'dashboard',
-  //   icon: DashboardIcon,
-  //   href: '/admin/dashboard',
-  // },
+  {
+    titleKey: 'dashboard',
+    icon: DashboardIcon,
+    href: '/admin/dashboard',
+  },
   {
     titleKey: 'traffic',
     icon: TrafficIcon,

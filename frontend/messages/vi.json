@@ -568,6 +568,17 @@
     "adminAlerts": "Quản lý cảnh báo",
     "adminFeedback": "Quản lý phản hồi"
   },
+  "adminDashboard": {
+    "title": "Dashboard",
+    "subtitle": "Tổng quan hệ thống Smart City",
+    "sections": {
+      "traffic": "Lưu lượng giao thông",
+      "flood": "Giám sát ngập lụt",
+      "airQuality": "Chất lượng không khí",
+      "weather": "Thời tiết",
+      "feedback": "Phản hồi từ người dân"
+    }
+  },
   "overview": {
     "title": "Tổng quan",
     "subtitle": "Thông tin tổng hợp về chất lượng môi trường và giao thông",
