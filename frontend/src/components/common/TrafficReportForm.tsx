@@ -8,8 +8,9 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
+import { getAddressFromCoordinates } from '@/services/floodReportService';
 
 export interface TrafficReport {
   id: string;
@@ -46,6 +47,12 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
 
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    // Trigger animation after mount
+    setIsOpen(true);
+  }, []);
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -56,13 +63,31 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
   const handleGetCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setFormData({
-            ...formData,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-          setUseCurrentLocation(true);
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          
+          try {
+            // Get address from coordinates using service
+            const streetName = await getAddressFromCoordinates(lat, lon);
+            
+            setFormData((prevData) => ({
+              ...prevData,
+              latitude: lat,
+              longitude: lon,
+              street_name: streetName,
+            }));
+            setUseCurrentLocation(true);
+          } catch (error) {
+            console.error('Error fetching address:', error);
+            // Still update coordinates even if address fetch fails
+            setFormData((prevData) => ({
+              ...prevData,
+              latitude: lat,
+              longitude: lon,
+            }));
+            setUseCurrentLocation(true);
+          }
         },
         (error) => {
           alert(t('locationError'));
@@ -117,12 +142,16 @@ export default function TrafficReportForm({ onSubmit, onClose }: TrafficReportFo
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center p-4"
+      className={`fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-500 ease-out ${
+        isOpen ? 'opacity-100' : 'opacity-0'
+      }`}
       style={{ zIndex: 9999, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
       onClick={handleBackdropClick}
     >
       <div
-        className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        className={`bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transition-all duration-500 ease-out ${
+          isOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0'
+        }`}
         style={{ position: 'relative', zIndex: 10000 }}
         onClick={(e) => e.stopPropagation()}
       >

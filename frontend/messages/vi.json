@@ -557,6 +557,7 @@
     "floodMap": "Bản đồ ngập nước",
     "airQuality": "Chất lượng không khí",
     "weather": "Thời tiết",
+    "feedback": "Phản hồi",
     "login": "Đăng nhập",
     "register": "Đăng ký",
     "adminDashboard": "Bảng điều khiển Admin",
@@ -707,6 +708,156 @@
       "error": "Không thể cập nhật trạng thái phản hồi"
     }
   },
+  "adminSidebar": {
+    "title": "Smart City",
+    "subtitle": "Bảng quản trị",
+    "menu": {
+      "dashboard": "Tổng quan",
+      "traffic": "Giao thông",
+      "flood": "Ngập nước",
+      "airQuality": "Chất lượng không khí",
+      "weather": "Thời tiết",
+      "feedback": "Phản hồi",
+      "alerts": "Cảnh báo"
+    },
+    "user": {
+      "role": "Quản trị viên",
+      "email": "admin@smartcity.vn"
+    }
+  },
+  "adminHeader": {
+    "searchPlaceholder": "Tìm kiếm...",
+    "logoutSuccess": "Đăng xuất thành công!",
+    "user": {
+      "name": "Admin",
+      "role": "Quản trị viên",
+      "email": "admin@smartcity.vn"
+    }
+  },
+  "userMenu": {
+    "goToHome": "Về trang chủ",
+    "profile": "Thông tin cá nhân",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất"
+  },
+  "adminTraffic": {
+    "pageTitle": "Quản lý giao thông",
+    "title": "Quản lý Báo cáo Giao thông",
+    "subtitle": "Xem và quản lý các báo cáo giao thông và dữ liệu cảm biến",
+    "sensorDataTitle": "Dữ liệu Cảm biến Giao thông",
+    "citizenReportsTitle": "Báo cáo từ Người dân"
+  },
+  "adminTrafficFlow": {
+    "status": {
+      "congested": "Tắc nghẽn",
+      "smooth": "Thông thoáng",
+      "slow": "Chậm",
+      "jam": "Kẹt xe"
+    },
+    "charts": {
+      "averageSpeed": "Tốc độ trung bình các cảm biến",
+      "speed": "Tốc độ (km/h)",
+      "intensityOccupancy": "Cường độ & Mật độ giao thông",
+      "intensity": "Cường độ",
+      "occupancy": "Mật độ (%)"
+    },
+    "table": {
+      "title": "Cảm biến giao thông",
+      "total": "Tổng số",
+      "sensors": "cảm biến",
+      "station": "Trạm",
+      "location": "Vị trí",
+      "status": "Trạng thái",
+      "avgSpeed": "Tốc độ TB",
+      "intensity": "Cường độ",
+      "occupancy": "Mật độ",
+      "lane": "Làn đường",
+      "updated": "Cập nhật",
+      "actions": "Hành động",
+      "noData": "Không có dữ liệu cảm biến giao thông",
+      "vehiclesPerMin": "xe/phút",
+      "view": "Xem"
+    },
+    "modal": {
+      "title": "Chi tiết cảm biến giao thông",
+      "status": "Trạng thái",
+      "stationInfo": "Thông tin trạm",
+      "stationId": "Mã trạm",
+      "lane": "Làn đường",
+      "address": "Địa chỉ",
+      "coordinates": "Tọa độ",
+      "trafficMetrics": "Thông số giao thông",
+      "averageSpeed": "Tốc độ trung bình",
+      "vehicleIntensity": "Cường độ xe",
+      "vehiclesPerMin": "xe/phút",
+      "roadOccupancy": "Mật độ đường",
+      "congested": "Tắc nghẽn",
+      "yes": "Có",
+      "no": "Không",
+      "updateTime": "Thời gian cập nhật"
+    },
+    "refresh": "Làm mới",
+    "close": "Đóng"
+  },
+  "adminTrafficReports": {
+    "errors": {
+      "loadFailed": "Không thể tải danh sách báo cáo giao thông",
+      "verifyInvalidId": "Không thể xác minh báo cáo. ID không hợp lệ.",
+      "verifyFailed": "Không thể xác minh báo cáo. Vui lòng thử lại."
+    },
+    "success": {
+      "verified": "Xác minh báo cáo giao thông thành công!"
+    },
+    "error": "Lỗi",
+    "retry": "Thử lại",
+    "charts": {
+      "bySeverity": "Báo cáo theo mức độ",
+      "byStatus": "Báo cáo theo trạng thái",
+      "count": "Số lượng"
+    },
+    "status": {
+      "reported": "Đã báo cáo",
+      "verified": "Đã xác minh"
+    },
+    "filter": "Lọc theo trạng thái",
+    "filterAll": "Tất cả",
+    "filterReported": "Đã báo cáo",
+    "filterVerified": "Đã xác minh",
+    "refresh": "Làm mới",
+    "table": {
+      "reporter": "Người báo cáo",
+      "location": "Vị trí",
+      "severity": "Mức độ",
+      "status": "Trạng thái",
+      "description": "Mô tả",
+      "time": "Thời gian",
+      "actions": "Hành động",
+      "noReports": "Không tìm thấy báo cáo giao thông",
+      "view": "Xem"
+    },
+    "verify": "Xác minh",
+    "verifying": "Đang xử lý...",
+    "pagination": {
+      "previous": "Trước",
+      "next": "Sau"
+    },
+    "page": "Trang",
+    "modal": {
+      "title": "Chi tiết báo cáo giao thông",
+      "status": "Trạng thái",
+      "severity": "Mức độ",
+      "reporterInfo": "Thông tin người báo cáo",
+      "name": "Tên",
+      "time": "Thời gian",
+      "location": "Vị trí",
+      "street": "Đường",
+      "coordinates": "Tọa độ",
+      "description": "Mô tả",
+      "photos": "Hình ảnh",
+      "verifyButton": "Xác minh báo cáo"
+    },
+    "close": "Đóng"
+  },
   "export": {
     "title": "Xuất dữ liệu",
     "button": "Xuất dữ liệu",
@@ -738,5 +889,272 @@
       "TrafficFlowObserved": "Lưu lượng giao thông",
       "FloodMonitoring": "Giám sát ngập lụt"
     }
+  },
+  "adminFlood": {
+    "title": "Quản lý Báo cáo Ngập lụt",
+    "description": "Xem và quản lý các báo cáo ngập lụt và dữ liệu cảm biến",
+    "sensorSection": "Dữ liệu Cảm biến Ngập lụt",
+    "reportSection": "Báo cáo từ Người dân"
+  },
+  "adminFloodReports": {
+    "errors": {
+      "loadFailed": "Không thể tải danh sách báo cáo",
+      "verifyInvalidId": "Không thể xác minh báo cáo. ID không hợp lệ.",
+      "verifyFailed": "Không thể xác minh báo cáo. Vui lòng thử lại."
+    },
+    "success": {
+      "verified": "Xác minh báo cáo thành công!"
+    },
+    "error": "Lỗi",
+    "retry": "Thử lại",
+    "charts": {
+      "bySeverity": "Báo cáo theo mức độ",
+      "byStatus": "Báo cáo theo trạng thái",
+      "count": "Số lượng"
+    },
+    "status": {
+      "reported": "Đã báo cáo",
+      "verified": "Đã xác minh"
+    },
+    "filter": {
+      "label": "Lọc theo trạng thái:",
+      "all": "Tất cả",
+      "refresh": "Làm mới"
+    },
+    "table": {
+      "reporter": "Người báo cáo",
+      "location": "Vị trí",
+      "severity": "Mức độ",
+      "status": "Trạng thái",
+      "description": "Mô tả",
+      "time": "Thời gian",
+      "actions": "Hành động",
+      "noReports": "Không tìm thấy báo cáo ngập lụt",
+      "view": "Xem",
+      "verify": "Xác minh",
+      "verifying": "Đang xử lý..."
+    },
+    "pagination": {
+      "page": "Trang",
+      "previous": "Trước",
+      "next": "Sau"
+    },
+    "modal": {
+      "title": "Chi tiết báo cáo ngập lụt",
+      "status": "Trạng thái",
+      "severity": "Mức độ",
+      "reporterInfo": "Thông tin người báo cáo",
+      "name": "Tên người dùng",
+      "time": "Thời gian báo cáo",
+      "location": "Thông tin vị trí",
+      "street": "Tên đường",
+      "latitude": "Vĩ độ",
+      "longitude": "Kinh độ",
+      "description": "Mô tả chi tiết",
+      "photos": "Hình ảnh"
+    },
+    "close": "Đóng"
+  },
+  "adminFloodMonitoring": {
+    "status": {
+      "normal": "Bình thường",
+      "alert": "Cảnh báo",
+      "danger": "Nguy hiểm",
+      "unknown": "Không xác định"
+    },
+    "charts": {
+      "waterLevel": "Mực nước các trạm",
+      "statusDistribution": "Phân bố trạng thái",
+      "meters": "Mét (m)",
+      "currentLevel": "Mực nước hiện tại",
+      "alertLevel": "Mức cảnh báo",
+      "dangerLevel": "Mức nguy hiểm",
+      "stationCount": "Số lượng trạm"
+    },
+    "label": "Cảm biến ngập lụt",
+    "totalSensors": "Tổng số: {count} cảm biến",
+    "refresh": "Làm mới",
+    "table": {
+      "station": "Trạm",
+      "location": "Địa điểm",
+      "status": "Trạng thái",
+      "waterLevel": "Mực nước",
+      "alertLevel": "Mức cảnh báo",
+      "dangerLevel": "Mức nguy hiểm",
+      "updated": "Cập nhật",
+      "actions": "Hành động",
+      "noData": "Không có dữ liệu cảm biến ngập lụt",
+      "view": "Xem"
+    },
+    "modal": {
+      "title": "Chi tiết cảm biến ngập lụt",
+      "status": "Trạng thái",
+      "stationInfo": "Thông tin trạm",
+      "stationId": "Mã trạm",
+      "address": "Địa chỉ",
+      "description": "Mô tả",
+      "coordinates": "Tọa độ",
+      "waterLevelMetrics": "Thông số mực nước",
+      "currentLevel": "Mực nước hiện tại",
+      "alertLevel": "Mức cảnh báo",
+      "dangerLevel": "Mức nguy hiểm",
+      "referenceLevel": "Mức tham chiếu",
+      "measuredDistance": "Khoảng cách đo",
+      "waterLevelVsDanger": "Mực nước so với mức nguy hiểm",
+      "lastUpdate": "Thời gian cập nhật"
+    },
+    "close": "Đóng"
+  },
+  "adminAirQuality": {
+    "title": "Quản lý Chất lượng Không khí",
+    "description": "Theo dõi và quản lý dữ liệu từ các trạm quan trắc không khí"
+  },
+  "adminAirQualityTable": {
+    "errors": {
+      "loadFailed": "Không thể tải dữ liệu chất lượng không khí"
+    },
+    "error": "Lỗi",
+    "retry": "Thử lại",
+    "levels": {
+      "good": "Tốt",
+      "moderate": "Trung bình",
+      "unhealthyForSensitiveGroups": "Không tốt cho nhóm nhạy cảm",
+      "unhealthy": "Không tốt",
+      "veryUnhealthy": "Rất không tốt",
+      "hazardous": "Nguy hại"
+    },
+    "charts": {
+      "aqiDistribution": "Phân bố chất lượng không khí",
+      "averagePollutants": "Chất ô nhiễm trung bình",
+      "avgValue": "Giá trị TB",
+      "good": "Tốt",
+      "moderate": "Trung bình",
+      "poor": "Kém",
+      "bad": "Xấu",
+      "veryBad": "Rất xấu",
+      "hazardous": "Nguy hại"
+    },
+    "totalStations": "Tổng số trạm: {count}",
+    "refresh": "Làm mới",
+    "table": {
+      "station": "Trạm quan trắc",
+      "area": "Khu vực",
+      "aqi": "AQI",
+      "level": "Mức độ",
+      "pm25": "PM2.5",
+      "time": "Thời gian",
+      "actions": "Hành động",
+      "noData": "Không tìm thấy dữ liệu trạm quan trắc",
+      "view": "Xem"
+    },
+    "modal": {
+      "title": "Chi tiết trạm quan trắc",
+      "stationInfo": "Thông tin trạm",
+      "stationName": "Tên trạm",
+      "areaServed": "Khu vực phục vụ",
+      "lastUpdate": "Thời gian cập nhật",
+      "dataSource": "Nguồn dữ liệu",
+      "aqiIndex": "Chỉ số chất lượng không khí",
+      "aqi": "AQI",
+      "level": "Mức độ",
+      "pollutants": "Chất ô nhiễm",
+      "weather": "Thời tiết",
+      "temperature": "Nhiệt độ",
+      "humidity": "Độ ẩm",
+      "location": "Vị trí",
+      "coordinates": "Tọa độ",
+      "address": "Địa chỉ"
+    },
+    "close": "Đóng"
+  },
+  "adminWeather": {
+    "title": "Quản lý Thời tiết",
+    "description": "Theo dõi và quản lý dữ liệu từ các trạm quan trắc thời tiết"
+  },
+  "adminWeatherTable": {
+    "errors": {
+      "loadFailed": "Không thể tải dữ liệu thời tiết"
+    },
+    "error": "Lỗi",
+    "retry": "Thử lại",
+    "uvLevels": {
+      "low": "Thấp",
+      "moderate": "Trung bình",
+      "high": "Cao",
+      "veryHigh": "Rất cao",
+      "extreme": "Cực cao"
+    },
+    "windDirections": {
+      "north": "Bắc",
+      "northeast": "Đông Bắc",
+      "east": "Đông",
+      "southeast": "Đông Nam",
+      "south": "Nam",
+      "southwest": "Tây Nam",
+      "west": "Tây",
+      "northwest": "Tây Bắc"
+    },
+    "charts": {
+      "weatherMetrics": "Các chỉ số thời tiết",
+      "temperatureDistribution": "Phân bố nhiệt độ",
+      "avgTemperature": "Nhiệt độ TB",
+      "humidityDistribution": "Phân bố độ ẩm",
+      "avgHumidity": "Độ ẩm TB",
+      "windSpeedDistribution": "Phân bố tốc độ gió",
+      "avgWindSpeed": "Tốc độ gió TB",
+      "windVisibility": "Gió & Tầm nhìn",
+      "value": "Giá trị"
+    },
+    "metrics": {
+      "temperature": "Nhiệt độ",
+      "feelsLike": "Cảm giác như",
+      "humidity": "Độ ẩm",
+      "pressure": "Áp suất",
+      "windSpeed": "Tốc độ gió",
+      "visibility": "Tầm nhìn",
+      "precipitation": "Lượng mưa"
+    },
+    "overview": {
+      "avgTemperature": "Nhiệt độ trung bình",
+      "avgHumidity": "Độ ẩm trung bình",
+      "avgWindSpeed": "Tốc độ gió trung bình",
+      "avgPrecipitation": "Lượng mưa trung bình"
+    },
+    "totalStations": "Tổng số trạm: {count}",
+    "refresh": "Làm mới",
+    "table": {
+      "title": "Thông tin thời tiết chi tiết",
+      "viewFull": "Xem chi tiết đầy đủ",
+      "parameter": "Thông số",
+      "value": "Giá trị",
+      "unit": "Đơn vị",
+      "observedAt": "Thời gian quan sát",
+      "station": "Trạm quan trắc",
+      "area": "Khu vực",
+      "weatherType": "Loại thời tiết",
+      "temperature": "Nhiệt độ",
+      "feelsLike": "Cảm giác như",
+      "humidity": "Độ ẩm",
+      "pressure": "Áp suất khí quyển",
+      "windSpeed": "Tốc độ gió",
+      "windDirection": "Hướng gió",
+      "precipitation": "Lượng mưa",
+      "visibility": "Tầm nhìn",
+      "uvIndex": "Chỉ số UV tối đa",
+      "noData": "Không tìm thấy dữ liệu trạm thời tiết"
+    },
+    "modal": {
+      "title": "Thông tin đầy đủ về thời tiết",
+      "stationInfo": "Thông tin trạm",
+      "stationName": "Tên trạm",
+      "area": "Khu vực",
+      "address": "Địa chỉ",
+      "dataSource": "Nguồn dữ liệu",
+      "description": "Mô tả",
+      "location": "Vị trí",
+      "coordinates": "Tọa độ",
+      "observationTime": "Thời gian quan sát"
+    },
+    "close": "Đóng"
   }
 }

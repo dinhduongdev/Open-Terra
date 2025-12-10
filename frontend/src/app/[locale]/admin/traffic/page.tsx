@@ -9,17 +9,19 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import TrafficReportsTable from '@/components/admin/TrafficReportsTable';
 import TrafficFlowTable from '@/components/admin/TrafficFlowTable';
 import { getLatestTrafficFlow, TrafficFlowData } from '@/services/trafficFlowService';
 
 export default function AdminTrafficPage() {
+  const t = useTranslations('adminTraffic');
   const [trafficFlowData, setTrafficFlowData] = useState<TrafficFlowData[]>([]);
 
   // Update document title
   useEffect(() => {
-    document.title = 'Open-Terra - Quản lý giao thông';
-  }, []);
+    document.title = `Open-Terra - ${t('pageTitle')}`;
+  }, [t]);
 
   const fetchTrafficFlowData = async () => {
     try {
@@ -47,15 +49,15 @@ export default function AdminTrafficPage() {
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Quản lý Báo cáo Giao thông</h1>
-          <p className="text-gray-600 mt-2">Xem và quản lý các báo cáo giao thông và dữ liệu cảm biến</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
+          <p className="text-gray-600 mt-2">{t('subtitle')}</p>
         </div>
       </div>
 
       {/* Traffic Flow Sensors Section */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-3">
-          Dữ liệu Cảm biến Giao thông
+          {t('sensorDataTitle')}
         </h2>
         <TrafficFlowTable sensors={trafficFlowData} onRefresh={fetchTrafficFlowData} />
       </div>
@@ -63,7 +65,7 @@ export default function AdminTrafficPage() {
       {/* Traffic Reports Section */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-3">
-          Báo cáo từ Người dân
+          {t('citizenReportsTitle')}
         </h2>
         <TrafficReportsTable />
       </div>

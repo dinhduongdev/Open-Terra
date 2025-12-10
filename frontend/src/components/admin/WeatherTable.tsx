@@ -9,19 +9,21 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { useWeatherData } from '@/hooks/useWeatherData';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import toast from 'react-hot-toast';
 
 export default function WeatherTable() {
+  const t = useTranslations('adminWeatherTable');
   const { weatherData, loading, error } = useWeatherData();
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (error) {
-      toast.error('Không thể tải dữ liệu thời tiết');
+      toast.error(t('errors.loadFailed'));
     }
-  }, [error]);
+  }, [error, t]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -44,15 +46,24 @@ export default function WeatherTable() {
   };
 
   const getUVLevel = (uv: number) => {
-    if (uv <= 2) return { text: 'Thấp', color: 'bg-green-100 text-green-800' };
-    if (uv <= 5) return { text: 'Trung bình', color: 'bg-yellow-100 text-yellow-800' };
-    if (uv <= 7) return { text: 'Cao', color: 'bg-orange-100 text-orange-800' };
-    if (uv <= 10) return { text: 'Rất cao', color: 'bg-red-100 text-red-800' };
-    return { text: 'Cực cao', color: 'bg-purple-100 text-purple-800' };
+    if (uv <= 2) return { text: t('uvLevels.low'), color: 'bg-green-100 text-green-800' };
+    if (uv <= 5) return { text: t('uvLevels.moderate'), color: 'bg-yellow-100 text-yellow-800' };
+    if (uv <= 7) return { text: t('uvLevels.high'), color: 'bg-orange-100 text-orange-800' };
+    if (uv <= 10) return { text: t('uvLevels.veryHigh'), color: 'bg-red-100 text-red-800' };
+    return { text: t('uvLevels.extreme'), color: 'bg-purple-100 text-purple-800' };
   };
 
   const getWindDirection = (degrees: number) => {
-    const directions = ['Bắc', 'Đông Bắc', 'Đông', 'Đông Nam', 'Nam', 'Tây Nam', 'Tây', 'Tây Bắc'];
+    const directions = [
+      t('windDirections.north'),
+      t('windDirections.northeast'),
+      t('windDirections.east'),
+      t('windDirections.southeast'),
+      t('windDirections.south'),
+      t('windDirections.southwest'),
+      t('windDirections.west'),
+      t('windDirections.northwest')
+    ];
     const index = Math.round(degrees / 45) % 8;
     return directions[index];
   };
@@ -63,22 +74,22 @@ export default function WeatherTable() {
     
     return [
       {
-        metric: 'Nhiệt độ',
+        metric: t('metrics.temperature'),
         value: Number(weatherData.result.temperature.value),
         unit: '°C',
       },
       {
-        metric: 'Cảm giác',
+        metric: t('metrics.feelsLike'),
         value: Number(weatherData.result.feelsLikeTemperature.value),
         unit: '°C',
       },
       {
-        metric: 'Độ ẩm',
+        metric: t('metrics.humidity'),
         value: Number(weatherData.result.relativeHumidity.value) * 100,
         unit: '%',
       },
       {
-        metric: 'Áp suất',
+        metric: t('metrics.pressure'),
         value: Number(weatherData.result.atmosphericPressure.value),
         unit: 'hPa',
       },
@@ -90,17 +101,17 @@ export default function WeatherTable() {
     
     return [
       {
-        metric: 'Tốc độ gió',
+        metric: t('metrics.windSpeed'),
         value: Number(weatherData.result.windSpeed.value),
         unit: 'km/h',
       },
       {
-        metric: 'Tầm nhìn',
+        metric: t('metrics.visibility'),
         value: Number(weatherData.result.visibility.value) / 1000,
         unit: 'km',
       },
       {
-        metric: 'Lượng mưa',
+        metric: t('metrics.precipitation'),
         value: Number(weatherData.result.precipitation.value),
         unit: 'mm',
       },
@@ -118,8 +129,8 @@ export default function WeatherTable() {
   if (error || !weatherData?.result) {
     return (
       <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-        <p className="font-bold">Lỗi</p>
-        <p>{error || 'Không có dữ liệu thời tiết'}</p>
+        <p className="font-bold">{t('error')}</p>
+        <p>{error || t('noData')}</p>
       </div>
     );
   }
@@ -172,7 +183,7 @@ export default function WeatherTable() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Weather Metrics Chart */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Các chỉ số thời tiết</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('charts.weatherMetrics')}</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={getWeatherMetricsData()}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -180,14 +191,14 @@ export default function WeatherTable() {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="value" name="Giá trị" fill="#3b82f6" />
+              <Bar dataKey="value" name={t('charts.value')} fill="#3b82f6" />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Wind & Visibility Chart */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Gió và Tầm nhìn</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('charts.windVisibility')}</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={getWindAndVisibilityData()}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -195,7 +206,7 @@ export default function WeatherTable() {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="value" name="Giá trị" fill="#10b981" />
+              <Bar dataKey="value" name={t('charts.value')} fill="#10b981" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -204,12 +215,12 @@ export default function WeatherTable() {
       {/* Detailed Information Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-          <h3 className="text-lg font-semibold text-gray-900">Thông tin chi tiết</h3>
+          <h3 className="text-lg font-semibold text-gray-900">{t('table.title')}</h3>
           <button
             onClick={() => setShowModal(true)}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
-            Xem đầy đủ
+            {t('table.viewFull')}
           </button>
         </div>
         <div className="overflow-x-auto">
@@ -217,66 +228,66 @@ export default function WeatherTable() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Thông số
+                  {t('table.parameter')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Giá trị
+                  {t('table.value')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Đơn vị
+                  {t('table.unit')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Thời gian quan sát
+                  {t('table.observedAt')}
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               <tr className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Trạm quan trắc</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{t('table.station')}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500" colSpan={3}>{weather.name}</td>
               </tr>
               <tr className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Khu vực</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{t('table.area')}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500" colSpan={3}>{weather.areaServed}</td>
               </tr>
               <tr className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Loại thời tiết</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{t('table.weatherType')}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500" colSpan={3}>
                   {weather.weatherType.value}
                 </td>
               </tr>
               <tr className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Nhiệt độ</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{t('table.temperature')}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{Number(weather.temperature.value)}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{weather.temperature.unitCode}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(weather.temperature.observedAt!)}</td>
               </tr>
               <tr className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Cảm giác như</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{t('table.feelsLike')}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{Number(weather.feelsLikeTemperature.value)}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{weather.feelsLikeTemperature.unitCode}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(weather.feelsLikeTemperature.observedAt!)}</td>
               </tr>
               <tr className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Độ ẩm</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{t('table.humidity')}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{(Number(weather.relativeHumidity.value) * 100).toFixed(0)}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">%</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(weather.relativeHumidity.observedAt!)}</td>
               </tr>
               <tr className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Áp suất khí quyển</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{t('table.pressure')}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{Number(weather.atmosphericPressure.value)}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{weather.atmosphericPressure.unitCode}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(weather.atmosphericPressure.observedAt!)}</td>
               </tr>
               <tr className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Tốc độ gió</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{t('table.windSpeed')}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{Number(weather.windSpeed.value)}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{weather.windSpeed.unitCode}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(weather.windSpeed.observedAt!)}</td>
               </tr>
               <tr className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Hướng gió</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{t('table.windDirection')}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {weather.windDirection.value}° ({getWindDirection(weather.windDirection.value as number)})
                 </td>
@@ -284,19 +295,19 @@ export default function WeatherTable() {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(weather.windDirection.observedAt!)}</td>
               </tr>
               <tr className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Lượng mưa</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{t('table.precipitation')}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{Number(weather.precipitation.value)}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{weather.precipitation.unitCode}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(weather.precipitation.observedAt!)}</td>
               </tr>
               <tr className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Tầm nhìn</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{t('table.visibility')}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{(Number(weather.visibility.value) / 1000).toFixed(1)}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">km</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(weather.visibility.observedAt!)}</td>
               </tr>
               <tr className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Chỉ số UV tối đa</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{t('table.uvIndex')}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <span className={`px-2 py-1 rounded-full text-xs font-semibold ${uvLevel.color}`}>
                     {Number(weather.uVIndexMax.value)} - {uvLevel.text}
@@ -322,7 +333,7 @@ export default function WeatherTable() {
           >
             {/* Modal Header */}
             <div className="flex justify-between items-center p-6 border-b border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900">Thông tin đầy đủ về thời tiết</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{t('modal.title')}</h2>
               <button
                 onClick={() => setShowModal(false)}
                 className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
@@ -335,28 +346,28 @@ export default function WeatherTable() {
             <div className="p-6 space-y-6">
               {/* Station Info */}
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Thông tin trạm</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('modal.stationInfo')}</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-600">Tên trạm</p>
+                    <p className="text-sm text-gray-600">{t('modal.stationName')}</p>
                     <p className="font-medium text-gray-900">{weather.name}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Khu vực</p>
+                    <p className="text-sm text-gray-600">{t('modal.area')}</p>
                     <p className="font-medium text-gray-900">{weather.areaServed}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Địa chỉ</p>
+                    <p className="text-sm text-gray-600">{t('modal.address')}</p>
                     <p className="font-medium text-gray-900">
                       {weather.address.addressLocality}, {weather.address.addressCountry}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Nguồn dữ liệu</p>
+                    <p className="text-sm text-gray-600">{t('modal.dataSource')}</p>
                     <p className="font-medium text-gray-900">{weather.source}</p>
                   </div>
                   <div className="col-span-2">
-                    <p className="text-sm text-gray-600">Mô tả</p>
+                    <p className="text-sm text-gray-600">{t('modal.description')}</p>
                     <p className="font-medium text-gray-900">{weather.description}</p>
                   </div>
                 </div>
@@ -364,15 +375,15 @@ export default function WeatherTable() {
 
               {/* Location */}
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Vị trí</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('modal.location')}</h3>
                 <p className="text-gray-900">
-                  Tọa độ: {weather.location.coordinates[1].toFixed(6)}, {weather.location.coordinates[0].toFixed(6)}
+                  {t('modal.coordinates')}: {weather.location.coordinates[1].toFixed(6)}, {weather.location.coordinates[0].toFixed(6)}
                 </p>
               </div>
 
               {/* Observation Time */}
               <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Thời gian quan sát</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('modal.observationTime')}</h3>
                 <p className="text-gray-900">{formatDate(weather.dateObserved['@value'])}</p>
               </div>
             </div>
@@ -383,7 +394,7 @@ export default function WeatherTable() {
                 onClick={() => setShowModal(false)}
                 className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 font-medium"
               >
-                Đóng
+                {t('close')}
               </button>
             </div>
           </div>

@@ -9,6 +9,7 @@
 "use client";
 import React, { useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import ProgressLink from '../common/ProgressLink';
 import DashboardIcon from '../icon/DashboardIcon';
 import TrafficIcon from '../icon/TrafficIcon';
@@ -21,37 +22,37 @@ import FeedbackIcon from '../icon/FeedbackIcon';
 
 const menuItems = [
   // {
-  //   title: 'Dashboard',
+  //   titleKey: 'dashboard',
   //   icon: DashboardIcon,
   //   href: '/admin/dashboard',
   // },
   {
-    title: 'Giao thông',
+    titleKey: 'traffic',
     icon: TrafficIcon,
     href: '/admin/traffic',
   },
   {
-    title: 'Ngập nước',
+    titleKey: 'flood',
     icon: FloodIcon,
     href: '/admin/flood',
   },
   {
-    title: 'Không khí',
+    titleKey: 'airQuality',
     icon: AirQualityIcon,
     href: '/admin/air-quality',
   },
   {
-    title: 'Thời tiết',
+    titleKey: 'weather',
     icon: WeatherIcon,
     href: '/admin/weather',
   },
   {
-    title: 'Phản hồi',
+    titleKey: 'feedback',
     icon: FeedbackIcon,
     href: '/admin/feedback',
   },
   // {
-  //   title: 'Cảnh báo',
+  //   titleKey: 'alerts',
   //   icon: AlertIcon,
   //   href: '/admin/alerts',
   // },
@@ -60,6 +61,7 @@ const menuItems = [
 const AdminSidebar: React.FC = () => {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const t = useTranslations('adminSidebar');
 
   return (
     <aside
@@ -71,8 +73,8 @@ const AdminSidebar: React.FC = () => {
       <div className="p-6 flex items-center justify-between border-b border-emerald-500">
         {!isCollapsed && (
           <div>
-            <h1 className="text-2xl font-bold">Smart City</h1>
-            <p className="text-xs text-emerald-200 mt-1">Admin Panel</p>
+            <h1 className="text-2xl font-bold">{t('title')}</h1>
+            <p className="text-xs text-emerald-200 mt-1">{t('subtitle')}</p>
           </div>
         )}
         <button
@@ -115,7 +117,7 @@ const AdminSidebar: React.FC = () => {
                 className={`w-6 h-6 ${isActive ? 'text-emerald-600' : 'text-white'}`}
               />
               {!isCollapsed && (
-                <span className="ml-3 font-medium">{item.title}</span>
+                <span className="ml-3 font-medium">{t(`menu.${item.titleKey}`)}</span>
               )}
             </ProgressLink>
           );
@@ -130,8 +132,8 @@ const AdminSidebar: React.FC = () => {
           </div>
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">Admin</p>
-              <p className="text-xs text-emerald-200 truncate">admin@smartcity.vn</p>
+              <p className="text-sm font-medium truncate">{t('user.role')}</p>
+              <p className="text-xs text-emerald-200 truncate">{t('user.email')}</p>
             </div>
           )}
         </div>

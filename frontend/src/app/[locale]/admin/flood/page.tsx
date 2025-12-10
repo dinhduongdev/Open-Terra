@@ -9,6 +9,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import FloodReportsTable from "@/components/admin/FloodReportsTable";
 import FloodMonitoringTable from "@/components/admin/FloodMonitoringTable";
 import {
@@ -17,14 +18,15 @@ import {
 } from "@/services/floodMonitoringService";
 
 export default function AdminFloodPage() {
+  const t = useTranslations('adminFlood');
   const [floodMonitoringData, setFloodMonitoringData] = useState<
     FloodMonitoringData[]
   >([]);
 
   // Update document title
   useEffect(() => {
-    document.title = 'Open-Terra - Quản lý ngập lụt';
-  }, []);
+    document.title = `Open-Terra - ${t('title')}`;
+  }, [t]);
 
   const fetchFloodMonitoringData = async () => {
     try {
@@ -50,10 +52,10 @@ export default function AdminFloodPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
-            Quản lý Báo cáo Ngập lụt
+            {t('title')}
           </h1>
           <p className="text-gray-600 mt-2">
-            Xem và quản lý các báo cáo ngập lụt và dữ liệu cảm biến
+            {t('description')}
           </p>
         </div>
       </div>
@@ -61,7 +63,7 @@ export default function AdminFloodPage() {
       {/* Flood Monitoring Sensors Section */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-3">
-          Dữ liệu Cảm biến Ngập lụt
+          {t('sensorSection')}
         </h2>
         <FloodMonitoringTable
           sensors={floodMonitoringData}
@@ -72,7 +74,7 @@ export default function AdminFloodPage() {
       {/* Flood Reports Section */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-3">
-          Báo cáo từ Người dân
+          {t('reportSection')}
         </h2>
         <FloodReportsTable />
       </div>

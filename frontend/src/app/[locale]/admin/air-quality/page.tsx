@@ -9,20 +9,23 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import AirQualityTable from '@/components/admin/AirQualityTable';
 
 export default function AdminAirQualityPage() {
+  const t = useTranslations('adminAirQuality');
+  
   // Update document title
   useEffect(() => {
-    document.title = 'Open-Terra - Quản lý chất lượng không khí';
-  }, []);
+    document.title = `Open-Terra - ${t('title')}`;
+  }, [t]);
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Quản lý Chất lượng Không khí</h1>
-          <p className="text-gray-600 mt-2">Theo dõi và quản lý dữ liệu từ các trạm quan trắc không khí</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
+          <p className="text-gray-600 mt-2">{t('description')}</p>
         </div>
       </div>
       

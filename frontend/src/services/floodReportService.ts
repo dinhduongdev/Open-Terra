@@ -12,6 +12,33 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
   ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api$/, '')
   : 'https://sta-backend.open-terra.io.vn';
 
+const NOMINATIM_API_URL = 'https://nominatim.openstreetmap.org';
+
+interface NominatimResponse {
+  place_id: number;
+  licence: string;
+  osm_type: string;
+  osm_id: number;
+  lat: string;
+  lon: string;
+  class: string;
+  type: string;
+  place_rank: number;
+  importance: number;
+  addresstype: string;
+  name: string;
+  display_name: string;
+  address: {
+    road?: string;
+    suburb?: string;
+    city?: string;
+    postcode?: string;
+    country?: string;
+    country_code?: string;
+  };
+  boundingbox: string[];
+}
+
 interface FloodReportAPIResponse {
   total: number;
   items: Array<{
@@ -124,6 +151,32 @@ export async function submitFloodReport(report: Omit<FloodReport, 'id' | 'timest
     };
   } catch (error) {
     console.error('Error submitting flood report:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get address from coordinates using Nominatim API
+ */
+export async function getAddressFromCoordinates(lat: number, lon: number): Promise<string> {
+  try {
+    const response = await fetch(
+      `${NOMINATIM_API_URL}/reverse?lat=${lat}&lon=${lon}&format=json`,
+      {
+        headers: {
+          'Accept': 'application/json',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Nominatim API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data: NominatimResponse = await response.json();
+    return data.display_name || '';
+  } catch (error) {
+    console.error('Error fetching address from coordinates:', error);
     throw error;
   }
 }

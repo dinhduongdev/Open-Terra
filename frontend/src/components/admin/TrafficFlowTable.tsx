@@ -9,6 +9,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { TrafficFlowData } from '@/services/trafficFlowService';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -18,6 +19,7 @@ interface TrafficFlowTableProps {
 }
 
 export default function TrafficFlowTable({ sensors, onRefresh }: TrafficFlowTableProps) {
+  const t = useTranslations('adminTrafficFlow');
   const [selectedSensor, setSelectedSensor] = useState<TrafficFlowData | null>(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -29,10 +31,10 @@ export default function TrafficFlowTable({ sensors, onRefresh }: TrafficFlowTabl
   };
 
   const getStatusText = (speed: number, congested: boolean) => {
-    if (congested) return 'Tắc nghẽn';
-    if (speed > 40) return 'Thông thoáng';
-    if (speed > 25) return 'Chậm';
-    return 'Kẹt xe';
+    if (congested) return t('status.congested');
+    if (speed > 40) return t('status.smooth');
+    if (speed > 25) return t('status.slow');
+    return t('status.jam');
   };
 
   const formatDate = (dateString: string) => {
@@ -79,7 +81,7 @@ export default function TrafficFlowTable({ sensors, onRefresh }: TrafficFlowTabl
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Speed Chart */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Tốc độ trung bình các cảm biến</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('charts.averageSpeed')}</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={getSpeedChartData()}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -87,14 +89,14 @@ export default function TrafficFlowTable({ sensors, onRefresh }: TrafficFlowTabl
               <YAxis label={{ value: 'km/h', angle: -90, position: 'insideLeft' }} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="speed" name="Tốc độ (km/h)" fill="#3b82f6" />
+              <Bar dataKey="speed" name={t('charts.speed')} fill="#3b82f6" />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Intensity & Occupancy Chart */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Cường độ & Mật độ giao thông</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('charts.intensityOccupancy')}</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={getIntensityOccupancyChartData()}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -102,8 +104,8 @@ export default function TrafficFlowTable({ sensors, onRefresh }: TrafficFlowTabl
               <YAxis />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="intensity" name="Cường độ" stroke="#8b5cf6" strokeWidth={2} />
-              <Line type="monotone" dataKey="occupancy" name="Mật độ (%)" stroke="#ec4899" strokeWidth={2} />
+              <Line type="monotone" dataKey="intensity" name={t('charts.intensity')} stroke="#8b5cf6" strokeWidth={2} />
+              <Line type="monotone" dataKey="occupancy" name={t('charts.occupancy')} stroke="#ec4899" strokeWidth={2} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -111,15 +113,15 @@ export default function TrafficFlowTable({ sensors, onRefresh }: TrafficFlowTabl
 
       {/* Controls */}
       <div className="flex gap-4 items-center bg-white p-4 rounded-lg shadow">
-        <label className="font-semibold text-gray-900">Cảm biến giao thông</label>
+        <label className="font-semibold text-gray-900">{t('table.title')}</label>
         <div className="ml-auto flex gap-2">
-          <span className="text-sm text-gray-600">Tổng số: {sensors.length} cảm biến</span>
+          <span className="text-sm text-gray-600">{t('table.total')}: {sensors.length} {t('table.sensors')}</span>
           {onRefresh && (
             <button
               onClick={onRefresh}
               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >
-              Làm mới
+              {t('refresh')}
             </button>
           )}
         </div>
@@ -132,31 +134,31 @@ export default function TrafficFlowTable({ sensors, onRefresh }: TrafficFlowTabl
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Trạm
+                  {t('table.station')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Vị trí
+                  {t('table.location')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Trạng thái
+                  {t('table.status')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Tốc độ TB
+                  {t('table.avgSpeed')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Cường độ
+                  {t('table.intensity')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Mật độ
+                  {t('table.occupancy')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Làn đường
+                  {t('table.lane')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Cập nhật
+                  {t('table.updated')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Hành động
+                  {t('table.actions')}
                 </th>
               </tr>
             </thead>
@@ -164,7 +166,7 @@ export default function TrafficFlowTable({ sensors, onRefresh }: TrafficFlowTabl
               {sensors.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="px-6 py-4 text-center text-gray-500">
-                    Không có dữ liệu cảm biến giao thông
+                    {t('table.noData')}
                   </td>
                 </tr>
               ) : (
@@ -197,7 +199,7 @@ export default function TrafficFlowTable({ sensors, onRefresh }: TrafficFlowTabl
                         {speed.toFixed(1)} km/h
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {intensity} xe/phút
+                        {intensity} {t('table.vehiclesPerMin')}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {(occupancy * 100).toFixed(0)}%
@@ -213,7 +215,7 @@ export default function TrafficFlowTable({ sensors, onRefresh }: TrafficFlowTabl
                           onClick={() => handleViewDetail(sensor)}
                           className="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700"
                         >
-                          Xem
+                          {t('table.view')}
                         </button>
                       </td>
                     </tr>
@@ -237,7 +239,7 @@ export default function TrafficFlowTable({ sensors, onRefresh }: TrafficFlowTabl
           >
             {/* Modal Header */}
             <div className="flex justify-between items-center p-6 border-b border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900">Chi tiết cảm biến giao thông</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{t('modal.title')}</h2>
               <button
                 onClick={handleCloseModal}
                 className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
@@ -264,7 +266,7 @@ export default function TrafficFlowTable({ sensors, onRefresh }: TrafficFlowTabl
                     {/* Status */}
                     <div className="flex gap-4">
                       <div>
-                        <span className="text-sm text-gray-600">Trạng thái: </span>
+                        <span className="text-sm text-gray-600">{t('modal.status')}: </span>
                         <span className={`px-3 py-1 inline-flex text-sm font-semibold rounded-full border ${getStatusColor(speed, congested)}`}>
                           {getStatusText(speed, congested)}
                         </span>
@@ -273,39 +275,39 @@ export default function TrafficFlowTable({ sensors, onRefresh }: TrafficFlowTabl
 
                     {/* Station Info */}
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <h3 className="font-semibold text-gray-900 mb-2">Thông tin trạm</h3>
-                      <p className="text-gray-700"><span className="font-medium">Mã trạm:</span> #{stationID}</p>
-                      <p className="text-gray-700"><span className="font-medium">Làn đường:</span> {laneId}</p>
-                      <p className="text-gray-700"><span className="font-medium">Địa chỉ:</span> {address}</p>
-                      <p className="text-gray-700"><span className="font-medium">Tọa độ:</span> {lat.toFixed(6)}, {lng.toFixed(6)}</p>
+                      <h3 className="font-semibold text-gray-900 mb-2">{t('modal.stationInfo')}</h3>
+                      <p className="text-gray-700"><span className="font-medium">{t('modal.stationId')}:</span> #{stationID}</p>
+                      <p className="text-gray-700"><span className="font-medium">{t('modal.lane')}:</span> {laneId}</p>
+                      <p className="text-gray-700"><span className="font-medium">{t('modal.address')}:</span> {address}</p>
+                      <p className="text-gray-700"><span className="font-medium">{t('modal.coordinates')}:</span> {lat.toFixed(6)}, {lng.toFixed(6)}</p>
                     </div>
 
                     {/* Traffic Metrics */}
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <h3 className="font-semibold text-gray-900 mb-2">Thông số giao thông</h3>
+                      <h3 className="font-semibold text-gray-900 mb-2">{t('modal.trafficMetrics')}</h3>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="bg-white p-3 rounded border border-blue-200">
-                          <p className="text-xs text-gray-600 mb-1">Tốc độ trung bình</p>
+                          <p className="text-xs text-gray-600 mb-1">{t('modal.averageSpeed')}</p>
                           <p className="text-2xl font-bold text-blue-700">{speed.toFixed(1)} km/h</p>
                         </div>
                         <div className="bg-white p-3 rounded border border-purple-200">
-                          <p className="text-xs text-gray-600 mb-1">Cường độ xe</p>
-                          <p className="text-2xl font-bold text-purple-700">{intensity} xe/phút</p>
+                          <p className="text-xs text-gray-600 mb-1">{t('modal.vehicleIntensity')}</p>
+                          <p className="text-2xl font-bold text-purple-700">{intensity} {t('modal.vehiclesPerMin')}</p>
                         </div>
                         <div className="bg-white p-3 rounded border border-orange-200">
-                          <p className="text-xs text-gray-600 mb-1">Mật độ đường</p>
+                          <p className="text-xs text-gray-600 mb-1">{t('modal.roadOccupancy')}</p>
                           <p className="text-2xl font-bold text-orange-700">{(occupancy * 100).toFixed(0)}%</p>
                         </div>
                         <div className="bg-white p-3 rounded border border-red-200">
-                          <p className="text-xs text-gray-600 mb-1">Tắc nghẽn</p>
-                          <p className="text-2xl font-bold text-red-700">{congested ? 'Có' : 'Không'}</p>
+                          <p className="text-xs text-gray-600 mb-1">{t('modal.congested')}</p>
+                          <p className="text-2xl font-bold text-red-700">{congested ? t('modal.yes') : t('modal.no')}</p>
                         </div>
                       </div>
                     </div>
 
                     {/* Timestamp */}
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-2">Thời gian cập nhật</h3>
+                      <h3 className="font-semibold text-gray-900 mb-2">{t('modal.updateTime')}</h3>
                       <p className="text-gray-700">{timestamp ? formatDate(timestamp) : 'N/A'}</p>
                     </div>
                   </>
@@ -319,7 +321,7 @@ export default function TrafficFlowTable({ sensors, onRefresh }: TrafficFlowTabl
                 onClick={handleCloseModal}
                 className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 text-gray-700"
               >
-                Đóng
+                {t('close')}
               </button>
             </div>
           </div>
